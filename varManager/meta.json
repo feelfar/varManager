@@ -1,0 +1,456 @@
+{ 
+   "licenseType" : "CC BY", 
+   "creatorName" : "Ruthven2000", 
+   "packageName" : "LittleRed", 
+   "standardReferenceVersionOption" : "Latest", 
+   "scriptReferenceVersionOption" : "Exact", 
+   "description" : "", 
+   "credits" : "", 
+   "instructions" : "", 
+   "promotionalLink" : "", 
+   "programVersion" : "1.20.77.9", 
+   "contentList" : [ 
+      "Saves/scene/Current/RedHood", 
+      "Custom/Sounds/DarkGift.mp3", 
+      "Custom/Sounds/Horror/werewolf/Howls/Howl01.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/untitled.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl02.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl03.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl04.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl05.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl06.wav", 
+      "Custom/Sounds/Horror/werewolf/Low Growls/growl07.wav", 
+      "Custom/Sounds/BDSM/clothrip.wav", 
+      "Custom/Sounds/BDSM/Gasps/Gasp15.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp14.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp13.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp12.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp11.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp10.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp7.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp8.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp9.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp6.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp5.mp3", 
+      "Custom/Sounds/BDSM/Gasps/Gasp4.mp3", 
+      "Custom/Scripts/MeshedVR/FloatParamRandomizer.cs", 
+      "Custom/Clothing/Female/Ruthven2000/Gipsydressopen/Gipsydressopen.vam", 
+      "Custom/Clothing/Female/Ruthven2000/Gipsydressopen/Gipsydressopen.jpg", 
+      "Custom/Clothing/Female/Ruthven2000/Gipsydressopen/Gipsydressopen.vaj", 
+      "Custom/Clothing/Female/Ruthven2000/Gipsydressopen/Gipsydressopen.vab", 
+      "Custom/Atom/Person/Morphs/female_genitalia/!Custom/Gens Young.vmi", 
+      "Custom/Atom/Person/Morphs/female_genitalia/!Custom/Gens Young.vmb", 
+      "Custom/Atom/Person/Textures/Cassie/CassieTorsoN.png", 
+      "Custom/Images/fullmoon.jpg", 
+      "Custom/Atom/Person/Morphs/male/_Alien_Face/PHMNoseHag.vmi", 
+      "Custom/Atom/Person/Morphs/male/_Alien_Face/PHMNoseHag.vmb", 
+      "Custom/Atom/Person/Morphs/male/Face_Reloaded-Lite/Forehead back.vmi", 
+      "Custom/Atom/Person/Morphs/male/Face_Reloaded-Lite/Forehead back.vmb", 
+      "Custom/Atom/Person/Morphs/male/Mouth_Reloaded-Lite/Mouth big X.vmi", 
+      "Custom/Atom/Person/Morphs/male/Mouth_Reloaded-Lite/Mouth big X.vmb", 
+      "Custom/Atom/Person/Morphs/female/AUTO/Face flat.vmi", 
+      "Custom/Atom/Person/Morphs/female/AUTO/Face flat.vmb", 
+      "Custom/Atom/Person/Morphs/female/Body Diversity/Face Weight Gaunt.vmi", 
+      "Custom/Atom/Person/Morphs/female/Body Diversity/Face Weight Gaunt.vmb", 
+      "Custom/Atom/Person/Textures/JackarooFreeGenNormals.png", 
+      "Custom/Sounds/Horror/werewolf/Howls/Howl02.wav", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/GypsyDressDown.vam", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/GypsyDressDown.jpg", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/GypsyDressDown.vaj", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/GypsyDressDown.vab", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/Dress 4.png", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/Dressalpha.png", 
+      "Custom/Clothing/Female/Ruthven2000/GypsyDressDown/Dress 2.png"
+   ], 
+   "dependencies" : { 
+      "via5.Synergy.1" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "AcidBubbles.Timeline.217" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "bvctr.SoundRandomizer.1" : { 
+         "licenseType" : "CC BY-NC", 
+         "dependencies" : { 
+         }
+      }, 
+      "YameteOuji.YameteOuji_Shoes_MidHeelA.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "cotyounoyume.ExpressionBlushingAndTears.10" : { 
+         "licenseType" : "CC BY-NC-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "Skippy.Skippys_CumClothing.latest" : { 
+         "licenseType" : "CC BY-NC", 
+         "dependencies" : { 
+         }
+      }, 
+      "SupaRioAmateur.Sub_Demi_Eyes.1" : { 
+         "licenseType" : "CC BY-NC-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "noheadnoleg.t014_wearable_tattoo_eye.latest" : { 
+         "licenseType" : "PC", 
+         "dependencies" : { 
+         }
+      }, 
+      "NoStage3.Hair_Long_Side_2_Bangs_3.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "Spacedog.Import_Reloaded_Lite.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "Xstatic.Denise.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+            "Roac.Slayer_hair.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "kemenate.Morphs.latest" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }, 
+      "Dragontales.She's_Alive.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+            "via5.Synergy.1" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }, 
+            "MacGruber.Life.10" : { 
+               "licenseType" : "CC BY-SA", 
+               "dependencies" : { 
+               }
+            }, 
+            "Dragontales.RealGaze.1" : { 
+               "licenseType" : "Questionable", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }, 
+      "Alter3go.Skin_A1_3.latest" : { 
+         "licenseType" : "CC BY-NC-ND", 
+         "dependencies" : { 
+         }
+      }, 
+      "Alter3go.Body_Freckles.latest" : { 
+         "licenseType" : "CC BY-NC-ND", 
+         "dependencies" : { 
+         }
+      }, 
+      "JoyBoy.Old_Big_Tree.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "xstatic.Xstatic_particle_pack_#8_Fog.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "hazmhox.rocksandplants101.1" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+            "MeshedVR.3PointLightSetup.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+                  "NoStage3.Hair_Long_Upswept_Top_Bun.latest" : { 
+                     "licenseType" : "CC BY", 
+                     "dependencies" : { 
+                     }
+                  }
+               }
+            }, 
+            "kemenate.Morphs.latest" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }, 
+            "MeshedVR.PresetsPack.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }, 
+      "Damarmau.Forest.1" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+            "MacGruber.PostMagic.3" : { 
+               "licenseType" : "CC BY-SA", 
+               "dependencies" : { 
+               }
+            }, 
+            "BooMoon.BooMoon_Lut_Pack.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "xstatic.Xstatic_particle_pack_#8_Fog.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "MR.Trees.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "hazmhox.rocksandplants101.1" : { 
+               "licenseType" : "CC BY-SA", 
+               "dependencies" : { 
+                  "MeshedVR.3PointLightSetup.latest" : { 
+                     "licenseType" : "CC BY", 
+                     "dependencies" : { 
+                        "NoStage3.Hair_Long_Upswept_Top_Bun.latest" : { 
+                           "licenseType" : "CC BY", 
+                           "dependencies" : { 
+                           }
+                        }
+                     }
+                  }, 
+                  "kemenate.Morphs.latest" : { 
+                     "licenseType" : "FC", 
+                     "dependencies" : { 
+                     }
+                  }, 
+                  "MeshedVR.PresetsPack.latest" : { 
+                     "licenseType" : "CC BY", 
+                     "dependencies" : { 
+                     }
+                  }
+               }
+            }, 
+            "NoStage3.UnityAssetVamifier.20" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "MR.Campfire.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "hazmhox.vamafx.2" : { 
+               "licenseType" : "CC BY-NC-SA", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }, 
+      "MR.Trees.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "NoStage3.UnityAssetVamifier.20" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "AcidBubbles.ImprovedPoV.1" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "Hunting-Succubus.Male&Futa_Enhanced_Eyes.latest" : { 
+         "licenseType" : "PC EA", 
+         "dependencies" : { 
+         }
+      }, 
+      "kemenate.Male_Body_Hair.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "kemenate.Male_Hairstyles.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "kemenate.Male_Beard.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "WeebU.My_morphs.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "MacGruber.Life.10" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "Vamtastic.Penis_Grip_V3.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "kemenate.Morphs.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "Spacedog.Wet_Bits.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "MacGruber.Life.13" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "Romolas.Eye_Saccades.2" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "VaMChan.Hair_Headband_Hairstyles.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "kemenate.Clothing.latest" : { 
+         "licenseType" : "FC", 
+         "dependencies" : { 
+         }
+      }, 
+      "JayJayWon.BJSFX.1" : { 
+         "licenseType" : "CC BY-NC-SA", 
+         "dependencies" : { 
+         }
+      }, 
+      "AshAuryn.Sexpressions.latest" : { 
+         "licenseType" : "CC BY", 
+         "dependencies" : { 
+         }
+      }, 
+      "geesp0t.EasyMoan.10" : { 
+         "licenseType" : "CC BY-SA", 
+         "dependencies" : { 
+            "AshAuryn.Sexpressions.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "TenStrip.Expressions.latest" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }, 
+      "KdollMASTA.KDoll_Mk10.1" : { 
+         "licenseType" : "CC BY-NC", 
+         "dependencies" : { 
+            "cotyounoyume.ExpressionBlushingAndTearsFullVer.3" : { 
+               "missing" : "true", 
+               "licenseType" : "MISSING", 
+               "dependencies" : { 
+               }
+            }, 
+            "MeshedVR.3PointLightSetup.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+                  "NoStage3.Hair_Long_Upswept_Top_Bun.latest" : { 
+                     "licenseType" : "CC BY", 
+                     "dependencies" : { 
+                     }
+                  }
+               }
+            }, 
+            "LFE.AutoPupil0.8" : { 
+               "missing" : "true", 
+               "licenseType" : "MISSING", 
+               "dependencies" : { 
+               }
+            }, 
+            "Hunting-Succubus.FemaleBodySmootherTessellation.1" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "Hunting-Succubus.Enhanced_Eyes.latest" : { 
+               "licenseType" : "PC", 
+               "dependencies" : { 
+               }
+            }, 
+            "Roac.Arty_alt_hairs.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+               }
+            }, 
+            "KdollMASTA.KDoll_Mk2.latest" : { 
+               "missing" : "true", 
+               "licenseType" : "MISSING", 
+               "dependencies" : { 
+               }
+            }, 
+            "KdollMASTA.K_Doll_Mk_5.2" : { 
+               "missing" : "true", 
+               "licenseType" : "MISSING", 
+               "dependencies" : { 
+               }
+            }, 
+            "kemenate.Morphs.latest" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }, 
+            "TenStrip.Morphs.latest" : { 
+               "licenseType" : "FC", 
+               "dependencies" : { 
+               }
+            }, 
+            "VamXFan.Neutral-Environment-Color.latest" : { 
+               "licenseType" : "CC BY", 
+               "dependencies" : { 
+                  "Blazedust.Script_ColorScale.1" : { 
+                     "licenseType" : "CC BY", 
+                     "dependencies" : { 
+                     }
+                  }
+               }
+            }, 
+            "MacGruber.PostMagic.3" : { 
+               "licenseType" : "CC BY-SA", 
+               "dependencies" : { 
+               }
+            }
+         }
+      }
+   }, 
+   "customOptions" : { 
+      "preloadMorphs" : "false"
+   }, 
+   "hadReferenceIssues" : "true", 
+   "referenceIssues" : [ 
+      { 
+         "reference" : "Saves/scene/Current/RedHood/Gasp15.mp3|Gasp14.mp3|Gasp13.mp3|Gasp12.mp3|Gasp11.mp3|Gasp10.mp3|Gasp7.mp3|Gasp8.mp3|Gasp9.mp3|Gasp6.mp3|Gasp5.mp3|Gasp4.mp3", 
+         "issue" : "BROKEN: References local relative file Gasp15.mp3|Gasp14.mp3|Gasp13.mp3|Gasp12.mp3|Gasp11.mp3|Gasp10.mp3|Gasp7.mp3|Gasp8.mp3|Gasp9.mp3|Gasp6.mp3|Gasp5.mp3|Gasp4.mp3 not included in package. File is missing"
+      }
+   ]
+}
