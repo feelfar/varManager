@@ -32,13 +32,14 @@ namespace varManager
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
-            this.buttonTidyVars = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonFixSavesDepend = new System.Windows.Forms.Button();
+            this.buttonFixRebuildLink = new System.Windows.Forms.Button();
             this.buttonScenesManager = new System.Windows.Forms.Button();
             this.buttonStaleVars = new System.Windows.Forms.Button();
-            this.buttonFix = new System.Windows.Forms.Button();
             this.buttonUpdDB = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -95,9 +96,9 @@ namespace varManager
             this.toolStripButtonPreviewFirst = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPreviewPrev = new System.Windows.Forms.ToolStripButton();
             this.toolStripComboBoxPreviewPage = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLabelPreviewCountItem = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButtonPreviewNext = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPreviewLast = new System.Windows.Forms.ToolStripButton();
-            this.backgroundWorkerExtraImgs = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerUpdDB = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerInstall = new System.ComponentModel.BackgroundWorker();
             this.varsBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -110,8 +111,10 @@ namespace varManager
             this.installStatusBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
@@ -136,7 +139,7 @@ namespace varManager
             // 
             // buttonSetting
             // 
-            this.buttonSetting.Location = new System.Drawing.Point(9, 481);
+            this.buttonSetting.Location = new System.Drawing.Point(16, 448);
             this.buttonSetting.Name = "buttonSetting";
             this.buttonSetting.Size = new System.Drawing.Size(75, 28);
             this.buttonSetting.TabIndex = 0;
@@ -144,21 +147,11 @@ namespace varManager
             this.buttonSetting.UseVisualStyleBackColor = true;
             this.buttonSetting.Click += new System.EventHandler(this.buttonSetting_Click);
             // 
-            // buttonTidyVars
-            // 
-            this.buttonTidyVars.Location = new System.Drawing.Point(9, 27);
-            this.buttonTidyVars.Name = "buttonTidyVars";
-            this.buttonTidyVars.Size = new System.Drawing.Size(75, 29);
-            this.buttonTidyVars.TabIndex = 1;
-            this.buttonTidyVars.Text = "TidyVars";
-            this.buttonTidyVars.UseVisualStyleBackColor = true;
-            this.buttonTidyVars.Click += new System.EventHandler(this.buttonTidyVars_Click);
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.Controls.Add(this.listBoxLog, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 0);
@@ -173,7 +166,7 @@ namespace varManager
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1243, 585);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1368, 663);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // listBoxLog
@@ -181,64 +174,91 @@ namespace varManager
             this.listBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBoxLog.FormattingEnabled = true;
             this.listBoxLog.ItemHeight = 15;
-            this.listBoxLog.Location = new System.Drawing.Point(3, 328);
+            this.listBoxLog.Location = new System.Drawing.Point(3, 406);
             this.listBoxLog.Name = "listBoxLog";
-            this.listBoxLog.Size = new System.Drawing.Size(1137, 194);
+            this.listBoxLog.Size = new System.Drawing.Size(1242, 194);
             this.listBoxLog.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.buttonScenesManager);
             this.panel1.Controls.Add(this.buttonStaleVars);
-            this.panel1.Controls.Add(this.buttonFix);
             this.panel1.Controls.Add(this.buttonUpdDB);
             this.panel1.Controls.Add(this.buttonSetting);
-            this.panel1.Controls.Add(this.buttonTidyVars);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(1146, 43);
+            this.panel1.Location = new System.Drawing.Point(1251, 43);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 3);
-            this.panel1.Size = new System.Drawing.Size(94, 519);
+            this.panel1.Size = new System.Drawing.Size(114, 597);
             this.panel1.TabIndex = 5;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.buttonFixSavesDepend);
+            this.groupBox1.Controls.Add(this.buttonFixRebuildLink);
+            this.groupBox1.Location = new System.Drawing.Point(10, 68);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(96, 140);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Fix";
+            // 
+            // buttonFixSavesDepend
+            // 
+            this.buttonFixSavesDepend.Location = new System.Drawing.Point(6, 82);
+            this.buttonFixSavesDepend.Name = "buttonFixSavesDepend";
+            this.buttonFixSavesDepend.Size = new System.Drawing.Size(75, 43);
+            this.buttonFixSavesDepend.TabIndex = 4;
+            this.buttonFixSavesDepend.Text = "\"Saves\" depends";
+            this.toolTip1.SetToolTip(this.buttonFixSavesDepend, "Search  the dependencies of scene and look in the save directory will be found an" +
+        "d installed");
+            this.buttonFixSavesDepend.UseVisualStyleBackColor = true;
+            this.buttonFixSavesDepend.Click += new System.EventHandler(this.buttonFixSavesDepend_Click);
+            // 
+            // buttonFixRebuildLink
+            // 
+            this.buttonFixRebuildLink.Location = new System.Drawing.Point(6, 24);
+            this.buttonFixRebuildLink.Name = "buttonFixRebuildLink";
+            this.buttonFixRebuildLink.Size = new System.Drawing.Size(75, 43);
+            this.buttonFixRebuildLink.TabIndex = 4;
+            this.buttonFixRebuildLink.Text = "Rebuild symlink";
+            this.toolTip1.SetToolTip(this.buttonFixRebuildLink, "When your Vars source directory changes, you need to rebuild symlinks");
+            this.buttonFixRebuildLink.UseVisualStyleBackColor = true;
+            this.buttonFixRebuildLink.Click += new System.EventHandler(this.buttonFixRebuildLink_Click);
             // 
             // buttonScenesManager
             // 
-            this.buttonScenesManager.Location = new System.Drawing.Point(9, 362);
+            this.buttonScenesManager.Location = new System.Drawing.Point(16, 363);
             this.buttonScenesManager.Name = "buttonScenesManager";
-            this.buttonScenesManager.Size = new System.Drawing.Size(75, 48);
+            this.buttonScenesManager.Size = new System.Drawing.Size(75, 42);
             this.buttonScenesManager.TabIndex = 4;
             this.buttonScenesManager.Text = "Hide Fav";
+            this.toolTip1.SetToolTip(this.buttonScenesManager, "Batch hide or favorite Scenes, looks, colthing, hairstyle");
             this.buttonScenesManager.UseVisualStyleBackColor = true;
             this.buttonScenesManager.Click += new System.EventHandler(this.buttonScenesManager_Click);
             // 
             // buttonStaleVars
             // 
-            this.buttonStaleVars.Location = new System.Drawing.Point(10, 282);
+            this.buttonStaleVars.Location = new System.Drawing.Point(16, 281);
             this.buttonStaleVars.Name = "buttonStaleVars";
-            this.buttonStaleVars.Size = new System.Drawing.Size(75, 48);
+            this.buttonStaleVars.Size = new System.Drawing.Size(75, 42);
             this.buttonStaleVars.TabIndex = 4;
             this.buttonStaleVars.Text = "Stale Vars";
+            this.toolTip1.SetToolTip(this.buttonStaleVars, "Move old version packages are not dependent on other packages to ___VarTidied___ " +
+        "dirtory");
             this.buttonStaleVars.UseVisualStyleBackColor = true;
             this.buttonStaleVars.Click += new System.EventHandler(this.buttonStaleVars_Click);
             // 
-            // buttonFix
-            // 
-            this.buttonFix.Location = new System.Drawing.Point(10, 213);
-            this.buttonFix.Name = "buttonFix";
-            this.buttonFix.Size = new System.Drawing.Size(75, 23);
-            this.buttonFix.TabIndex = 4;
-            this.buttonFix.Text = "Fix";
-            this.buttonFix.UseVisualStyleBackColor = true;
-            this.buttonFix.Click += new System.EventHandler(this.buttonFix_Click);
-            // 
             // buttonUpdDB
             // 
-            this.buttonUpdDB.Location = new System.Drawing.Point(10, 152);
+            this.buttonUpdDB.Location = new System.Drawing.Point(16, 27);
             this.buttonUpdDB.Name = "buttonUpdDB";
             this.buttonUpdDB.Size = new System.Drawing.Size(75, 23);
             this.buttonUpdDB.TabIndex = 3;
             this.buttonUpdDB.Text = "UPD_DB";
+            this.toolTip1.SetToolTip(this.buttonUpdDB, "When you run for the first time, or you get some new packages, please click");
             this.buttonUpdDB.UseVisualStyleBackColor = true;
             this.buttonUpdDB.Click += new System.EventHandler(this.buttonUpdDB_Click);
             // 
@@ -248,7 +268,7 @@ namespace varManager
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1137, 34);
+            this.panel2.Size = new System.Drawing.Size(1242, 34);
             this.panel2.TabIndex = 6;
             // 
             // flowLayoutPanel1
@@ -263,7 +283,7 @@ namespace varManager
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1137, 34);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1242, 34);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
             // buttonInstall
@@ -352,7 +372,6 @@ namespace varManager
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "位置";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -450,11 +469,11 @@ namespace varManager
             this.tableLayoutPanel2.Controls.Add(this.progressBar1, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.labelProgress, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 528);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 606);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1137, 34);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1242, 34);
             this.tableLayoutPanel2.TabIndex = 7;
             // 
             // progressBar1
@@ -462,7 +481,7 @@ namespace varManager
             this.progressBar1.Dock = System.Windows.Forms.DockStyle.Top;
             this.progressBar1.Location = new System.Drawing.Point(163, 3);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(971, 25);
+            this.progressBar1.Size = new System.Drawing.Size(1076, 25);
             this.progressBar1.TabIndex = 4;
             // 
             // labelProgress
@@ -491,8 +510,8 @@ namespace varManager
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanelPreview);
             this.splitContainer1.Panel2.Controls.Add(this.listViewPreviewPics);
             this.splitContainer1.Panel2.Controls.Add(this.toolStripPreview);
-            this.splitContainer1.Size = new System.Drawing.Size(1137, 279);
-            this.splitContainer1.SplitterDistance = 468;
+            this.splitContainer1.Size = new System.Drawing.Size(1242, 357);
+            this.splitContainer1.SplitterDistance = 510;
             this.splitContainer1.TabIndex = 8;
             // 
             // varsViewDataGridView
@@ -523,7 +542,7 @@ namespace varManager
             this.varsViewDataGridView.RowHeadersWidth = 51;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(468, 279);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(510, 357);
             this.varsViewDataGridView.TabIndex = 0;
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
             this.varsViewDataGridView.SelectionChanged += new System.EventHandler(this.varsDataGridView_SelectionChanged);
@@ -749,7 +768,7 @@ namespace varManager
             this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(665, 251);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 329);
             this.listViewPreviewPics.TabIndex = 0;
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
             this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
@@ -770,11 +789,12 @@ namespace varManager
             this.toolStripButtonPreviewFirst,
             this.toolStripButtonPreviewPrev,
             this.toolStripComboBoxPreviewPage,
+            this.toolStripLabelPreviewCountItem,
             this.toolStripButtonPreviewNext,
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(665, 28);
+            this.toolStripPreview.Size = new System.Drawing.Size(728, 28);
             this.toolStripPreview.TabIndex = 2;
             this.toolStripPreview.Text = "toolStrip1";
             // 
@@ -828,6 +848,12 @@ namespace varManager
             this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
             this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
             // 
+            // toolStripLabelPreviewCountItem
+            // 
+            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
+            this.toolStripLabelPreviewCountItem.Text = "/{0}";
+            // 
             // toolStripButtonPreviewNext
             // 
             this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -845,11 +871,6 @@ namespace varManager
             this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonPreviewLast.Text = ">|";
             this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
-            // 
-            // backgroundWorkerExtraImgs
-            // 
-            this.backgroundWorkerExtraImgs.WorkerReportsProgress = true;
-            this.backgroundWorkerExtraImgs.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerExtraImgs_DoWork);
             // 
             // backgroundWorkerUpdDB
             // 
@@ -914,7 +935,7 @@ namespace varManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1243, 585);
+            this.ClientSize = new System.Drawing.Size(1368, 663);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -922,6 +943,7 @@ namespace varManager
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
@@ -955,18 +977,16 @@ namespace varManager
         #endregion
 
         private System.Windows.Forms.Button buttonSetting;
-        private System.Windows.Forms.Button buttonTidyVars;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ListBox listBoxLog;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerExtraImgs;
         private System.Windows.Forms.Button buttonUpdDB;
         private System.ComponentModel.BackgroundWorker backgroundWorkerUpdDB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label labelProgress;
-        private System.Windows.Forms.Button buttonFix;
+        private System.Windows.Forms.Button buttonFixRebuildLink;
         private System.ComponentModel.BackgroundWorker backgroundWorkerInstall;
         private System.Windows.Forms.ComboBox comboBoxCreater;
         private System.Windows.Forms.Label label1;
@@ -1034,6 +1054,10 @@ namespace varManager
         private System.Windows.Forms.Button buttonScenesManager;
         private System.Windows.Forms.BindingSource scenesBindingSource;
         private varManagerDataSetTableAdapters.scenesTableAdapter scenesTableAdapter;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelPreviewCountItem;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button buttonFixSavesDepend;
     }
 }
 

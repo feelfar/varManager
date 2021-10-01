@@ -22,6 +22,7 @@ namespace varManager
         private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
         private static SimpleLogger simpLog = new SimpleLogger();
         private static string tidiedDirName = "___VarTidied___";
+        private static string redundantDirName = "___VarRedundant___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
         public Form1()
@@ -36,157 +37,86 @@ namespace varManager
             formSettings.ShowDialog();
         }
 
-        private void buttonTidyVars_Click(object sender, EventArgs e)
-        {
-            string message = "All .var files in " + Settings.Default.varspath + " directory will be organized into *" + tidiedDirName + "* subfolders,Are you sure?";
-            const string caption = "VAR Tidy";
-            var result = MessageBox.Show(message, caption,
-                                         MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Question,
-                                         MessageBoxDefaultButton.Button2);
-            if (result == DialogResult.Yes)
-                TidyVars();
-        }
-
+        private List<string> varsForInstall = new List<string>();
         private void TidyVars()
         {
-            string[] vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories);
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            InvokeProgress mi = new InvokeProgress(UpdateProgress);
+            this.BeginInvoke(addlog, new Object[] { "Tidy Vars..." });
             string tidypath = Path.Combine(Settings.Default.varspath, tidiedDirName);
             if (!Directory.Exists(tidypath))
                 Directory.CreateDirectory(tidypath);
+            string redundantpath = Path.Combine(Settings.Default.varspath, redundantDirName);
+            if (!Directory.Exists(redundantpath))
+                Directory.CreateDirectory(redundantpath);
 
+            var vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
+                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1);
+            
+            string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
+
+            var varsUsed = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.AllDirectories)
+                          .Where(q => q.IndexOf(installlinkdir) == -1);
+            varsForInstall.Clear();
+            if (File.Exists("varsForInstall.txt"))
+                varsForInstall.AddRange(File.ReadAllLines("varsForInstall.txt"));
+            foreach (var varins in varsUsed)
+            {
+                varsForInstall.Add(Path.GetFileNameWithoutExtension(varins));
+            }
+            File.WriteAllLines("varsForInstall.txt", varsForInstall);
+            varsForInstall = varsForInstall.Distinct().ToList();
             int curVarfile = 0;
-            foreach (string varfile in vars)
+            foreach (string varfile in vars.Concat(varsUsed))
             {
-                if (Path.GetDirectoryName(varfile).IndexOf(tidypath) == -1)
+                string varfilename = Path.GetFileNameWithoutExtension(varfile);
+                string[] varnamepart = varfilename.Split('.');
+                if (varnamepart.Length == 3)
                 {
-                    string varfilename = Path.GetFileNameWithoutExtension(varfile);
-                    string[] varnamepart = varfilename.Split('.');
-                    if (varnamepart.Length == 3)
+                    string createrpath = Path.Combine(tidypath, varnamepart[0]);
+                    if (!Directory.Exists(createrpath))
+                        Directory.CreateDirectory(createrpath);
+                    string destvarfilename = Path.Combine(createrpath, Path.GetFileName(varfile));
+                    if (File.Exists(destvarfilename))
                     {
-                        string createrpath = Path.Combine(tidypath, varnamepart[0]);
-                        if (!Directory.Exists(createrpath))
-                            Directory.CreateDirectory(createrpath);
-                        string destvarfilename = Path.Combine(createrpath, Path.GetFileName(varfile));
-                        if (File.Exists(destvarfilename))
+                        string errlog = varfile + " has same filename in tidy directory,will copy into the redundant directory";
+                        this.BeginInvoke(addlog, new Object[] { errlog });
+                        string redundantfilename = Path.Combine(redundantpath, Path.GetFileName(varfile));
+
+                        int count = 1;
+
+                        string fileNameOnly = Path.GetFileNameWithoutExtension(redundantfilename);
+                        string extension = Path.GetExtension(redundantfilename);
+                        string path = Path.GetDirectoryName(redundantfilename);
+
+                        while (File.Exists(redundantfilename))
                         {
-                            simpLog.Error(varfile + " has same filename in tidy directory");
-                            listBoxLog.Items.Add(varfile + " has same filename in tidy directory");
+                            string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                            redundantfilename = Path.Combine(path, tempFileName + extension);
                         }
-                        else
+                        File.Move(varfile, redundantfilename);
+                    }
+                    else
+                    {
+                        try
                         {
-                            try
-                            {
-                                File.Move(varfile, destvarfilename);
-                            }
-                            catch (Exception ex)
-                            {
-                                simpLog.Error(varfile + " move failed, " + ex.Message);
-                                listBoxLog.Items.Add(varfile + " move failed, " + ex.Message);
-                            }
-                            //OpenAsZip(destvarfilename);
+                            File.Move(varfile, destvarfilename);
                         }
+                        catch (Exception ex)
+                        {
+                            this.BeginInvoke(addlog, new Object[] { " move failed, " + ex.Message });
+                        }
+                        //OpenAsZip(destvarfilename);
                     }
                 }
+
                 curVarfile++;
-                progressBar1.Value = (int)((float)curVarfile * 100 / (float)vars.Length);
+                this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
             }
-            System.Diagnostics.Process.Start(tidypath);
+
+            // System.Diagnostics.Process.Start(tidypath);
         }
-
-        private void ExtractImages(string destvarfilename)
-        {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            try
-            {
-                ZipArchive varzipfile = ZipFile.OpenRead(destvarfilename);
-
-                var metajson = varzipfile.GetEntry("meta.json");
-                if (metajson == null)
-                {
-                    string errorMessage = destvarfilename + " is invalid,please check";
-                    simpLog.Error(errorMessage);
-                    this.BeginInvoke(addlog, new Object[] { errorMessage });
-                    return;
-                }
-
-                int jpgcount = 0;
-                foreach (var zfile in varzipfile.Entries)
-                {
-                    string[] patch = zfile.FullName.Split('/');
-                    string typeename = "";
-                    try
-                    {
-                        if (Regex.IsMatch(zfile.FullName, @"saves/scene/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "scenes";
-                        if (Regex.IsMatch(zfile.FullName, @"saves/person/appearance/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "looks";
-                        if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "looks";
-                        if (Regex.IsMatch(zfile.FullName, @"custom/clothing/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "clothing";
-                        if (Regex.IsMatch(zfile.FullName, @"custom/hair/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "hairstyle";
-                        if (Regex.IsMatch(zfile.FullName, @"custom/assets/.*?\x2e(?:assetbundle)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                            typeename = "assets";
-                        if (typeename != "")
-                        {
-                            string jpgfile = zfile.FullName.Substring(0, zfile.FullName.LastIndexOf('.')) + ".jpg";
-                            var jpg = varzipfile.GetEntry(jpgfile);
-                            if (jpg != null)
-                            {
-                                string namejpg = Path.GetFileNameWithoutExtension(jpg.Name).ToLower();
-                                jpgcount++;
-
-                                string typepath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typeename, Path.GetFileNameWithoutExtension(destvarfilename));
-                                if (!Directory.Exists(typepath))
-                                    Directory.CreateDirectory(typepath);
-
-                                string jpgextratname = Path.Combine(typepath, typeename + jpgcount.ToString("000") + "." + namejpg + ".jpg");
-                                if (!File.Exists(jpgextratname))
-                                    jpg.ExtractToFile(jpgextratname);
-                            }
-                        }
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        simpLog.Error(destvarfilename + " " + ex.Message);
-                        this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                simpLog.Error(destvarfilename + " " + ex.Message);
-                this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
-            }
-        }
-        /*
-        private void VarAnal(string destvarfilename)
-        {
-            try
-            {
-                ZipArchive varzipfile = ZipFile.OpenRead(destvarfilename);
-                var metajson = varzipfile.GetEntry("meta.json");
-                if (metajson == null)
-                {
-                    string errorMessage = destvarfilename + " is invalid,please check";
-                    simpLog.Error(errorMessage);
-                    listBoxLog.Items.Add(errorMessage);
-                    return;
-                }
-                var metajsonsteam = new StreamReader(metajson.Open());
-                string jsonstring = metajsonsteam.ReadToEnd();
-                JsonRead(jsonstring);
-            }
-            catch (Exception ex)
-            {
-                simpLog.Error(ex.Message);
-                listBoxLog.Items.Add(ex.Message);
-            }
-        }
-        */
+       
         List<string> Getdependencies(string jsonstring)
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
@@ -312,15 +242,13 @@ namespace varManager
             // TODO: 这行代码将数据加载到表“varManagerDataSet1.varsView”中。您可以根据需要移动或删除它。
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             //varsViewBindingSource.ResetBindings(true);
-            varsViewDataGridView.Update();
+            InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
+            this.BeginInvoke(invokeUpdateVarsViewDataGridView);
+            //varsViewDataGridView.Update();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
-            //this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
-
-
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
@@ -342,37 +270,19 @@ namespace varManager
 
         }
 
-        private void buttonGenJpg_Click(object sender, EventArgs e)
+
+        public delegate void InvokeUpdateVarsViewDataGridView();
+
+        public void UpdateVarsViewDataGridView()
         {
-            string message = "Preview image files will be extracted from the Var file, Are you sure?";
-
-            const string caption = "VAR Tidy";
-            var result = MessageBox.Show(message, caption,
-                                         MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Question,
-                                         MessageBoxDefaultButton.Button2);
-            if (result == DialogResult.Yes)
-                backgroundWorkerExtraImgs.RunWorkerAsync();
+            varsViewDataGridView.Update();
         }
-
-        private void ExtractImages()
-        {
-            string[] vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories);
-
-            int curVarfile = 0;
-            foreach (string varfile in vars)
-            {
-                ExtractImages(varfile);
-                curVarfile++;
-                InvokeProgress mi = new InvokeProgress(UpdateProgress);
-                this.BeginInvoke(mi, new Object[] { curVarfile, vars.Length });
-            }
-            MessageBox.Show("Extracted preview image files finish!");
-        }
+        
         public delegate void InvokeAddLoglist(string message);
 
         public void UpdateAddLoglist(string message)
         {
+            simpLog.Error(message);
             listBoxLog.Items.Add(message);
         }
 
@@ -381,19 +291,15 @@ namespace varManager
         public void UpdateProgress(int cur, int total)
         {
             labelProgress.Text = string.Format("{0}/{1}", cur, total);
-            progressBar1.Value = (int)((float)cur * 100 / (float)total);
-        }
-
-        private void backgroundWorkerExtraImgs_DoWork(object sender, DoWorkEventArgs e)
-        {
-            ExtractImages();
+            if(total!=0)
+                progressBar1.Value = (int)((float)cur * 100 / (float)total);
         }
 
         private void buttonUpdDB_Click(object sender, EventArgs e)
         {
-            string message = "It will take some time to update the DB, please be patient.";
+            string message = "Will organize vars, extract preview images,update DB. It will take some time, please be patient.";
 
-            const string caption = "VAR Tidy";
+            const string caption = "UpdateDB" ;
             var result = MessageBox.Show(message, caption,
                                          MessageBoxButtons.YesNo,
                                          MessageBoxIcon.Question,
@@ -409,7 +315,8 @@ namespace varManager
             {
                 string basename = Path.GetFileNameWithoutExtension(destvarfilename);
                 string curpath = Path.GetDirectoryName(destvarfilename);
-
+                curpath = Comm.MakeRelativePath(Settings.Default.varspath, curpath);
+                
                 var varsrow = varManagerDataSet.vars.FindByvarName(basename);
                 if (varsrow == null)
                 {
@@ -433,7 +340,7 @@ namespace varManager
                             string typename = "";
                             try
                             {
-                                if (Regex.IsMatch(zfile.FullName, @"saves/scene/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline)) 
+                                if (Regex.IsMatch(zfile.FullName, @"saves/scene/.*?\x2e(?:json)", RegexOptions.IgnoreCase | RegexOptions.Singleline)) 
                                 {
                                     typename = "scenes";
                                     countscene++;
@@ -443,22 +350,36 @@ namespace varManager
                                     typename = "looks";
                                     countlook++; 
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "looks";
                                     countlook++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/clothing/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.FullName, @"custom/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "clothing";
                                     countclothing++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/hair/.*?\x2e(?:json|vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                {
+                                    typename = "clothing";
+                                    countclothing++;
+                                }
+                                if (Regex.IsMatch(zfile.FullName, @"custom/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                {
+                                    typename = "hairstyle";
+                                    counthair++;
+                                }
+                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "hairstyle";
                                     counthair++;
                                 }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                {
+                                    countplugin++;
+                                }
+                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     countplugin++;
                                 }
@@ -484,7 +405,7 @@ namespace varManager
                                     if (jpg != null)
                                     {
                                         string namejpg = Path.GetFileNameWithoutExtension(jpg.Name).ToLower();
-                                       
+
                                         string typepath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, Path.GetFileNameWithoutExtension(destvarfilename));
                                         if (!Directory.Exists(typepath))
                                             Directory.CreateDirectory(typepath);
@@ -493,15 +414,15 @@ namespace varManager
                                         if (!File.Exists(jpgextratname))
                                             jpg.ExtractToFile(jpgextratname);
                                     }
-                                    
-                                    if(typename=="scenes"|| typename == "looks" || typename == "clothing" || typename == "hairstyle")
-                                    varManagerDataSet.scenes.AddscenesRow(typename,basename, zfile.FullName, jpgname);
+                                    string ext = zfile.FullName.Substring(zfile.FullName.LastIndexOf('.')).ToLower();
+                                    if (ext == ".vap" || ext == ".json")
+                                        if (typename == "scenes" || typename == "looks" || typename == "clothing" || typename == "hairstyle")
+                                            varManagerDataSet.scenes.AddscenesRow(typename, basename, zfile.FullName, jpgname);
                                 }
 
                             }
                             catch (ArgumentException ex)
                             {
-                                simpLog.Error(destvarfilename + " " + ex.Message);
                                 this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
                             }
                         }
@@ -520,7 +441,6 @@ namespace varManager
                         if (metajson == null)
                         {
                             string errorMessage = destvarfilename + " is invalid,please check";
-                            simpLog.Error(errorMessage);
                             this.BeginInvoke(addlog, new Object[] { errorMessage });
                             return;
                         }
@@ -533,7 +453,6 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            simpLog.Error(destvarfilename + " get dependencies failed " + ex.Message);
                             this.BeginInvoke(addlog, new Object[] { destvarfilename + " get dependencies failed " + ex.Message });
 
                         }
@@ -560,7 +479,6 @@ namespace varManager
             }
             catch (Exception ex)
             {
-                simpLog.Error(destvarfilename + " " + ex.Message);
                 this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
             }
         }
@@ -568,6 +486,7 @@ namespace varManager
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             InvokeProgress mi = new InvokeProgress(UpdateProgress);
+            this.BeginInvoke(addlog, new Object[] { "Analyze Var files, extract preview images, save info to DB" });
             string[] vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories);
             List<string> existVars = new List<string>();
             int curVarfile = 0;
@@ -598,7 +517,6 @@ namespace varManager
                 }
                 catch (Exception ex)
                 {
-                    simpLog.Error(deletevar + " " + ex.Message);
                     this.BeginInvoke(addlog, new Object[] { deletevar + " " + ex.Message });
                 }
             }
@@ -612,7 +530,6 @@ namespace varManager
                 }
                 catch (Exception ex)
                 {
-                    simpLog.Error(deletevar + " " + ex.Message);
                     this.BeginInvoke(addlog, new Object[] { deletevar + " " + ex.Message });
                 }
             }
@@ -624,7 +541,19 @@ namespace varManager
         }
         private void backgroundWorkerUpdDB_DoWork(object sender, DoWorkEventArgs e)
         {
+            TidyVars();
             UpdDB();
+            if (varsForInstall.Count() > 0)
+            {
+                var varNames = VarsDependencies(varsForInstall);
+                varsForInstall.Clear();
+                File.Delete("varsForInstall.txt");
+                foreach (string varname in varNames)
+                {
+                    VarInstall(varname, 1);
+                }
+                UpdateVarsInstalled();
+            }
         }
 
         [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
@@ -659,8 +588,8 @@ namespace varManager
                         File.Delete(linkvar + ".disabled");
                     if (File.Exists(linkvar))
                         return true;
-                    
-                    string destvarfile = Path.Combine(varsrow.varPath, varsrow.varName + ".var");
+
+                    string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                     /*
                     ProcessStartInfo mklinkprecess = new ProcessStartInfo("cmd.exe", "/c mklink /j " + linkvar + " " + destvarfile);
                     
@@ -683,13 +612,17 @@ namespace varManager
         }
         private void backgroundWorkerInstall_DoWork(object sender, DoWorkEventArgs e)
         {
-            if ((string)e.Argument == "fix")
+            if ((string)e.Argument == "rebuildLink")
             {
-                FixInstall();
+                FixRebuildLink();
+            }
+            if ((string)e.Argument == "savesDepend")
+            {
+                FixSavseDependencies();
             }
         }
 
-        private void FixInstall()
+        private void FixRebuildLink()
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
@@ -703,19 +636,23 @@ namespace varManager
                         if (varsrow != null)
                         {
                             File.Delete(varfile);
-                            string destvarfile = Path.Combine(varsrow.varPath, varsrow.varName + ".var");
+                            string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                             CreateSymbolicLink(varfile, destvarfile, SYMBOLIC_LINK_FLAG.File);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    simpLog.Error(varfile + " rebuild symlink failed " + ex.Message);
                     this.BeginInvoke(addlog, new Object[] { varfile + " rebuild symlink failed " + ex.Message });
-
                 }
             }
 
+            MessageBox.Show("fix finish");
+        }
+        
+        private void FixSavseDependencies()
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> dependencies = new List<string>();
             foreach (string jsonfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "Saves"), "*.json", SearchOption.AllDirectories))
             {
@@ -727,7 +664,6 @@ namespace varManager
                 }
                 catch (Exception ex)
                 {
-                    simpLog.Error(jsonfile + " Get dependencies failed " + ex.Message);
                     this.BeginInvoke(addlog, new Object[] { jsonfile + " Get dependencies failed " + ex.Message });
                 }
             }
@@ -740,9 +676,13 @@ namespace varManager
             MessageBox.Show("fix finish");
         }
 
-        private void buttonFix_Click(object sender, EventArgs e)
+        private void buttonFixRebuildLink_Click(object sender, EventArgs e)
         {
-            backgroundWorkerInstall.RunWorkerAsync("fix");
+            backgroundWorkerInstall.RunWorkerAsync("rebuildLink");
+        }
+        private void buttonFixSavesDepend_Click(object sender, EventArgs e)
+        {
+            backgroundWorkerInstall.RunWorkerAsync("savesDepend");
         }
 
         private void comboBoxCreater_SelectedIndexChanged(object sender, EventArgs e)
@@ -931,13 +871,24 @@ namespace varManager
                 previewpicsfilter = previewpics.Where(q => q.Pretype == previewtype).ToList();
             toolStripComboBoxPreviewPage.Items.Clear();
             previewPages = (previewpicsfilter.Count+ maxpicxPerpage - 1) / maxpicxPerpage;
+            toolStripLabelPreviewCountItem.Text = "/" + previewpicsfilter.Count.ToString();
             if (previewPages >= 1)
             {
-                for(int page=1;page<=previewPages;page++)
+                for(int page=0;page<previewPages;page++)
                 {
-                    toolStripComboBoxPreviewPage.Items.Add("page " + page.ToString("000"));
+                    int min = page * maxpicxPerpage + 1;
+                    int max = (page + 1) * maxpicxPerpage;
+                    if (max > previewpicsfilter.Count) max = previewpicsfilter.Count;
+
+                    string strpage = min.ToString("000") + " - " + max.ToString("000");
+                    toolStripComboBoxPreviewPage.Items.Add(strpage);
                 }
                 toolStripComboBoxPreviewPage.SelectedIndex = 0;
+            }
+            else
+            {
+                imageListPreviewPics.Images.Clear();
+                listViewPreviewPics.Items.Clear();
             }
         }
 
@@ -1019,7 +970,7 @@ namespace varManager
             {
                 if (varManagerDataSet.dependencies.Count(q => q.dependency == oldvar) == 0)
                 {
-                    string oldv = Path.Combine(varManagerDataSet.vars.FindByvarName(oldvar).varPath, oldvar + ".var");
+                    string oldv = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(oldvar).varPath, oldvar + ".var");
                     string stalev = Path.Combine(stalepath, oldvar + ".var");
                     try
                     {
@@ -1108,7 +1059,6 @@ namespace varManager
                                   MessageBoxDefaultButton.Button2);
             if (result == DialogResult.Yes)
             {
-
                 varNames = VarsDependencies(varNames);
                 foreach (string varname in varNames)
                 {
@@ -1146,12 +1096,16 @@ namespace varManager
                     pictureBoxPreview.Image = Image.FromFile(item.SubItems[2].Text);
                     if (item.SubItems[3].Text.ToLower() == "true")
                         buttonpreviewinstall.Text = "Remove";
+                    else
+                        buttonpreviewinstall.Text = "Install";
+
                     tableLayoutPanelPreview.Dock = DockStyle.Fill;
                     tableLayoutPanelPreview.Visible = true;
                 }
             }
         }
 
+       
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {
             string varName = labelPreviewVarName.Text;

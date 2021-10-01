@@ -16,7 +16,7 @@ namespace varManager
     {
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
-        private static int maxitemPerpage = 200;
+        private static int maxitemPerpage = 400;
         public FormScenes()
         {
             InitializeComponent();
@@ -54,12 +54,13 @@ namespace varManager
         private List<InstalledScene> listFilterPageScene = new List<InstalledScene>();
         private void FormScenes_Load(object sender, EventArgs e)
         {
+            panelImage.Dock = DockStyle.Fill;
             toolStripComboBoxCategory.SelectedIndex = 0;
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
             
             AllInstalledVars();
-            
+            FilterVars();
         }
         
         private void AllInstalledVars()
@@ -113,6 +114,7 @@ namespace varManager
                 listFilterCreatorScene = listFilterScene.ToList();
             }
             toolStripComboBoxCreator.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxCreator_SelectedIndexChanged);
+            FilterVarsCreator();
         }
 
         private void toolStripTextBoxFilter_TextChanged(object sender, EventArgs e)
@@ -122,25 +124,272 @@ namespace varManager
 
         private void toolStripComboBoxCreator_SelectedIndexChanged(object sender, EventArgs e)
         {
+            FilterVarsCreator();
+        }
+
+        private void FilterVarsCreator()
+        {
             string creatorname = toolStripComboBoxCreator.Text;
-           
+
             if (!string.IsNullOrEmpty(creatorname) && creatorname != "____ALL")
             {
-                    listFilterCreatorScene = listFilterScene.Where(q => q.Varname.StartsWith(creatorname)).ToList();
+                listFilterCreatorScene = listFilterScene.Where(q => q.Varname.StartsWith(creatorname)).ToList();
             }
             else
             {
                 listFilterCreatorScene = listFilterScene.ToList();
             }
             toolStripComboBoxScenePage.SelectedIndexChanged -= new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
-
+            toolStripLabelSceneCount.Text = "/" + listFilterCreatorScene.Count.ToString();
+            toolStripComboBoxScenePage.Items.Clear();
             int pages = (int)((listFilterCreatorScene.Count + maxitemPerpage - 1) / maxitemPerpage);
+            
+            for (int page = 0; page < pages; page++)
+            {
+                int min = page * maxitemPerpage + 1;
+                int max = (page + 1) * maxitemPerpage;
+                if (max > listFilterCreatorScene.Count) max = listFilterCreatorScene.Count;
+                string strpage = min.ToString("000") + " - " + max.ToString("000");
+                toolStripComboBoxScenePage.Items.Add(strpage);
+            }
+           
             toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
+            if (pages > 0) 
+                toolStripComboBoxScenePage.SelectedIndex = 0;
+            else
+            {
+                imageListScenes.Images.Clear();
+                listSceneItem.Clear();
+            }            
         }
 
         private void toolStripComboBoxScenePage_SelectedIndexChanged(object sender, EventArgs e)
         {
+            GenerateItems();
+        }
 
+        private List<ListViewItem> listSceneItem = new List<ListViewItem>();
+
+        private string  GetPreviewPicPath(string atomType,string varName,string picName)
+        {
+            
+            string fullpicname = Path.Combine(Settings.Default.varspath, previewpicsDirName, atomType, varName,picName);
+            if (File.Exists(fullpicname))
+                return fullpicname;
+            else
+                return "";
+        }
+
+        private void GenerateItems()
+        {
+            int startpic = maxitemPerpage * toolStripComboBoxScenePage.SelectedIndex;
+            imageListScenes.Images.Clear();
+            listSceneItem.Clear();
+            for (int i = 0; i < maxitemPerpage; i++)
+            {
+                int cur = startpic + i;
+                if (cur >= listFilterCreatorScene.Count()) break;
+                string scenePath = listFilterCreatorScene[cur].Scenepath;
+                string sceneName = listFilterCreatorScene[cur].Varname + " - " + Path.GetFileNameWithoutExtension(scenePath);
+                Image previwPic = Image.FromHbitmap(Properties.Resources.icoVarManager.ToBitmap().GetHbitmap());
+                string picpath = GetPreviewPicPath(listFilterCreatorScene[cur].Atomtype, listFilterCreatorScene[cur].Varname, listFilterCreatorScene[cur].Picpath);
+                if(!string.IsNullOrEmpty(picpath))
+                      previwPic = Image.FromFile(picpath);
+                
+                imageListScenes.Images.Add(previwPic);
+                ListViewItem item = new ListViewItem(sceneName, i);
+                item.SubItems.Add(listFilterCreatorScene[cur].Varname);
+                item.SubItems.Add(listFilterCreatorScene[cur].Scenepath);
+                item.SubItems.Add(picpath);
+                listSceneItem.Add(item);
+            }
+            FillItems();
+        }
+
+        private void FillItems()
+        {
+            listViewHide.Items.Clear();
+            listViewNormal.Items.Clear();
+            listViewFav.Items.Clear();
+            foreach (var item in listSceneItem)
+            {
+                string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
+                string scenename = Path.GetFileName(item.SubItems[2].Text);
+                string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
+                string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
+
+                if (File.Exists(hide))
+                    listViewHide.Items.Add(item);
+                else
+                {
+                    if (File.Exists(fav))
+                        listViewFav.Items.Add(item);
+                    else
+                        listViewNormal.Items.Add(item);
+                }
+            }
+        }
+
+        private void toolStripButtonSceneFirst_Click(object sender, EventArgs e)
+        {
+            if (toolStripComboBoxScenePage.SelectedIndex > 0) toolStripComboBoxScenePage.SelectedIndex = 0;
+        }
+
+        private void toolStripButtonScenePrev_Click(object sender, EventArgs e)
+        {
+            if (toolStripComboBoxScenePage.SelectedIndex > 0) toolStripComboBoxScenePage.SelectedIndex--;
+        }
+
+        private void toolStripButtonSceneNext_Click(object sender, EventArgs e)
+        {
+            if (toolStripComboBoxScenePage.SelectedIndex < toolStripComboBoxScenePage.Items.Count - 1) toolStripComboBoxScenePage.SelectedIndex++;
+        }
+
+        private void toolStripButtonSceneLast_Click(object sender, EventArgs e)
+        {
+            if (toolStripComboBoxScenePage.SelectedIndex < toolStripComboBoxScenePage.Items.Count - 1) toolStripComboBoxScenePage.SelectedIndex= toolStripComboBoxScenePage.Items.Count - 1;
+        }
+
+        private void pictureBoxPreview_Click(object sender, EventArgs e)
+        {
+            panelImage.Visible = false;
+        }
+
+
+        private void buttonAddHide_Click(object sender, EventArgs e)
+        {
+            if (listViewNormal.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewNormal.SelectedItems)
+                {
+                    string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
+                    string scenename = Path.GetFileName(item.SubItems[2].Text);
+                    string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
+                    string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
+
+                    if (File.Exists(fav))
+                        File.Delete(fav);
+                    if (!File.Exists(hide))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(hide));
+                        using (File.Create(hide)) { }
+                    }
+                }
+                FillItems();
+            }
+        }
+
+        private void buttonAddFav_Click(object sender, EventArgs e)
+        {
+            if (listViewNormal.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewNormal.SelectedItems)
+                {
+                    string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
+                    string scenename = Path.GetFileName(item.SubItems[2].Text);
+                    string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
+                    string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
+
+                    if (File.Exists(hide))
+                        File.Delete(hide);
+                    if (!File.Exists(fav))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(fav));
+                        using (File.Create(fav)) { }
+                    }
+                }
+                FillItems();
+            }
+        }
+
+        private void buttonRemoveHide_Click(object sender, EventArgs e)
+        {
+            if (listViewHide.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewHide.SelectedItems)
+                {
+                    string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
+                    string scenename = Path.GetFileName(item.SubItems[2].Text);
+                    string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
+                    string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
+
+                    if (File.Exists(hide))
+                        File.Delete(hide);
+                }
+                FillItems();
+            }
+        }
+
+        private void buttonRemoveFav_Click(object sender, EventArgs e)
+        {
+            if (listViewFav.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewFav.SelectedItems)
+                {
+                    string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
+                    string scenename = Path.GetFileName(item.SubItems[2].Text);
+                    string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
+                    string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
+
+                    if (File.Exists(fav))
+                        File.Delete(fav);
+                }
+                FillItems();
+            }
+        }
+
+        private void listViewHide_ItemActivate(object sender, EventArgs e)
+        {
+            if (listViewHide.SelectedIndices.Count == 1)
+            {
+                int index = listViewHide.SelectedIndices[0];
+                var item = listViewHide.Items[index];
+                if (item != null)
+                {
+                    if (!string.IsNullOrEmpty(item.SubItems[3].Text))
+                    {
+                        labelPreviewVarName.Text = item.SubItems[1].Text;
+                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
+                        panelImage.Visible = true;
+                    }
+                }
+            }
+        }
+
+        private void listViewNormal_ItemActivate(object sender, EventArgs e)
+        {
+            if (listViewNormal.SelectedIndices.Count == 1)
+            {
+                int index = listViewNormal.SelectedIndices[0];
+                var item = listViewNormal.Items[index];
+                if (item != null)
+                {
+                    if (!string.IsNullOrEmpty(item.SubItems[3].Text))
+                    {
+                        labelPreviewVarName.Text = item.SubItems[1].Text;
+                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
+                        panelImage.Visible = true;
+                    }
+                }
+            }
+        }
+
+        private void listViewFav_ItemActivate(object sender, EventArgs e)
+        {
+            if (listViewFav.SelectedIndices.Count == 1)
+            {
+                int index = listViewFav.SelectedIndices[0];
+                var item = listViewFav.Items[index];
+                if (item != null)
+                {
+                    if (!string.IsNullOrEmpty(item.SubItems[3].Text))
+                    {
+                        labelPreviewVarName.Text = item.SubItems[1].Text;
+                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
+                        panelImage.Visible = true;
+                    }
+                }
+            }
         }
     }
 }
