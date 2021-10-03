@@ -26,6 +26,7 @@ namespace varManager
         private static string redundantDirName = "___VarRedundant___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
+        private static string missingVarLinkDirName = "___MissingVarLink___";
         private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
 
         public Form1()
@@ -59,7 +60,7 @@ namespace varManager
             string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
 
             var varsUsed = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.AllDirectories)
-                          .Where(q => q.IndexOf(installlinkdir) == -1);
+                          .Where(q => q.IndexOf(installlinkdir) == -1 && q.IndexOf(missingVarLinkDirName) == -1);
             varsForInstall.Clear();
             if (File.Exists("varsForInstall.txt"))
                 varsForInstall.AddRange(File.ReadAllLines("varsForInstall.txt"));
@@ -112,7 +113,6 @@ namespace varManager
                         //OpenAsZip(destvarfilename);
                     }
                 }
-
                 curVarfile++;
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
             }

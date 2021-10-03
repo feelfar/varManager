@@ -22,6 +22,7 @@ namespace varManager
         }
 
         public List<string> MissingVars { get => missingVars; set => missingVars = value; }
+        public static string MissingVarLinkDirName { get => missingVarLinkDirName; set => missingVarLinkDirName = value; }
 
         private void FormMissingVars_Load(object sender, EventArgs e)
         {
