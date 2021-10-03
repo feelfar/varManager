@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -25,6 +26,8 @@ namespace varManager
         private static string redundantDirName = "___VarRedundant___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
+        private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
+
         public Form1()
         {
             InitializeComponent();
@@ -134,7 +137,10 @@ namespace varManager
                     Group groupObj = matchResults.Groups[1];
                     if (groupObj.Success)
                     {
-                        dependenciesList.Add(groupObj.Value);
+                        string depstr = groupObj.Value;
+                        if (depstr.IndexOf('/') > 0)
+                            depstr = depstr.Substring(depstr.IndexOf('/') + 1);
+                        dependenciesList.Add(depstr);
                         // match start: groupObj.Index
                         // match length: groupObj.Length
                     }
@@ -220,6 +226,121 @@ namespace varManager
                 }
             }
             */
+        }
+
+        private void FillInstalledDependencies()
+        {
+            installedDependencies.Clear();
+            List<varManagerDataSet.dependenciesRow> deprows = new List<varManagerDataSet.dependenciesRow>();
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
+            {
+                string varName = Path.GetFileNameWithoutExtension(varfile);
+                foreach (varManagerDataSet.dependenciesRow depRow in varManagerDataSet.dependencies.Where(q => q.varName == varName))
+                {
+                    deprows.Add(depRow);
+                }
+            }
+            foreach(varManagerDataSet.dependenciesRow deprow in deprows)
+            {
+               string[] varnameparts= deprow.dependency.Split('.');
+                if (varnameparts.Length == 3)
+                {
+                    string searchPattern = deprow.dependency + ".var";
+                    if (varnameparts[2].ToLower()=="lastest")
+                     searchPattern = varnameparts[0] + "." + varnameparts[1] + ".*.var";
+                    string[] files = new string[] { };
+                    try
+                    {
+                        files = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), searchPattern, SearchOption.AllDirectories);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    if (files.Length > 0)
+                    {
+                        int maxversion = 0;
+                        foreach (var file in files)
+                        {
+                            string filename = Path.GetFileNameWithoutExtension(file);
+                            int version = int.Parse(filename.Split('.')[2]);
+                            if (version > maxversion) maxversion = version;
+                        }
+                        string depvarname = varnameparts[0] + "." + varnameparts[1] + "." + maxversion.ToString();
+                        installedDependencies.AdddependenciesRow(deprow.varName,depvarname);
+                    }
+                }
+            }
+            installedDependencies.AcceptChanges();
+        }
+
+        private List<string> ImplicatedVar(string varname)
+        {
+            List<string> varnames = new List<string>();
+            foreach (var row in installedDependencies.Where(q => q.dependency == varname))
+            {
+                varnames.Add(row.varName);
+            }
+            return varnames;
+        }
+
+        private List<string> ImplicatedVars(List<string> varnames)
+        {
+            List<string> varnameexist = new List<string>();
+            List<string> varsProccessed = new List<string>();
+            List<string> varimplics = new List<string>();
+            foreach (string varname in varnames)
+            {
+                if (varname[varname.Length - 1] == '^')
+                    varsProccessed.Add(varname.Substring(0, varname.Length - 1));
+                else
+                    varnameexist.Add(varname);
+            }
+
+            foreach (string varname in varnameexist)
+            {
+                varimplics.AddRange(ImplicatedVar(varname));
+            }
+            varsProccessed.AddRange(varnameexist);
+            varimplics = varimplics.Distinct().Except(varsProccessed).ToList();
+            if (varimplics.Count() > 0)
+            {
+                foreach (string varname in varsProccessed)
+                {
+                    varimplics.Add(varname + "^");
+                }
+                return ImplicatedVars(varimplics);
+            }
+            else
+            {
+                varsProccessed = varsProccessed.Select(q => q.Trim('^')).Distinct().ToList();
+                return varsProccessed;
+            }
+        }
+
+        private void UnintallVars(List<string> varnames)
+        {
+            FillInstalledDependencies();
+            List<string> varimplics = ImplicatedVars(varnames);
+
+            FormUninstallVars formUninstallVars = new FormUninstallVars();
+            formUninstallVars.previewpicsDirName = previewpicsDirName;
+            foreach (string varname in varimplics)
+            {
+                var row = varManagerDataSet.vars.FindByvarName(varname);
+                formUninstallVars.varManagerDataSet.vars.Rows.Add(row.ItemArray);
+                
+            }
+            if (formUninstallVars.ShowDialog() == DialogResult.OK)
+            {
+                foreach (string varname in varimplics)
+                {
+                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varname + ".var");
+                    if (File.Exists(linkvar))
+                        File.Delete(linkvar);
+                }
+            }
+
         }
 
         private void UpdateVarsInstalled()
@@ -501,7 +622,6 @@ namespace varManager
             List<string> deletevars = new List<string>();
             foreach (var row in varManagerDataSet.vars)
             {
-
                 if (!existVars.Contains(row.varName)) deletevars.Add(row.varName);
             }
 
@@ -539,6 +659,7 @@ namespace varManager
             //varsViewDataGridView.Update();
             MessageBox.Show("Update DB finish!Please reopen this tool!");
         }
+
         private void backgroundWorkerUpdDB_DoWork(object sender, DoWorkEventArgs e)
         {
             TidyVars();
@@ -552,27 +673,9 @@ namespace varManager
                 {
                     VarInstall(varname, 1);
                 }
-                UpdateVarsInstalled();
             }
+            UpdateVarsInstalled();
         }
-
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern bool CreateHardLink(
-                          string lpFileName,
-                          string lpExistingFileName,
-                          IntPtr lpSecurityAttributes
-                          );
-        [Flags]
-        enum SYMBOLIC_LINK_FLAG
-        {
-            File = 0,
-            Directory = 1,
-            AllowUnprivilegedCreate = 2
-        }
-
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
-        static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
 
 
         private bool VarInstall(string varName, int operate)
@@ -596,7 +699,7 @@ namespace varManager
                     mklinkprecess.WindowStyle = ProcessWindowStyle.Hidden;
                     Process.Start(mklinkprecess);
                     */
-                    if (!CreateSymbolicLink(linkvar, destvarfile, SYMBOLIC_LINK_FLAG.File))
+                    if (!Comm.CreateSymbolicLink(linkvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File))
                     {
                         MessageBox.Show("Error: Unable to create symbolic link. " +
                                 "(Error Code: " + Marshal.GetLastWin32Error() + ")");
@@ -610,6 +713,7 @@ namespace varManager
             }
             return success;
         }
+
         private void backgroundWorkerInstall_DoWork(object sender, DoWorkEventArgs e)
         {
             if ((string)e.Argument == "rebuildLink")
@@ -637,7 +741,7 @@ namespace varManager
                         {
                             File.Delete(varfile);
                             string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
-                            CreateSymbolicLink(varfile, destvarfile, SYMBOLIC_LINK_FLAG.File);
+                            Comm.CreateSymbolicLink(varfile, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
                         }
                     }
                 }
@@ -1016,7 +1120,13 @@ namespace varManager
                                           MessageBoxIcon.Question,
                                           MessageBoxDefaultButton.Button2);
                     if (result == DialogResult.Yes)
-                        ;
+                    {
+                        List<string> varnames = new List<string>();
+                        varnames.Add(varName);
+                        UnintallVars(varnames);
+                        UpdateVarsInstalled();
+                    }
+                    
                 }
                 else
                 {
@@ -1105,7 +1215,81 @@ namespace varManager
             }
         }
 
-       
+        private static string GetKnownFolderPath(Guid knownFolderId)
+        {
+            IntPtr pszPath = IntPtr.Zero;
+            try
+            {
+                int hr = SHGetKnownFolderPath(knownFolderId, 0, IntPtr.Zero, out pszPath);
+                if (hr >= 0)
+                    return Marshal.PtrToStringAuto(pszPath);
+                throw Marshal.GetExceptionForHR(hr);
+            }
+            finally
+            {
+                if (pszPath != IntPtr.Zero)
+                    Marshal.FreeCoTaskMem(pszPath);
+            }
+        }
+
+        [DllImport("shell32.dll")]
+        static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
+
+        private void buttonLogAnalysis_Click(object sender, EventArgs e)
+        {
+            LogAnalysis();
+        }
+
+        private void LogAnalysis()
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            Guid localLowId = new Guid("A520A1A4-1780-4FF6-BD18-167343C5AF16");
+            string appdataPath = GetKnownFolderPath(localLowId);
+            string logfile = Path.Combine(appdataPath, "MeshedVR\\VaM\\output_log.txt");
+            if (File.Exists(logfile))
+            {
+                var metajsonsteam = new StreamReader(logfile);
+                string logstring = metajsonsteam.ReadToEnd();
+                List<string> dependencies = new List<string>();
+                try
+                {
+                    Regex regexObj = new Regex(@"Missing\s+addon\s+package\s+(?<depens>[^\x3A\x2E]{1,60}\x2E[^\x3A\x2E]{1,80}\x2E(?:\d+|latest))\s+that\s+package(?<package>[^\x3A\x2E]{1,60}\x2E[^\x3A\x2E]{1,80}\x2E\d+)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    Match matchResult = regexObj.Match(logstring);
+                    while (matchResult.Success)
+                    {
+                        dependencies.Add(matchResult.Groups["depens"].Value);
+                        matchResult = matchResult.NextMatch();
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    this.BeginInvoke(addlog, new Object[] { "LogAnalysis failed"+ex.Message });
+                }
+                dependencies = dependencies.Distinct().ToList();
+                List<string> missingvars = new List<string>();
+                foreach (string varname in dependencies)
+                {
+                    string varexistname = VarExistName(varname);
+                    if (varexistname != "missing")
+                    {
+                        VarInstall(varexistname, 1);
+                        this.BeginInvoke(addlog, new Object[] { varexistname + " installed"  });
+                    }
+                    else
+                    {
+                        missingvars.Add(varname);
+                       
+                    }
+                }
+                if (missingvars.Count > 0)
+                {
+                    FormMissingVars formMissingVars = new FormMissingVars();
+                    formMissingVars.MissingVars = missingvars;
+                    formMissingVars.ShowDialog();
+                }
+            }
+        }
+
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {
             string varName = labelPreviewVarName.Text;

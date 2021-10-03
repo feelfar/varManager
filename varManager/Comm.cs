@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +11,25 @@ namespace varManager
 {
     static class Comm
     {
+
+        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool CreateHardLink(
+                          string lpFileName,
+                          string lpExistingFileName,
+                          IntPtr lpSecurityAttributes
+                          );
+        [Flags]
+        public enum SYMBOLIC_LINK_FLAG
+        {
+            File = 0,
+            Directory = 1,
+            AllowUnprivilegedCreate = 2
+        }
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
+        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
         /// <summary>
         /// Creates a relative path from one file or folder to another.
         /// </summary>
@@ -42,5 +63,6 @@ namespace varManager
 
 
         }
+
     }
 }

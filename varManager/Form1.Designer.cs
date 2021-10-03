@@ -31,11 +31,14 @@ namespace varManager
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonLogAnalysis = new System.Windows.Forms.Button();
             this.buttonFixSavesDepend = new System.Windows.Forms.Button();
             this.buttonFixRebuildLink = new System.Windows.Forms.Button();
             this.buttonScenesManager = new System.Windows.Forms.Button();
@@ -139,9 +142,10 @@ namespace varManager
             // 
             // buttonSetting
             // 
-            this.buttonSetting.Location = new System.Drawing.Point(16, 448);
+            this.buttonSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSetting.Location = new System.Drawing.Point(14, 546);
             this.buttonSetting.Name = "buttonSetting";
-            this.buttonSetting.Size = new System.Drawing.Size(75, 28);
+            this.buttonSetting.Size = new System.Drawing.Size(89, 29);
             this.buttonSetting.TabIndex = 0;
             this.buttonSetting.Text = "Settings";
             this.buttonSetting.UseVisualStyleBackColor = true;
@@ -181,13 +185,13 @@ namespace varManager
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.buttonScenesManager);
             this.panel1.Controls.Add(this.buttonStaleVars);
             this.panel1.Controls.Add(this.buttonUpdDB);
             this.panel1.Controls.Add(this.buttonSetting);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(1251, 43);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 3);
@@ -196,20 +200,31 @@ namespace varManager
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonLogAnalysis);
             this.groupBox1.Controls.Add(this.buttonFixSavesDepend);
             this.groupBox1.Controls.Add(this.buttonFixRebuildLink);
-            this.groupBox1.Location = new System.Drawing.Point(10, 68);
+            this.groupBox1.Location = new System.Drawing.Point(10, 76);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(96, 140);
+            this.groupBox1.Size = new System.Drawing.Size(96, 195);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Fix";
             // 
+            // buttonLogAnalysis
+            // 
+            this.buttonLogAnalysis.Location = new System.Drawing.Point(4, 141);
+            this.buttonLogAnalysis.Name = "buttonLogAnalysis";
+            this.buttonLogAnalysis.Size = new System.Drawing.Size(89, 42);
+            this.buttonLogAnalysis.TabIndex = 4;
+            this.buttonLogAnalysis.Text = "Log analysis";
+            this.buttonLogAnalysis.UseVisualStyleBackColor = true;
+            this.buttonLogAnalysis.Click += new System.EventHandler(this.buttonLogAnalysis_Click);
+            // 
             // buttonFixSavesDepend
             // 
-            this.buttonFixSavesDepend.Location = new System.Drawing.Point(6, 82);
+            this.buttonFixSavesDepend.Location = new System.Drawing.Point(4, 82);
             this.buttonFixSavesDepend.Name = "buttonFixSavesDepend";
-            this.buttonFixSavesDepend.Size = new System.Drawing.Size(75, 43);
+            this.buttonFixSavesDepend.Size = new System.Drawing.Size(89, 42);
             this.buttonFixSavesDepend.TabIndex = 4;
             this.buttonFixSavesDepend.Text = "\"Saves\" depends";
             this.toolTip1.SetToolTip(this.buttonFixSavesDepend, "Search  the dependencies of scene and look in the save directory will be found an" +
@@ -219,9 +234,9 @@ namespace varManager
             // 
             // buttonFixRebuildLink
             // 
-            this.buttonFixRebuildLink.Location = new System.Drawing.Point(6, 24);
+            this.buttonFixRebuildLink.Location = new System.Drawing.Point(4, 24);
             this.buttonFixRebuildLink.Name = "buttonFixRebuildLink";
-            this.buttonFixRebuildLink.Size = new System.Drawing.Size(75, 43);
+            this.buttonFixRebuildLink.Size = new System.Drawing.Size(89, 42);
             this.buttonFixRebuildLink.TabIndex = 4;
             this.buttonFixRebuildLink.Text = "Rebuild symlink";
             this.toolTip1.SetToolTip(this.buttonFixRebuildLink, "When your Vars source directory changes, you need to rebuild symlinks");
@@ -230,20 +245,20 @@ namespace varManager
             // 
             // buttonScenesManager
             // 
-            this.buttonScenesManager.Location = new System.Drawing.Point(16, 363);
+            this.buttonScenesManager.Location = new System.Drawing.Point(14, 363);
             this.buttonScenesManager.Name = "buttonScenesManager";
-            this.buttonScenesManager.Size = new System.Drawing.Size(75, 42);
+            this.buttonScenesManager.Size = new System.Drawing.Size(89, 42);
             this.buttonScenesManager.TabIndex = 4;
-            this.buttonScenesManager.Text = "Hide Fav";
+            this.buttonScenesManager.Text = "Hide||Fav";
             this.toolTip1.SetToolTip(this.buttonScenesManager, "Batch hide or favorite Scenes, looks, colthing, hairstyle");
             this.buttonScenesManager.UseVisualStyleBackColor = true;
             this.buttonScenesManager.Click += new System.EventHandler(this.buttonScenesManager_Click);
             // 
             // buttonStaleVars
             // 
-            this.buttonStaleVars.Location = new System.Drawing.Point(16, 281);
+            this.buttonStaleVars.Location = new System.Drawing.Point(14, 303);
             this.buttonStaleVars.Name = "buttonStaleVars";
-            this.buttonStaleVars.Size = new System.Drawing.Size(75, 42);
+            this.buttonStaleVars.Size = new System.Drawing.Size(89, 42);
             this.buttonStaleVars.TabIndex = 4;
             this.buttonStaleVars.Text = "Stale Vars";
             this.toolTip1.SetToolTip(this.buttonStaleVars, "Move old version packages are not dependent on other packages to ___VarTidied___ " +
@@ -253,9 +268,11 @@ namespace varManager
             // 
             // buttonUpdDB
             // 
-            this.buttonUpdDB.Location = new System.Drawing.Point(16, 27);
+            this.buttonUpdDB.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUpdDB.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.buttonUpdDB.Location = new System.Drawing.Point(14, 27);
             this.buttonUpdDB.Name = "buttonUpdDB";
-            this.buttonUpdDB.Size = new System.Drawing.Size(75, 23);
+            this.buttonUpdDB.Size = new System.Drawing.Size(89, 42);
             this.buttonUpdDB.TabIndex = 3;
             this.buttonUpdDB.Text = "UPD_DB";
             this.toolTip1.SetToolTip(this.buttonUpdDB, "When you run for the first time, or you get some new packages, please click");
@@ -317,14 +334,14 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(158, 2);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(158, 0);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 31);
             this.varsBindingNavigator.TabIndex = 3;
             this.varsBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -341,7 +358,7 @@ namespace varManager
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 24);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 28);
             this.bindingNavigatorCountItem.Text = "/ {0}";
             this.bindingNavigatorCountItem.ToolTipText = "总项数";
             // 
@@ -351,7 +368,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
             // 
             // bindingNavigatorMovePreviousItem
@@ -360,18 +377,19 @@ namespace varManager
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMovePreviousItem.Text = "移到上一条记录";
             // 
             // bindingNavigatorSeparator
             // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorPositionItem
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "位置";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -380,7 +398,7 @@ namespace varManager
             // bindingNavigatorSeparator1
             // 
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorMoveNextItem
             // 
@@ -388,7 +406,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveNextItem.Text = "移到下一条记录";
             // 
             // bindingNavigatorMoveLastItem
@@ -397,13 +415,13 @@ namespace varManager
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveLastItem.Text = "移到最后一条记录";
             // 
             // bindingNavigatorSeparator2
             // 
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // label1
             // 
@@ -519,6 +537,14 @@ namespace varManager
             this.varsViewDataGridView.AllowUserToAddRows = false;
             this.varsViewDataGridView.AllowUserToDeleteRows = false;
             this.varsViewDataGridView.AutoGenerateColumns = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
@@ -536,10 +562,18 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn,
             this.disabledDataGridViewCheckBoxColumn});
             this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.varsViewDataGridView.Location = new System.Drawing.Point(0, 0);
             this.varsViewDataGridView.Name = "varsViewDataGridView";
-            this.varsViewDataGridView.RowHeadersWidth = 51;
+            this.varsViewDataGridView.RowHeadersWidth = 40;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.Size = new System.Drawing.Size(510, 357);
@@ -765,10 +799,10 @@ namespace varManager
             this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewPreviewPics.HideSelection = false;
             this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 329);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 326);
             this.listViewPreviewPics.TabIndex = 0;
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
             this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
@@ -794,14 +828,14 @@ namespace varManager
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(728, 28);
+            this.toolStripPreview.Size = new System.Drawing.Size(728, 31);
             this.toolStripPreview.TabIndex = 2;
             this.toolStripPreview.Text = "toolStrip1";
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(106, 25);
+            this.toolStripLabel1.Size = new System.Drawing.Size(106, 28);
             this.toolStripLabel1.Text = "PreviewType:";
             // 
             // toolStripComboBoxPreviewType
@@ -815,20 +849,20 @@ namespace varManager
             "hairstyle",
             "assets"});
             this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
-            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 31);
             this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripButtonPreviewFirst
             // 
             this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonPreviewFirst.Text = "|<";
             this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
             // 
@@ -837,7 +871,7 @@ namespace varManager
             this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonPreviewPrev.Text = "<";
             this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
             // 
@@ -845,13 +879,13 @@ namespace varManager
             // 
             this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 31);
             this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
             // 
             // toolStripLabelPreviewCountItem
             // 
             this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 28);
             this.toolStripLabelPreviewCountItem.Text = "/{0}";
             // 
             // toolStripButtonPreviewNext
@@ -859,7 +893,7 @@ namespace varManager
             this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonPreviewNext.Text = ">";
             this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
             // 
@@ -868,7 +902,7 @@ namespace varManager
             this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonPreviewLast.Text = ">|";
             this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
             // 
@@ -1058,6 +1092,7 @@ namespace varManager
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button buttonFixSavesDepend;
+        private System.Windows.Forms.Button buttonLogAnalysis;
     }
 }
 
