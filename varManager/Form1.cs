@@ -328,8 +328,9 @@ namespace varManager
             foreach (string varname in varimplics)
             {
                 var row = varManagerDataSet.vars.FindByvarName(varname);
-                formUninstallVars.varManagerDataSet.vars.Rows.Add(row.ItemArray);
-                
+                if (row != null)
+                    formUninstallVars.varManagerDataSet.vars.Rows.Add(row.ItemArray);
+
             }
             if (formUninstallVars.ShowDialog() == DialogResult.OK)
             {
@@ -361,7 +362,7 @@ namespace varManager
             installStatusTableAdapter.Update(varManagerDataSet.installStatus);
             this.varManagerDataSet.installStatus.AcceptChanges();
             // TODO: 这行代码将数据加载到表“varManagerDataSet1.varsView”中。您可以根据需要移动或删除它。
-            this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
+            
             //varsViewBindingSource.ResetBindings(true);
             InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
             this.BeginInvoke(invokeUpdateVarsViewDataGridView);
@@ -396,7 +397,33 @@ namespace varManager
 
         public void UpdateVarsViewDataGridView()
         {
+            List<string> selectedRowList = new List<string>();
+            foreach (DataGridViewRow item in varsViewDataGridView.SelectedRows)
+            {
+                selectedRowList.Add(item.Cells[0].Value.ToString());
+            }
+            varsViewDataGridView.SelectionChanged -= new System.EventHandler(this.varsDataGridView_SelectionChanged);
+            this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             varsViewDataGridView.Update();
+
+            int firstindex = int.MaxValue;
+            foreach (DataGridViewRow row in varsViewDataGridView.Rows)
+            {
+                string varname=  row.Cells[0].Value.ToString();
+                if (selectedRowList.Contains(varname))
+                {
+                    row.Selected = true;
+                    if (row.Index < firstindex) firstindex = row.Index;
+                }
+            }
+            if (firstindex == int.MaxValue) firstindex = 0;
+            if (varsViewDataGridView.SelectedRows.Count > 0)
+            {
+                varsViewDataGridView.FirstDisplayedScrollingRowIndex = firstindex;
+            }
+            varsViewDataGridView.SelectionChanged += new System.EventHandler(this.varsDataGridView_SelectionChanged);
+            UpdatePreviewPics();
+            tableLayoutPanelPreview.Visible = false;
         }
         
         public delegate void InvokeAddLoglist(string message);
@@ -655,8 +682,6 @@ namespace varManager
             }
             varsTableAdapter.Update(varManagerDataSet.vars);
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
-            //varsViewBindingSource.ResetBindings(true);
-            //varsViewDataGridView.Update();
             MessageBox.Show("Update DB finish!Please reopen this tool!");
         }
 
@@ -674,7 +699,7 @@ namespace varManager
                     VarInstall(varname, 1);
                 }
             }
-            UpdateVarsInstalled();
+            //UpdateVarsInstalled();
         }
 
 
@@ -737,9 +762,9 @@ namespace varManager
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
                         varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(varfile));
+                        File.Delete(varfile);
                         if (varsrow != null)
                         {
-                            File.Delete(varfile);
                             string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                             Comm.CreateSymbolicLink(varfile, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
                         }
@@ -802,7 +827,7 @@ namespace varManager
                 strFilter += " AND creatorName = '" + comboBoxCreater.SelectedItem.ToString() + "'";
             if (textBoxFilter.Text.Trim() != "")
             {
-                strFilter += " AND varName Like '%" + textBoxFilter.Text.Trim() + "*'";
+                strFilter += " AND varName Like '%" + textBoxFilter.Text.Trim().Replace("'","''") + "%'";
             }
             if (checkBoxInstalled.CheckState == CheckState.Checked)
             {
@@ -1250,6 +1275,8 @@ namespace varManager
             {
                 var metajsonsteam = new StreamReader(logfile);
                 string logstring = metajsonsteam.ReadToEnd();
+                metajsonsteam.Close();
+                System.Diagnostics.Process.Start(logfile);
                 List<string> dependencies = new List<string>();
                 try
                 {
@@ -1278,7 +1305,6 @@ namespace varManager
                     else
                     {
                         missingvars.Add(varname);
-                       
                     }
                 }
                 if (missingvars.Count > 0)
@@ -1290,25 +1316,51 @@ namespace varManager
             }
         }
 
+        private void varsViewDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            this.BeginInvoke(addlog, new Object[] { e.Exception.Message });
+        }
+
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {
+
             string varName = labelPreviewVarName.Text;
-            string message = varName + "  will be installed, are you sure?";
-            string caption = "Install Var";
-            var result = MessageBox.Show(message, caption,
-                                  MessageBoxButtons.YesNo,
-                                  MessageBoxIcon.Question,
-                                  MessageBoxDefaultButton.Button2);
-            if (result == DialogResult.Yes)
+            if (varManagerDataSet.installStatus.Where(q => q.varName == varName && q.Installed).Count() > 0)
             {
-                List<string> varnames = new List<string>();
-                varnames.Add(varName);
-                varnames = VarsDependencies(varnames);
-                foreach (string varname in varnames)
+                string message = varName + "  will be remove, are you sure?";
+                string caption = "Remove Var";
+                var result = MessageBox.Show(message, caption,
+                                      MessageBoxButtons.YesNo,
+                                      MessageBoxIcon.Question,
+                                      MessageBoxDefaultButton.Button2);
+                if (result == DialogResult.Yes)
                 {
-                    VarInstall(varname, 1);
+                    List<string> varnames = new List<string>();
+                    varnames.Add(varName);
+                    UnintallVars(varnames);
+                    UpdateVarsInstalled();
                 }
-                UpdateVarsInstalled();
+            }
+            else
+            {
+                string message = varName + "  will install, are you sure?";
+                string caption = "Install Var";
+                var result = MessageBox.Show(message, caption,
+                                      MessageBoxButtons.YesNo,
+                                      MessageBoxIcon.Question,
+                                      MessageBoxDefaultButton.Button2);
+                if (result == DialogResult.Yes)
+                {
+                    List<string> varnames = new List<string>();
+                    varnames.Add(varName);
+                    varnames = VarsDependencies(varnames);
+                    foreach (string varname in varnames)
+                    {
+                        VarInstall(varname, 1);
+                    }
+                    UpdateVarsInstalled();
+                }
             }
         }
     }

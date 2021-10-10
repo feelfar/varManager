@@ -126,7 +126,8 @@ namespace varManager
             }
             if (e.ColumnIndex == 3)
             {
-                System.Diagnostics.Process.Start("https://www.google.com/search?q="+ dataGridViewMissingVars.Rows[e.RowIndex].Cells[0].Value.ToString()+" var");
+                string varname = dataGridViewMissingVars.Rows[e.RowIndex].Cells[0].Value.ToString().Replace(".latest", ".1");
+                System.Diagnostics.Process.Start("https://www.google.com/search?q="+ varname + " var");
             }
         }
 

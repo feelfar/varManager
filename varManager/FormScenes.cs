@@ -17,6 +17,7 @@ namespace varManager
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
         private static int maxitemPerpage = 400;
+        private string strOrderBy = "Installdate";
         public FormScenes()
         {
             InitializeComponent();
@@ -56,6 +57,8 @@ namespace varManager
         {
             panelImage.Dock = DockStyle.Fill;
             toolStripComboBoxCategory.SelectedIndex = 0;
+            toolStripComboBoxHideFav.SelectedIndex = 0;
+            toolStripComboBoxOrderBy.SelectedIndex = 0;
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
             
@@ -88,6 +91,13 @@ namespace varManager
         {
             if (!string.IsNullOrWhiteSpace(toolStripComboBoxCategory.Text))
                 listFilterScene = listInstalledScene.Where(q => q.Atomtype == toolStripComboBoxCategory.Text).ToList();
+            if (toolStripComboBoxHideFav.Text == "Hide")
+                listFilterScene = listFilterScene.Where(q => File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".hide"))).ToList();
+            if (toolStripComboBoxHideFav.Text == "Fav")
+                listFilterScene = listFilterScene.Where(q => File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".fav"))).ToList();
+            if (toolStripComboBoxHideFav.Text == "Normal")
+                listFilterScene = listFilterScene.Where(q => !(File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".fav")) 
+                                                            || File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".hide")))).ToList();
             if (!string.IsNullOrWhiteSpace(toolStripTextBoxFilter.Text))
             {
                 string filtertext = toolStripTextBoxFilter.Text.Trim().ToLower();
@@ -182,6 +192,21 @@ namespace varManager
 
         private void GenerateItems()
         {
+            if (toolStripComboBoxScenePage.SelectedIndex < 0) return;
+            if (toolStripComboBoxOrderBy.Text != strOrderBy)
+            {
+                strOrderBy = toolStripComboBoxOrderBy.Text;
+                switch (strOrderBy)
+                {
+                    case "Installdate": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => q.Installdate).ToList();
+                        break; 
+                    case "VarName": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => q.Varname).ToList();
+                        break;
+                    case "SceneName": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => Path.GetFileNameWithoutExtension(q.Scenepath)).ToList();
+                        break;
+                }
+                
+            }
             int startpic = maxitemPerpage * toolStripComboBoxScenePage.SelectedIndex;
             imageListScenes.Images.Clear();
             listSceneItem.Clear();
@@ -208,6 +233,27 @@ namespace varManager
 
         private void FillItems()
         {
+            int hideIndex = 0;
+            for (hideIndex = 0; hideIndex < listViewHide.Items.Count; hideIndex++)
+            {
+                var rect = listViewHide.GetItemRect(hideIndex);
+                if (rect.Bottom + rect.Height >= listViewHide.Height)
+                    break;
+            }
+            int nomalIndex = 0;
+            for (nomalIndex = 0; nomalIndex < listViewNormal.Items.Count; nomalIndex++)
+            {
+                var rect = listViewNormal.GetItemRect(nomalIndex);
+                if (rect.Bottom + rect.Height >= listViewNormal.Height)
+                    break;
+            }
+            int favIndex = 0;
+            for (favIndex = 0; favIndex < listViewFav.Items.Count; favIndex++)
+            {
+                var rect = listViewFav.GetItemRect(favIndex);
+                if (rect.Bottom + rect.Height >= listViewFav.Height)
+                    break;
+            }
             listViewHide.Items.Clear();
             listViewNormal.Items.Clear();
             listViewFav.Items.Clear();
@@ -228,6 +274,16 @@ namespace varManager
                         listViewNormal.Items.Add(item);
                 }
             }
+            if (hideIndex >= listViewHide.Items.Count)
+                hideIndex = listViewHide.Items.Count - 1;
+            if (hideIndex >= 0) listViewHide.EnsureVisible(hideIndex);
+            if (nomalIndex >= listViewNormal.Items.Count)
+                nomalIndex = listViewNormal.Items.Count - 1;
+            if (nomalIndex >= 0) listViewNormal.EnsureVisible(nomalIndex);
+            if (favIndex >= listViewFav.Items.Count)
+                favIndex = listViewFav.Items.Count - 1;
+            if (favIndex >=0) listViewFav.EnsureVisible(favIndex);
+
         }
 
         private void toolStripButtonSceneFirst_Click(object sender, EventArgs e)
@@ -390,6 +446,17 @@ namespace varManager
                     }
                 }
             }
+        }
+
+        private void toolStripComboBoxHideFav_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterVars();
+        }
+
+        private void toolStripComboBoxOrderBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listFilterCreatorScene != null)
+                GenerateItems();
         }
     }
 }

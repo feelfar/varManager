@@ -42,11 +42,16 @@ namespace varManager
             this.toolStripButtonSceneNext = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSceneLast = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxHideFav = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxCreator = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripTextBoxFilter = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxOrderBy = new System.Windows.Forms.ToolStripComboBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.buttonRemoveHide = new System.Windows.Forms.Button();
             this.buttonAddHide = new System.Windows.Forms.Button();
@@ -105,7 +110,7 @@ namespace varManager
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1278, 742);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1343, 742);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // toolStripPreview
@@ -123,21 +128,26 @@ namespace varManager
             this.toolStripButtonSceneNext,
             this.toolStripButtonSceneLast,
             this.toolStripSeparator2,
+            this.toolStripLabel4,
+            this.toolStripComboBoxHideFav,
             this.toolStripLabel1,
             this.toolStripComboBoxCreator,
             this.toolStripSeparator3,
             this.toolStripLabel2,
-            this.toolStripTextBoxFilter});
+            this.toolStripTextBoxFilter,
+            this.toolStripSeparator4,
+            this.toolStripLabel5,
+            this.toolStripComboBoxOrderBy});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(1278, 31);
+            this.toolStripPreview.Size = new System.Drawing.Size(1343, 28);
             this.toolStripPreview.TabIndex = 3;
             this.toolStripPreview.Text = "toolStrip1";
             // 
             // toolStripLabel3
             // 
             this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(80, 28);
+            this.toolStripLabel3.Size = new System.Drawing.Size(80, 25);
             this.toolStripLabel3.Text = "Category:";
             // 
             // toolStripComboBoxCategory
@@ -149,20 +159,20 @@ namespace varManager
             "clothing",
             "hairstyle"});
             this.toolStripComboBoxCategory.Name = "toolStripComboBoxCategory";
-            this.toolStripComboBoxCategory.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxCategory.Size = new System.Drawing.Size(100, 28);
             this.toolStripComboBoxCategory.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxCategory_SelectedIndexChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
             // toolStripButtonSceneFirst
             // 
             this.toolStripButtonSceneFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneFirst.Name = "toolStripButtonSceneFirst";
-            this.toolStripButtonSceneFirst.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonSceneFirst.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonSceneFirst.Text = "|<";
             this.toolStripButtonSceneFirst.Click += new System.EventHandler(this.toolStripButtonSceneFirst_Click);
             // 
@@ -171,7 +181,7 @@ namespace varManager
             this.toolStripButtonScenePrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonScenePrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonScenePrev.Name = "toolStripButtonScenePrev";
-            this.toolStripButtonScenePrev.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonScenePrev.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonScenePrev.Text = "<";
             this.toolStripButtonScenePrev.Click += new System.EventHandler(this.toolStripButtonScenePrev_Click);
             // 
@@ -179,13 +189,13 @@ namespace varManager
             // 
             this.toolStripComboBoxScenePage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxScenePage.Name = "toolStripComboBoxScenePage";
-            this.toolStripComboBoxScenePage.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxScenePage.Size = new System.Drawing.Size(120, 28);
             this.toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxScenePage_SelectedIndexChanged);
             // 
             // toolStripLabelSceneCount
             // 
             this.toolStripLabelSceneCount.Name = "toolStripLabelSceneCount";
-            this.toolStripLabelSceneCount.Size = new System.Drawing.Size(34, 28);
+            this.toolStripLabelSceneCount.Size = new System.Drawing.Size(34, 25);
             this.toolStripLabelSceneCount.Text = "/{0}";
             // 
             // toolStripButtonSceneNext
@@ -193,7 +203,7 @@ namespace varManager
             this.toolStripButtonSceneNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneNext.Name = "toolStripButtonSceneNext";
-            this.toolStripButtonSceneNext.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonSceneNext.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonSceneNext.Text = ">";
             this.toolStripButtonSceneNext.Click += new System.EventHandler(this.toolStripButtonSceneNext_Click);
             // 
@@ -202,45 +212,85 @@ namespace varManager
             this.toolStripButtonSceneLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneLast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneLast.Name = "toolStripButtonSceneLast";
-            this.toolStripButtonSceneLast.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonSceneLast.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonSceneLast.Text = ">|";
             this.toolStripButtonSceneLast.Click += new System.EventHandler(this.toolStripButtonSceneLast_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(72, 25);
+            this.toolStripLabel4.Text = "HideFav:";
+            // 
+            // toolStripComboBoxHideFav
+            // 
+            this.toolStripComboBoxHideFav.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxHideFav.Items.AddRange(new object[] {
+            "____ALL",
+            "Hide",
+            "Normal",
+            "Fav"});
+            this.toolStripComboBoxHideFav.Name = "toolStripComboBoxHideFav";
+            this.toolStripComboBoxHideFav.Size = new System.Drawing.Size(100, 28);
+            this.toolStripComboBoxHideFav.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxHideFav_SelectedIndexChanged);
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(68, 28);
+            this.toolStripLabel1.Size = new System.Drawing.Size(68, 25);
             this.toolStripLabel1.Text = "Creator:";
             // 
             // toolStripComboBoxCreator
             // 
             this.toolStripComboBoxCreator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxCreator.Name = "toolStripComboBoxCreator";
-            this.toolStripComboBoxCreator.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxCreator.Size = new System.Drawing.Size(121, 28);
             this.toolStripComboBoxCreator.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxCreator_SelectedIndexChanged);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
             // 
             // toolStripLabel2
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(50, 28);
+            this.toolStripLabel2.Size = new System.Drawing.Size(50, 25);
             this.toolStripLabel2.Text = "Filter:";
             // 
             // toolStripTextBoxFilter
             // 
             this.toolStripTextBoxFilter.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.toolStripTextBoxFilter.Name = "toolStripTextBoxFilter";
-            this.toolStripTextBoxFilter.Size = new System.Drawing.Size(200, 31);
+            this.toolStripTextBoxFilter.Size = new System.Drawing.Size(160, 28);
             this.toolStripTextBoxFilter.TextChanged += new System.EventHandler(this.toolStripTextBoxFilter_TextChanged);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
+            // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(73, 25);
+            this.toolStripLabel5.Text = "OrderBy:";
+            // 
+            // toolStripComboBoxOrderBy
+            // 
+            this.toolStripComboBoxOrderBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxOrderBy.Items.AddRange(new object[] {
+            "Installdate",
+            "VarName",
+            "SceneName"});
+            this.toolStripComboBoxOrderBy.Name = "toolStripComboBoxOrderBy";
+            this.toolStripComboBoxOrderBy.Size = new System.Drawing.Size(100, 28);
+            this.toolStripComboBoxOrderBy.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxOrderBy_SelectedIndexChanged);
             // 
             // panel5
             // 
@@ -248,7 +298,7 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(375, 68);
+            this.panel5.Location = new System.Drawing.Point(397, 68);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(74, 671);
             this.panel5.TabIndex = 4;
@@ -280,7 +330,7 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(827, 68);
+            this.panel6.Location = new System.Drawing.Point(871, 68);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(74, 671);
             this.panel6.TabIndex = 5;
@@ -311,7 +361,7 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(166, 42);
+            this.label1.Location = new System.Drawing.Point(177, 42);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(39, 15);
             this.label1.TabIndex = 6;
@@ -321,7 +371,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(610, 42);
+            this.label2.Location = new System.Drawing.Point(643, 42);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 15);
             this.label2.TabIndex = 6;
@@ -331,7 +381,7 @@ namespace varManager
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1075, 42);
+            this.label3.Location = new System.Drawing.Point(1130, 42);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 6;
@@ -344,7 +394,7 @@ namespace varManager
             this.listViewHide.LargeImageList = this.imageListScenes;
             this.listViewHide.Location = new System.Drawing.Point(3, 68);
             this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(366, 671);
+            this.listViewHide.Size = new System.Drawing.Size(388, 671);
             this.listViewHide.TabIndex = 7;
             this.listViewHide.UseCompatibleStateImageBehavior = false;
             this.listViewHide.ItemActivate += new System.EventHandler(this.listViewHide_ItemActivate);
@@ -360,9 +410,9 @@ namespace varManager
             this.listViewNormal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewNormal.HideSelection = false;
             this.listViewNormal.LargeImageList = this.imageListScenes;
-            this.listViewNormal.Location = new System.Drawing.Point(455, 68);
+            this.listViewNormal.Location = new System.Drawing.Point(477, 68);
             this.listViewNormal.Name = "listViewNormal";
-            this.listViewNormal.Size = new System.Drawing.Size(366, 671);
+            this.listViewNormal.Size = new System.Drawing.Size(388, 671);
             this.listViewNormal.TabIndex = 7;
             this.listViewNormal.UseCompatibleStateImageBehavior = false;
             this.listViewNormal.ItemActivate += new System.EventHandler(this.listViewNormal_ItemActivate);
@@ -372,9 +422,9 @@ namespace varManager
             this.listViewFav.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFav.HideSelection = false;
             this.listViewFav.LargeImageList = this.imageListScenes;
-            this.listViewFav.Location = new System.Drawing.Point(907, 68);
+            this.listViewFav.Location = new System.Drawing.Point(951, 68);
             this.listViewFav.Name = "listViewFav";
-            this.listViewFav.Size = new System.Drawing.Size(368, 671);
+            this.listViewFav.Size = new System.Drawing.Size(389, 671);
             this.listViewFav.TabIndex = 7;
             this.listViewFav.UseCompatibleStateImageBehavior = false;
             this.listViewFav.ItemActivate += new System.EventHandler(this.listViewFav_ItemActivate);
@@ -406,7 +456,7 @@ namespace varManager
             // 
             this.panelImage.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panelImage.Controls.Add(this.tableLayoutPanel2);
-            this.panelImage.Location = new System.Drawing.Point(100, 115);
+            this.panelImage.Location = new System.Drawing.Point(132, 115);
             this.panelImage.Name = "panelImage";
             this.panelImage.Size = new System.Drawing.Size(415, 124);
             this.panelImage.TabIndex = 1;
@@ -463,7 +513,7 @@ namespace varManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1278, 742);
+            this.ClientSize = new System.Drawing.Size(1343, 742);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FormScenes";
@@ -528,5 +578,10 @@ namespace varManager
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.Label labelPreviewVarName;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxHideFav;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxOrderBy;
     }
 }
