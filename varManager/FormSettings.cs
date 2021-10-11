@@ -42,8 +42,8 @@ namespace varManager
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            string varspath = new DirectoryInfo(textBoxVarspath.Text).FullName;
-            string packpath = new DirectoryInfo(Path.Combine(textBoxVamPath.Text, "AddonPackages")).FullName;
+            string varspath = new DirectoryInfo(textBoxVarspath.Text).FullName.ToLower();
+            string packpath = new DirectoryInfo(Path.Combine(textBoxVamPath.Text, "AddonPackages")).FullName.ToLower();
             if (varspath == packpath)
             {
                 MessageBox.Show("Vars Path can't be {VamInstallDir}\\AddonPackages");

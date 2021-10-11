@@ -30,6 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormScenes));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStripPreview = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
@@ -516,8 +517,9 @@ namespace varManager
             this.ClientSize = new System.Drawing.Size(1343, 742);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormScenes";
-            this.Text = "FormScenes";
+            this.Text = "Hide &  Fav";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormScenes_Load);
             this.tableLayoutPanel1.ResumeLayout(false);

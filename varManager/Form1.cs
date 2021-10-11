@@ -377,8 +377,8 @@ namespace varManager
             this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.installStatus”中。您可以根据需要移动或删除它。
             this.installStatusTableAdapter.Fill(this.varManagerDataSet.installStatus);
-            string varspath = new DirectoryInfo(Settings.Default.varspath).FullName;
-            string packpath = new DirectoryInfo(Path.Combine(Settings.Default.varspath, "AddonPackages")).FullName;
+            string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
+            string packpath = new DirectoryInfo(Path.Combine(Settings.Default.varspath, "AddonPackages")).FullName.ToLower();
             if (varspath == packpath)
             {
                 MessageBox.Show("Vars Path can't be {VamInstallDir}\\AddonPackages");

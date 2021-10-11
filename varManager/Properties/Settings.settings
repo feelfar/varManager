@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="varspath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">d:\vars</Value>
     </Setting>
     <Setting Name="vampath" Type="System.String" Scope="User">
       <Value Profile="(Default)">d:\virt_a_mate</Value>
