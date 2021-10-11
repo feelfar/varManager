@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,13 @@ namespace varManager
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            string varspath = new DirectoryInfo(textBoxVarspath.Text).FullName;
+            string packpath = new DirectoryInfo(Path.Combine(textBoxVamPath.Text, "AddonPackages")).FullName;
+            if (varspath == packpath)
+            {
+                MessageBox.Show("Vars Path can't be {VamInstallDir}\\AddonPackages");
+                return;
+            }
             Properties.Settings.Default.varspath = textBoxVarspath.Text;
             Properties.Settings.Default.vampath = textBoxVamPath.Text;
             Properties.Settings.Default.Save();
