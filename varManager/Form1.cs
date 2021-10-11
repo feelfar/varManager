@@ -68,8 +68,9 @@ namespace varManager
             {
                 varsForInstall.Add(Path.GetFileNameWithoutExtension(varins));
             }
-            File.WriteAllLines("varsForInstall.txt", varsForInstall);
+            File.Delete("varsForInstall.txt");
             varsForInstall = varsForInstall.Distinct().ToList();
+            File.WriteAllLines("varsForInstall.txt", varsForInstall);
             int curVarfile = 0;
             foreach (string varfile in vars.Concat(varsUsed))
             {
@@ -484,7 +485,10 @@ namespace varManager
                         varsrow.createDate = File.GetCreationTime(destvarfilename);
                         varsrow.creatorName = varnamepart[0];
                         varsrow.packageName = varnamepart[1];
-                        varsrow.version = int.Parse(varnamepart[2]);
+                        int version;
+                        if (!int.TryParse(varnamepart[2], out version))
+                            version = 1;
+                        varsrow.version = version;
                         varsrow.varPath = curpath;
                         ZipArchive varzipfile = ZipFile.OpenRead(destvarfilename);
 
@@ -642,7 +646,7 @@ namespace varManager
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             InvokeProgress mi = new InvokeProgress(UpdateProgress);
             this.BeginInvoke(addlog, new Object[] { "Analyze Var files, extract preview images, save info to DB" });
-            string[] vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories);
+            string[] vars = Directory.GetFiles(Path.Combine(Settings.Default.varspath, tidiedDirName), "*.var", SearchOption.AllDirectories);         
             List<string> existVars = new List<string>();
             int curVarfile = 0;
             foreach (string varfile in vars)
