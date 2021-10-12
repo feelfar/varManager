@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.Json;
+//using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using varManager.Properties;
@@ -20,10 +20,11 @@ namespace varManager
     public partial class Form1 : Form
     {
         private static readonly byte[] s_creatorNameUtf8 = Encoding.UTF8.GetBytes("creatorName");
-        private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
+        //private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
         private static SimpleLogger simpLog = new SimpleLogger();
         private static string tidiedDirName = "___VarTidied___";
         private static string redundantDirName = "___VarRedundant___";
+        private static string notComplyRuleDirName = "___VarnotComplyRule___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
         private static string missingVarLinkDirName = "___MissingVarLink___";
@@ -40,7 +41,22 @@ namespace varManager
             FormSettings formSettings = new FormSettings();
             formSettings.ShowDialog();
         }
-
+        private static bool ComplyVarFile(string varfile)
+        {
+            bool complyRule = false;
+            string varfilename = Path.GetFileNameWithoutExtension(varfile);
+            string[] varnamepart = varfilename.Split('.');
+           
+            if (varnamepart.Length == 3)
+            {
+                int version = 0;
+                if (int.TryParse(varnamepart[2], out version))
+                {
+                    complyRule = true;
+                }
+            }
+            return complyRule;
+        }
         private List<string> varsForInstall = new List<string>();
         private void TidyVars()
         {
@@ -53,9 +69,12 @@ namespace varManager
             string redundantpath = Path.Combine(Settings.Default.varspath, redundantDirName);
             if (!Directory.Exists(redundantpath))
                 Directory.CreateDirectory(redundantpath);
+            string notComplRulepath = Path.Combine(Settings.Default.varspath, notComplyRuleDirName);
+            if (!Directory.Exists(notComplRulepath))
+                Directory.CreateDirectory(notComplRulepath);
 
             var vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
-                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1);
+                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1 && q.IndexOf(notComplRulepath) == -1);
             
             string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
 
@@ -66,7 +85,8 @@ namespace varManager
                 varsForInstall.AddRange(File.ReadAllLines("varsForInstall.txt"));
             foreach (var varins in varsUsed)
             {
-                varsForInstall.Add(Path.GetFileNameWithoutExtension(varins));
+                if (ComplyVarFile(varins))
+                    varsForInstall.Add(Path.GetFileNameWithoutExtension(varins));
             }
             File.Delete("varsForInstall.txt");
             varsForInstall = varsForInstall.Distinct().ToList();
@@ -74,17 +94,17 @@ namespace varManager
             int curVarfile = 0;
             foreach (string varfile in vars.Concat(varsUsed))
             {
-                string varfilename = Path.GetFileNameWithoutExtension(varfile);
-                string[] varnamepart = varfilename.Split('.');
-                if (varnamepart.Length == 3)
+                if (ComplyVarFile(varfile))
                 {
+                    string varfilename = Path.GetFileNameWithoutExtension(varfile);
+                    string[] varnamepart = varfilename.Split('.');
                     string createrpath = Path.Combine(tidypath, varnamepart[0]);
                     if (!Directory.Exists(createrpath))
                         Directory.CreateDirectory(createrpath);
                     string destvarfilename = Path.Combine(createrpath, Path.GetFileName(varfile));
                     if (File.Exists(destvarfilename))
                     {
-                        string errlog = varfile + " has same filename in tidy directory,will copy into the redundant directory";
+                        string errlog = $"{varfile} has same filename in tidy directory,moved into the {redundantDirName} directory";
                         this.BeginInvoke(addlog, new Object[] { errlog });
                         string redundantfilename = Path.Combine(redundantpath, Path.GetFileName(varfile));
 
@@ -99,7 +119,15 @@ namespace varManager
                             string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
                             redundantfilename = Path.Combine(path, tempFileName + extension);
                         }
-                        File.Move(varfile, redundantfilename);
+                        
+                        try
+                        {
+                            File.Move(varfile, redundantfilename);
+                        }
+                        catch (Exception ex)
+                        {
+                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
+                        }
                     }
                     else
                     {
@@ -109,18 +137,43 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            this.BeginInvoke(addlog, new Object[] { " move failed, " + ex.Message });
+                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
                         }
                         //OpenAsZip(destvarfilename);
+                    }
+                }
+                else
+                {
+                    string errlog = $"{varfile} not comply Var filename rule, move into {notComplyRuleDirName} directory";
+                    this.BeginInvoke(addlog, new Object[] { errlog });
+                    string notComplRulefilename = Path.Combine(notComplRulepath, Path.GetFileName(varfile));
+
+                    int count = 1;
+
+                    string fileNameOnly = Path.GetFileNameWithoutExtension(notComplRulefilename);
+                    string extension = Path.GetExtension(notComplRulefilename);
+                    string path = Path.GetDirectoryName(notComplRulefilename);
+
+                    while (File.Exists(notComplRulefilename))
+                    {
+                        string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                        notComplRulefilename = Path.Combine(path, tempFileName + extension);
+                    }
+                    try
+                    {
+                        File.Move(varfile, notComplRulefilename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
                     }
                 }
                 curVarfile++;
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
             }
-
             // System.Diagnostics.Process.Start(tidypath);
         }
-       
+        
         List<string> Getdependencies(string jsonstring)
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
@@ -157,7 +210,7 @@ namespace varManager
             return dependenciesList;
         }
 
-
+        /*
         void JsonRead(string jsonstring)
         {
             string creatorName = "", packageName = "", dependencies = "";
@@ -200,7 +253,7 @@ namespace varManager
                 simpLog.Error(ex.Message);
                 listBoxLog.Items.Add(ex.Message);
             }
-            /*
+            
             byte[] b = Encoding.UTF8.GetBytes(jsonstring);
             ReadOnlySpan<byte> bb = new ReadOnlySpan<byte>(b);
 
@@ -226,8 +279,8 @@ namespace varManager
                         break;
                 }
             }
-            */
-        }
+           
+        } */
 
         private void FillInstalledDependencies()
         {
@@ -694,6 +747,8 @@ namespace varManager
             varsTableAdapter.Update(varManagerDataSet.vars);
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             MessageBox.Show("Update DB finish!Please reopen this tool!");
+            Application.Restart();
+            Environment.Exit(0);
         }
 
         private void backgroundWorkerUpdDB_DoWork(object sender, DoWorkEventArgs e)
@@ -1197,7 +1252,7 @@ namespace varManager
                 varnamestype += row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString() + ",";
             }
             if (varNames.Count <= 0) return;
-            string message = varnamestype + "  will be installed, are you sure?";
+            string message = varnamestype + " and dependencies  will be installed, are you sure?";
             string caption = "Install Var";
             var result = MessageBox.Show(message, caption,
                                   MessageBoxButtons.YesNo,
@@ -1332,6 +1387,37 @@ namespace varManager
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             this.BeginInvoke(addlog, new Object[] { e.Exception.Message });
         }
+
+        private void buttonUninstallSels_Click(object sender, EventArgs e)
+        {
+            List<string> varNames = new List<string>();
+            string varnamestype = "";
+            foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
+            {
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+                var varsrow = varManagerDataSet.installStatus.FindByvarName(varName);
+                if (varsrow != null)
+                {
+                    if( varsrow.Installed)
+                    {
+                        varNames.Add(varName);
+                        varnamestype += varName + ",";
+                    }
+                }
+            }
+            if (varNames.Count <= 0) return;
+            string message = varnamestype + " and dependencies will be Uninstall, are you sure?";
+            string caption = "Uninstall Vars";
+            var result = MessageBox.Show(message, caption,
+                                  MessageBoxButtons.YesNo,
+                                  MessageBoxIcon.Question,
+                                  MessageBoxDefaultButton.Button2);
+            if (result == DialogResult.Yes)
+            {
+                UnintallVars(varNames);
+                UpdateVarsInstalled();
+            }
+         }
 
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {

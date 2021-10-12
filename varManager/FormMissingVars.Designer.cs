@@ -148,6 +148,8 @@ namespace varManager
             // 
             // buttonLinkto
             // 
+            this.buttonLinkto.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonLinkto.ForeColor = System.Drawing.Color.Crimson;
             this.buttonLinkto.Location = new System.Drawing.Point(282, 12);
             this.buttonLinkto.Name = "buttonLinkto";
             this.buttonLinkto.Size = new System.Drawing.Size(75, 23);

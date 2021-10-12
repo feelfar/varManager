@@ -31,8 +31,8 @@ namespace varManager
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
@@ -115,6 +115,7 @@ namespace varManager
             this.installStatusBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
+            this.buttonUninstallSels = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -297,6 +298,7 @@ namespace varManager
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.buttonInstall);
+            this.flowLayoutPanel1.Controls.Add(this.buttonUninstallSels);
             this.flowLayoutPanel1.Controls.Add(this.varsBindingNavigator);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.comboBoxCreater);
@@ -318,6 +320,7 @@ namespace varManager
             this.buttonInstall.Size = new System.Drawing.Size(117, 23);
             this.buttonInstall.TabIndex = 8;
             this.buttonInstall.Text = "InstallSels";
+            this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
             this.buttonInstall.UseVisualStyleBackColor = true;
             this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
             // 
@@ -340,7 +343,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(123, 2);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(246, 2);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
@@ -433,7 +436,7 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(363, 8);
+            this.label1.Location = new System.Drawing.Point(486, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 15);
             this.label1.TabIndex = 4;
@@ -445,7 +448,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(440, 4);
+            this.comboBoxCreater.Location = new System.Drawing.Point(563, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(153, 23);
             this.comboBoxCreater.TabIndex = 5;
@@ -455,7 +458,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(599, 8);
+            this.label2.Location = new System.Drawing.Point(722, 8);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 15);
             this.label2.TabIndex = 4;
@@ -464,7 +467,7 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(668, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(791, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(196, 25);
             this.textBoxFilter.TabIndex = 6;
@@ -476,7 +479,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(870, 6);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(993, 6);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(101, 19);
             this.checkBoxInstalled.TabIndex = 7;
@@ -543,14 +546,14 @@ namespace varManager
             this.varsViewDataGridView.AllowUserToAddRows = false;
             this.varsViewDataGridView.AllowUserToDeleteRows = false;
             this.varsViewDataGridView.AutoGenerateColumns = false;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
@@ -568,14 +571,14 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn,
             this.disabledDataGridViewCheckBoxColumn});
             this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.varsViewDataGridView.Location = new System.Drawing.Point(0, 0);
             this.varsViewDataGridView.Name = "varsViewDataGridView";
@@ -776,6 +779,7 @@ namespace varManager
             this.buttonpreviewinstall.Size = new System.Drawing.Size(75, 23);
             this.buttonpreviewinstall.TabIndex = 0;
             this.buttonpreviewinstall.Text = "Install";
+            this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
             this.buttonpreviewinstall.UseVisualStyleBackColor = true;
             this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
             // 
@@ -972,6 +976,19 @@ namespace varManager
             // 
             this.scenesTableAdapter.ClearBeforeFill = true;
             // 
+            // buttonUninstallSels
+            // 
+            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
+            this.buttonUninstallSels.Location = new System.Drawing.Point(126, 3);
+            this.buttonUninstallSels.Name = "buttonUninstallSels";
+            this.buttonUninstallSels.Size = new System.Drawing.Size(117, 23);
+            this.buttonUninstallSels.TabIndex = 8;
+            this.buttonUninstallSels.Text = "UnInstSels";
+            this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
+            this.buttonUninstallSels.UseVisualStyleBackColor = true;
+            this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1101,6 +1118,7 @@ namespace varManager
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button buttonFixSavesDepend;
         private System.Windows.Forms.Button buttonLogAnalysis;
+        private System.Windows.Forms.Button buttonUninstallSels;
     }
 }
 
