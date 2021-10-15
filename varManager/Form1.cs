@@ -96,6 +96,13 @@ namespace varManager
             {
                 if (ComplyVarFile(varfile))
                 {
+                    FileInfo pathInfo = new FileInfo(varfile);
+                    if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                    {
+                        string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
+                        this.BeginInvoke(addlog, new Object[] { errlog });
+                        continue;
+                    }
                     string varfilename = Path.GetFileNameWithoutExtension(varfile);
                     string[] varnamepart = varfilename.Split('.');
                     string createrpath = Path.Combine(tidypath, varnamepart[0]);
@@ -820,14 +827,22 @@ namespace varManager
         private void FixRebuildLink()
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
+            this.BeginInvoke(addlog, new Object[] { "Check Installed symlink"});
+            List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
+            varfiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories));
+
+            foreach (string varfile in varfiles)
             {
                 try
                 {
                     FileInfo pathInfo = new FileInfo(varfile);
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
-                        varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(varfile));
+                        string destfilename = Comm.ReparsePoint(varfile);
+                        if (File.Exists(destfilename))
+                            continue;
+                        this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {varfile} is missing, will rebuild symlink..." });
+                        varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(destfilename));
                         File.Delete(varfile);
                         if (varsrow != null)
                         {
@@ -1248,10 +1263,29 @@ namespace varManager
             string varnamestype = "";
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
             {
-                varNames.Add(row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString());
-                varnamestype += row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString() + ",";
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+                bool install = false;
+                var varsrow = varManagerDataSet.installStatus.FindByvarName(varName);
+                if (varsrow != null)
+                {
+                    if (varsrow.Installed)
+                    {
+                        install = true; ;
+                    }
+                }
+                if (!install)
+                {
+                    varNames.Add(varName);
+                    varnamestype += varName + ",";
+                }
             }
             if (varNames.Count <= 0) return;
+            int max = 50;
+            if (varNames.Count > max)
+            {
+                MessageBox.Show($"Please do not install more than {max} files at once");
+                return;
+            }
             string message = varnamestype + " and dependencies  will be installed, are you sure?";
             string caption = "Install Var";
             var result = MessageBox.Show(message, caption,
@@ -1296,9 +1330,16 @@ namespace varManager
                     labelPreviewVarName.Text = item.SubItems[1].Text;
                     pictureBoxPreview.Image = Image.FromFile(item.SubItems[2].Text);
                     if (item.SubItems[3].Text.ToLower() == "true")
-                        buttonpreviewinstall.Text = "Remove";
+                    {
+                        buttonpreviewinstall.Text = "Uninstall";
+                        buttonpreviewinstall.ForeColor = Color.Red;
+                    }
+                    
                     else
+                    {
                         buttonpreviewinstall.Text = "Install";
+                        buttonpreviewinstall.ForeColor = Color.DarkBlue;
+                    }
 
                     tableLayoutPanelPreview.Dock = DockStyle.Fill;
                     tableLayoutPanelPreview.Visible = true;
@@ -1406,6 +1447,12 @@ namespace varManager
                 }
             }
             if (varNames.Count <= 0) return;
+            int max = 50;
+            if (varNames.Count > max)
+            {
+                MessageBox.Show($"Please do not install more than {max} files at once");
+                return;
+            }
             string message = varnamestype + " and dependencies will be Uninstall, are you sure?";
             string caption = "Uninstall Vars";
             var result = MessageBox.Show(message, caption,

@@ -31,8 +31,8 @@ namespace varManager
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
@@ -47,9 +47,8 @@ namespace varManager
             this.panel2 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonInstall = new System.Windows.Forms.Button();
+            this.buttonUninstallSels = new System.Windows.Forms.Button();
             this.varsBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
-            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.varManagerDataSet = new varManager.varManagerDataSet();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -69,20 +68,6 @@ namespace varManager
             this.labelProgress = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
-            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.packageNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.createDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.labelPreviewVarName = new System.Windows.Forms.Label();
@@ -105,6 +90,22 @@ namespace varManager
             this.backgroundWorkerUpdDB = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerInstall = new System.ComponentModel.BackgroundWorker();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.varManagerDataSet = new varManager.varManagerDataSet();
+            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.packageNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.createDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.varsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesTableAdapter = new varManager.varManagerDataSetTableAdapters.dependenciesTableAdapter();
@@ -115,7 +116,6 @@ namespace varManager
             this.installStatusBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
-            this.buttonUninstallSels = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -123,8 +123,6 @@ namespace varManager
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
             this.varsBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -135,6 +133,8 @@ namespace varManager
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.toolStripPreview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).BeginInit();
@@ -230,8 +230,7 @@ namespace varManager
             this.buttonFixSavesDepend.Size = new System.Drawing.Size(89, 42);
             this.buttonFixSavesDepend.TabIndex = 4;
             this.buttonFixSavesDepend.Text = "\"Saves\" depends";
-            this.toolTip1.SetToolTip(this.buttonFixSavesDepend, "Search  the dependencies of scene and look in the save directory will be found an" +
-        "d installed");
+            this.toolTip1.SetToolTip(this.buttonFixSavesDepend, " Analyze the json file in the Save directory to find installation dependencies");
             this.buttonFixSavesDepend.UseVisualStyleBackColor = true;
             this.buttonFixSavesDepend.Click += new System.EventHandler(this.buttonFixSavesDepend_Click);
             // 
@@ -324,6 +323,19 @@ namespace varManager
             this.buttonInstall.UseVisualStyleBackColor = true;
             this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
             // 
+            // buttonUninstallSels
+            // 
+            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
+            this.buttonUninstallSels.Location = new System.Drawing.Point(126, 3);
+            this.buttonUninstallSels.Name = "buttonUninstallSels";
+            this.buttonUninstallSels.Size = new System.Drawing.Size(117, 23);
+            this.buttonUninstallSels.TabIndex = 8;
+            this.buttonUninstallSels.Text = "UnInstSels";
+            this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
+            this.buttonUninstallSels.UseVisualStyleBackColor = true;
+            this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
+            // 
             // varsBindingNavigator
             // 
             this.varsBindingNavigator.AddNewItem = null;
@@ -343,31 +355,21 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(246, 2);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(246, 0);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 31);
             this.varsBindingNavigator.TabIndex = 3;
             this.varsBindingNavigator.Text = "bindingNavigator1";
-            // 
-            // varsViewBindingSource
-            // 
-            this.varsViewBindingSource.DataMember = "varsView";
-            this.varsViewBindingSource.DataSource = this.varManagerDataSet;
-            // 
-            // varManagerDataSet
-            // 
-            this.varManagerDataSet.DataSetName = "varManagerDataSet";
-            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 24);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 28);
             this.bindingNavigatorCountItem.Text = "/ {0}";
             this.bindingNavigatorCountItem.ToolTipText = "总项数";
             // 
@@ -377,7 +379,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
             // 
             // bindingNavigatorMovePreviousItem
@@ -386,13 +388,13 @@ namespace varManager
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMovePreviousItem.Text = "移到上一条记录";
             // 
             // bindingNavigatorSeparator
             // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorPositionItem
             // 
@@ -407,7 +409,7 @@ namespace varManager
             // bindingNavigatorSeparator1
             // 
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // bindingNavigatorMoveNextItem
             // 
@@ -415,7 +417,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveNextItem.Text = "移到下一条记录";
             // 
             // bindingNavigatorMoveLastItem
@@ -424,13 +426,13 @@ namespace varManager
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveLastItem.Text = "移到最后一条记录";
             // 
             // bindingNavigatorSeparator2
             // 
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // label1
             // 
@@ -452,6 +454,7 @@ namespace varManager
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(153, 23);
             this.comboBoxCreater.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.comboBoxCreater, "Filter by creator");
             this.comboBoxCreater.SelectedIndexChanged += new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
             // 
             // label2
@@ -471,6 +474,7 @@ namespace varManager
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(196, 25);
             this.textBoxFilter.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.textBoxFilter, "Filter by varname");
             this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
             // 
             // checkBoxInstalled
@@ -485,6 +489,7 @@ namespace varManager
             this.checkBoxInstalled.TabIndex = 7;
             this.checkBoxInstalled.Text = "Installed";
             this.checkBoxInstalled.ThreeState = true;
+            this.toolTip1.SetToolTip(this.checkBoxInstalled, "Filter by installation status");
             this.checkBoxInstalled.UseVisualStyleBackColor = true;
             this.checkBoxInstalled.CheckStateChanged += new System.EventHandler(this.checkBoxInstalled_CheckStateChanged);
             // 
@@ -546,14 +551,14 @@ namespace varManager
             this.varsViewDataGridView.AllowUserToAddRows = false;
             this.varsViewDataGridView.AllowUserToDeleteRows = false;
             this.varsViewDataGridView.AutoGenerateColumns = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
@@ -571,14 +576,14 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn,
             this.disabledDataGridViewCheckBoxColumn});
             this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle4;
             this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.varsViewDataGridView.Location = new System.Drawing.Point(0, 0);
             this.varsViewDataGridView.Name = "varsViewDataGridView";
@@ -587,9 +592,224 @@ namespace varManager
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.Size = new System.Drawing.Size(510, 357);
             this.varsViewDataGridView.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.varsViewDataGridView, "var package list, multiple choice");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
             this.varsViewDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.varsViewDataGridView_DataError);
             this.varsViewDataGridView.SelectionChanged += new System.EventHandler(this.varsDataGridView_SelectionChanged);
+            // 
+            // tableLayoutPanelPreview
+            // 
+            this.tableLayoutPanelPreview.ColumnCount = 1;
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
+            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
+            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(79, 53);
+            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
+            this.tableLayoutPanelPreview.RowCount = 2;
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(496, 100);
+            this.tableLayoutPanelPreview.TabIndex = 1;
+            this.tableLayoutPanelPreview.Visible = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.labelPreviewVarName);
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.buttonpreviewinstall);
+            this.panel3.Controls.Add(this.buttonpreviewback);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 63);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(490, 34);
+            this.panel3.TabIndex = 0;
+            // 
+            // labelPreviewVarName
+            // 
+            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelPreviewVarName.AutoSize = true;
+            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 8);
+            this.labelPreviewVarName.Name = "labelPreviewVarName";
+            this.labelPreviewVarName.Size = new System.Drawing.Size(47, 15);
+            this.labelPreviewVarName.TabIndex = 2;
+            this.labelPreviewVarName.Text = "a.a.1";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 8);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(71, 15);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "VarName:";
+            // 
+            // buttonpreviewinstall
+            // 
+            this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonpreviewinstall.Location = new System.Drawing.Point(283, 8);
+            this.buttonpreviewinstall.Name = "buttonpreviewinstall";
+            this.buttonpreviewinstall.Size = new System.Drawing.Size(98, 23);
+            this.buttonpreviewinstall.TabIndex = 0;
+            this.buttonpreviewinstall.Text = "Install";
+            this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
+            this.buttonpreviewinstall.UseVisualStyleBackColor = true;
+            this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
+            // 
+            // buttonpreviewback
+            // 
+            this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonpreviewback.Location = new System.Drawing.Point(401, 8);
+            this.buttonpreviewback.Name = "buttonpreviewback";
+            this.buttonpreviewback.Size = new System.Drawing.Size(75, 23);
+            this.buttonpreviewback.TabIndex = 0;
+            this.buttonpreviewback.Text = "return";
+            this.buttonpreviewback.UseVisualStyleBackColor = true;
+            this.buttonpreviewback.Click += new System.EventHandler(this.buttonpreviewback_Click);
+            // 
+            // pictureBoxPreview
+            // 
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(490, 54);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
+            // 
+            // listViewPreviewPics
+            // 
+            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPreviewPics.HideSelection = false;
+            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
+            this.listViewPreviewPics.MultiSelect = false;
+            this.listViewPreviewPics.Name = "listViewPreviewPics";
+            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 329);
+            this.listViewPreviewPics.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
+            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
+            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
+            // 
+            // imageListPreviewPics
+            // 
+            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
+            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // toolStripPreview
+            // 
+            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.toolStripComboBoxPreviewType,
+            this.toolStripSeparator1,
+            this.toolStripButtonPreviewFirst,
+            this.toolStripButtonPreviewPrev,
+            this.toolStripComboBoxPreviewPage,
+            this.toolStripLabelPreviewCountItem,
+            this.toolStripButtonPreviewNext,
+            this.toolStripButtonPreviewLast});
+            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
+            this.toolStripPreview.Name = "toolStripPreview";
+            this.toolStripPreview.Size = new System.Drawing.Size(728, 28);
+            this.toolStripPreview.TabIndex = 2;
+            this.toolStripPreview.Text = "toolStrip1";
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(106, 28);
+            this.toolStripLabel1.Text = "PreviewType:";
+            // 
+            // toolStripComboBoxPreviewType
+            // 
+            this.toolStripComboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxPreviewType.Items.AddRange(new object[] {
+            "_All",
+            "scenes",
+            "looks",
+            "clothing",
+            "hairstyle",
+            "assets"});
+            this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
+            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // toolStripButtonPreviewFirst
+            // 
+            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewFirst.Text = "|<";
+            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
+            // 
+            // toolStripButtonPreviewPrev
+            // 
+            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewPrev.Text = "<";
+            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
+            // 
+            // toolStripComboBoxPreviewPage
+            // 
+            this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
+            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
+            // 
+            // toolStripLabelPreviewCountItem
+            // 
+            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 28);
+            this.toolStripLabelPreviewCountItem.Text = "/{0}";
+            // 
+            // toolStripButtonPreviewNext
+            // 
+            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewNext.Text = ">";
+            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
+            // 
+            // toolStripButtonPreviewLast
+            // 
+            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewLast.Text = ">|";
+            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
+            // 
+            // backgroundWorkerUpdDB
+            // 
+            this.backgroundWorkerUpdDB.WorkerReportsProgress = true;
+            this.backgroundWorkerUpdDB.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerUpdDB_DoWork);
+            // 
+            // backgroundWorkerInstall
+            // 
+            this.backgroundWorkerInstall.WorkerReportsProgress = true;
+            this.backgroundWorkerInstall.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerInstall_DoWork);
+            // 
+            // varsViewBindingSource
+            // 
+            this.varsViewBindingSource.DataMember = "varsView";
+            this.varsViewBindingSource.DataSource = this.varManagerDataSet;
+            // 
+            // varManagerDataSet
+            // 
+            this.varManagerDataSet.DataSetName = "varManagerDataSet";
+            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // varNameDataGridViewTextBoxColumn
             // 
@@ -724,209 +944,6 @@ namespace varManager
             this.disabledDataGridViewCheckBoxColumn.Visible = false;
             this.disabledDataGridViewCheckBoxColumn.Width = 50;
             // 
-            // tableLayoutPanelPreview
-            // 
-            this.tableLayoutPanelPreview.ColumnCount = 1;
-            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
-            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(79, 53);
-            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
-            this.tableLayoutPanelPreview.RowCount = 2;
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(496, 100);
-            this.tableLayoutPanelPreview.TabIndex = 1;
-            this.tableLayoutPanelPreview.Visible = false;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.labelPreviewVarName);
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.buttonpreviewinstall);
-            this.panel3.Controls.Add(this.buttonpreviewback);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 63);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(490, 34);
-            this.panel3.TabIndex = 0;
-            // 
-            // labelPreviewVarName
-            // 
-            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 8);
-            this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(47, 15);
-            this.labelPreviewVarName.TabIndex = 2;
-            this.labelPreviewVarName.Text = "a.a.1";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(71, 15);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "VarName:";
-            // 
-            // buttonpreviewinstall
-            // 
-            this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewinstall.Location = new System.Drawing.Point(306, 8);
-            this.buttonpreviewinstall.Name = "buttonpreviewinstall";
-            this.buttonpreviewinstall.Size = new System.Drawing.Size(75, 23);
-            this.buttonpreviewinstall.TabIndex = 0;
-            this.buttonpreviewinstall.Text = "Install";
-            this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
-            this.buttonpreviewinstall.UseVisualStyleBackColor = true;
-            this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
-            // 
-            // buttonpreviewback
-            // 
-            this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewback.Location = new System.Drawing.Point(401, 8);
-            this.buttonpreviewback.Name = "buttonpreviewback";
-            this.buttonpreviewback.Size = new System.Drawing.Size(75, 23);
-            this.buttonpreviewback.TabIndex = 0;
-            this.buttonpreviewback.Text = "return";
-            this.buttonpreviewback.UseVisualStyleBackColor = true;
-            this.buttonpreviewback.Click += new System.EventHandler(this.buttonpreviewback_Click);
-            // 
-            // pictureBoxPreview
-            // 
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(490, 54);
-            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
-            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
-            // 
-            // listViewPreviewPics
-            // 
-            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPreviewPics.HideSelection = false;
-            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
-            this.listViewPreviewPics.MultiSelect = false;
-            this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 329);
-            this.listViewPreviewPics.TabIndex = 0;
-            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
-            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
-            // 
-            // imageListPreviewPics
-            // 
-            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
-            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // toolStripPreview
-            // 
-            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.toolStripComboBoxPreviewType,
-            this.toolStripSeparator1,
-            this.toolStripButtonPreviewFirst,
-            this.toolStripButtonPreviewPrev,
-            this.toolStripComboBoxPreviewPage,
-            this.toolStripLabelPreviewCountItem,
-            this.toolStripButtonPreviewNext,
-            this.toolStripButtonPreviewLast});
-            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
-            this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(728, 28);
-            this.toolStripPreview.TabIndex = 2;
-            this.toolStripPreview.Text = "toolStrip1";
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(106, 25);
-            this.toolStripLabel1.Text = "PreviewType:";
-            // 
-            // toolStripComboBoxPreviewType
-            // 
-            this.toolStripComboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxPreviewType.Items.AddRange(new object[] {
-            "_All",
-            "scenes",
-            "looks",
-            "clothing",
-            "hairstyle",
-            "assets"});
-            this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
-            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 28);
-            this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripButtonPreviewFirst
-            // 
-            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewFirst.Text = "|<";
-            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
-            // 
-            // toolStripButtonPreviewPrev
-            // 
-            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewPrev.Text = "<";
-            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
-            // 
-            // toolStripComboBoxPreviewPage
-            // 
-            this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
-            this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
-            // 
-            // toolStripLabelPreviewCountItem
-            // 
-            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
-            this.toolStripLabelPreviewCountItem.Text = "/{0}";
-            // 
-            // toolStripButtonPreviewNext
-            // 
-            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewNext.Text = ">";
-            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
-            // 
-            // toolStripButtonPreviewLast
-            // 
-            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewLast.Text = ">|";
-            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
-            // 
-            // backgroundWorkerUpdDB
-            // 
-            this.backgroundWorkerUpdDB.WorkerReportsProgress = true;
-            this.backgroundWorkerUpdDB.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerUpdDB_DoWork);
-            // 
-            // backgroundWorkerInstall
-            // 
-            this.backgroundWorkerInstall.WorkerReportsProgress = true;
-            this.backgroundWorkerInstall.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerInstall_DoWork);
-            // 
             // varsBindingSource
             // 
             this.varsBindingSource.DataMember = "vars";
@@ -976,19 +993,6 @@ namespace varManager
             // 
             this.scenesTableAdapter.ClearBeforeFill = true;
             // 
-            // buttonUninstallSels
-            // 
-            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
-            this.buttonUninstallSels.Location = new System.Drawing.Point(126, 3);
-            this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(117, 23);
-            this.buttonUninstallSels.TabIndex = 8;
-            this.buttonUninstallSels.Text = "UnInstSels";
-            this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
-            this.buttonUninstallSels.UseVisualStyleBackColor = true;
-            this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1009,8 +1013,6 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).EndInit();
             this.varsBindingNavigator.ResumeLayout(false);
             this.varsBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1025,6 +1027,8 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.toolStripPreview.ResumeLayout(false);
             this.toolStripPreview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).EndInit();
