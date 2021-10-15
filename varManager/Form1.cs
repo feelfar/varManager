@@ -990,11 +990,14 @@ namespace varManager
                 }
             }
 
+            varnameexist = varnameexist.Distinct().Except(varsProccessed).ToList();
             foreach (string varname in varnameexist)
             {
                 vardeps.AddRange(VarsDependencies(varname));
             }
             varsProccessed.AddRange(varnameexist);
+            varsProccessed = varsProccessed.Distinct().ToList();
+
             vardeps = vardeps.Distinct().Except(varsProccessed).ToList();
             if (vardeps.Count() > 0)
             {
