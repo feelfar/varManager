@@ -754,8 +754,7 @@ namespace varManager
             varsTableAdapter.Update(varManagerDataSet.vars);
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             MessageBox.Show("Update DB finish!Please reopen this tool!");
-            Application.Restart();
-            Environment.Exit(0);
+           
         }
 
         private void backgroundWorkerUpdDB_DoWork(object sender, DoWorkEventArgs e)
@@ -772,6 +771,8 @@ namespace varManager
                     VarInstall(varname, 1);
                 }
             }
+            Application.Restart();
+            Environment.Exit(0);
             //UpdateVarsInstalled();
         }
 
