@@ -26,6 +26,8 @@ namespace varManager
         private static string redundantDirName = "___VarRedundant___";
         private static string notComplyRuleDirName = "___VarnotComplyRule___";
         private static string previewpicsDirName = "___PreviewPics___";
+        private static string staleVarsDirName = "___StaleVars___";
+
         private static string installLinkDirName = "___VarsLink___";
         private static string missingVarLinkDirName = "___MissingVarLink___";
         private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
@@ -74,7 +76,7 @@ namespace varManager
                 Directory.CreateDirectory(notComplRulepath);
 
             var vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
-                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1 && q.IndexOf(notComplRulepath) == -1);
+                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1 && q.IndexOf(notComplRulepath) == -1 && q.IndexOf(staleVarsDirName) == -1);
             
             string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
 
@@ -432,6 +434,7 @@ namespace varManager
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.Text ="VarManager  v"+ Assembly.GetEntryAssembly().GetName().Version.ToString();
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
@@ -500,6 +503,7 @@ namespace varManager
         {
             simpLog.Error(message);
             listBoxLog.Items.Add(message);
+            listBoxLog.TopIndex = listBoxLog.Items.Count - 1;
         }
 
         public delegate void InvokeProgress(int cur, int total);
@@ -511,6 +515,17 @@ namespace varManager
                 progressBar1.Value = (int)((float)cur * 100 / (float)total);
         }
 
+        public delegate void InvokeShowformMissingVars(List<string> missingvars);
+
+        public void ShowformMissingVars(List<string> missingvars)
+        {
+            if (missingvars.Count > 0)
+            {
+                FormMissingVars formMissingVars = new FormMissingVars();
+                formMissingVars.MissingVars = missingvars;
+                formMissingVars.Show();
+            }
+        }
         private void buttonUpdDB_Click(object sender, EventArgs e)
         {
             string message = "Will organize vars, extract preview images,update DB. It will take some time, please be patient.";
@@ -521,7 +536,7 @@ namespace varManager
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
-                backgroundWorkerUpdDB.RunWorkerAsync();
+                backgroundWorkerInstall.RunWorkerAsync("UpdDB");
         }
 
         private void UpdDB(string destvarfilename)
@@ -675,9 +690,10 @@ namespace varManager
                             this.BeginInvoke(addlog, new Object[] { destvarfilename + " get dependencies failed " + ex.Message });
 
                         }
-                        foreach (var row in varManagerDataSet.dependencies.Where(q => q.varName == basename))
+                        var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == basename).ToList();
+                        for (int i = dependencierows.Count() - 1; i >= 0; i--)
                         {
-                            row.Delete();
+                            dependencierows[i].Delete();
                         }
                         foreach (string dependencie in dependencies)
                             varManagerDataSet.dependencies.AdddependenciesRow(basename, dependencie);
@@ -701,12 +717,17 @@ namespace varManager
                 this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
             }
         }
-        private void UpdDB()
+        private bool UpdDB()
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             InvokeProgress mi = new InvokeProgress(UpdateProgress);
             this.BeginInvoke(addlog, new Object[] { "Analyze Var files, extract preview images, save info to DB" });
-            string[] vars = Directory.GetFiles(Path.Combine(Settings.Default.varspath, tidiedDirName), "*.var", SearchOption.AllDirectories);         
+            string[] vars = Directory.GetFiles(Path.Combine(Settings.Default.varspath, tidiedDirName), "*.var", SearchOption.AllDirectories);
+            if(vars.Length<=0)
+            {
+                MessageBox.Show("No VAR file found, please check if the path setting is wrong!");
+                return false ;
+            }
             List<string> existVars = new List<string>();
             int curVarfile = 0;
             foreach (string varfile in vars)
@@ -720,26 +741,32 @@ namespace varManager
             List<string> deletevars = new List<string>();
             foreach (var row in varManagerDataSet.vars)
             {
-                if (!existVars.Contains(row.varName)) deletevars.Add(row.varName);
+                if (!existVars.Contains(row.varName))
+                {
+                    this.BeginInvoke(addlog, new Object[] { $"{row.varName} The target VAR file is not found and the record will be deleted" });
+                    deletevars.Add(row.varName); 
+                }
             }
 
             foreach (string deletevar in deletevars)
             {
                 try
                 {
-                    foreach (var deprow in varManagerDataSet.dependencies.Where(q => q.varName == deletevar))
+                    var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == deletevar).ToList();
+                    for (int i = dependencierows.Count() - 1; i >= 0; i--)
                     {
-                        if (deprow.RowState == DataRowState.Deleted) continue;
-                        deprow.Delete();
+                        dependencierows[i].Delete();
                     }
+                    dependenciesTableAdapter.Update(varManagerDataSet.dependencies);
+                    varManagerDataSet.dependencies.AcceptChanges();
+
                 }
                 catch (Exception ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { deletevar + " " + ex.Message });
+                    this.BeginInvoke(addlog, new Object[] { deletevar + ",delete dependences record error, " + ex.Message });
                 }
             }
-            dependenciesTableAdapter.Update(varManagerDataSet.dependencies);
-
+            
             foreach (string deletevar in deletevars)
             {
                 try
@@ -748,34 +775,15 @@ namespace varManager
                 }
                 catch (Exception ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { deletevar + " " + ex.Message });
+                    this.BeginInvoke(addlog, new Object[] { deletevar + ",delete record error," + ex.Message });
                 }
             }
             varsTableAdapter.Update(varManagerDataSet.vars);
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             MessageBox.Show("Update DB finish!Please reopen this tool!");
+            return true;
            
         }
-
-        private void backgroundWorkerUpdDB_DoWork(object sender, DoWorkEventArgs e)
-        {
-            TidyVars();
-            UpdDB();
-            if (varsForInstall.Count() > 0)
-            {
-                var varNames = VarsDependencies(varsForInstall);
-                varsForInstall.Clear();
-                File.Delete("varsForInstall.txt");
-                foreach (string varname in varNames)
-                {
-                    VarInstall(varname, 1);
-                }
-            }
-            Application.Restart();
-            Environment.Exit(0);
-            //UpdateVarsInstalled();
-        }
-
 
         private bool VarInstall(string varName, int operate)
         {
@@ -802,11 +810,13 @@ namespace varManager
                     {
                         MessageBox.Show("Error: Unable to create symbolic link. " +
                                 "(Error Code: " + Marshal.GetLastWin32Error() + ")");
+                        return false;
                     }
                     if (operate == 2)
                     {
                         using (File.Create(linkvar + ".disabled")) { }
                     }
+                    success = true;
                 }
 
             }
@@ -814,7 +824,25 @@ namespace varManager
         }
 
         private void backgroundWorkerInstall_DoWork(object sender, DoWorkEventArgs e)
-        {
+        { 
+            if ((string)e.Argument == "UpdDB")
+            {
+                TidyVars();
+                UpdDB();
+                if (varsForInstall.Count() > 0)
+                {
+                    var varNames = VarsDependencies(varsForInstall);
+                    varsForInstall.Clear();
+                    File.Delete("varsForInstall.txt");
+                    foreach (string varname in varNames)
+                    {
+                        VarInstall(varname, 1);
+                    }
+                }
+                Application.Restart();
+                Environment.Exit(0);
+            }
+
             if ((string)e.Argument == "rebuildLink")
             {
                 FixRebuildLink();
@@ -822,6 +850,14 @@ namespace varManager
             if ((string)e.Argument == "savesDepend")
             {
                 FixSavseDependencies();
+            }
+            if ((string)e.Argument == "LogAnalysis")
+            {
+                LogAnalysis();
+            }
+            if ((string)e.Argument == "StaleVars")
+            {
+                StaleVars();
             }
         }
 
@@ -865,8 +901,10 @@ namespace varManager
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> dependencies = new List<string>();
+            this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory" });
             foreach (string jsonfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "Saves"), "*.json", SearchOption.AllDirectories))
             {
+                this.BeginInvoke(addlog, new Object[] { $"Analyze { Path.GetFileName(jsonfile)} ..."});
                 try
                 {
                     var metajsonsteam = new StreamReader(jsonfile);
@@ -879,21 +917,66 @@ namespace varManager
                 }
             }
             dependencies = dependencies.Distinct().ToList();
-            dependencies = VarsDependencies(dependencies);
+            var dependencies2 = VarsDependencies(dependencies);
+            dependencies = dependencies.Concat(dependencies2).Distinct().OrderBy(q=>q).ToList();
+            List<string> varinstalled = new List<string>();
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
+            {
+                varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
+            }
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories))
+            {
+                varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
+            }
+            dependencies = dependencies.Except(varinstalled).ToList();
+            this.BeginInvoke(addlog, new Object[] { $"{dependencies.Count()} var files will be installed" });
+            List<string> missingvars = new List<string>();
             foreach (string varname in dependencies)
             {
-                VarInstall(varname, 1);
+                string varexistname = VarExistName(varname);
+                if (varexistname != "missing")
+                {
+                    VarInstall(varexistname, 1);
+                    this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                }
+                else
+                {
+                    missingvars.Add(varname);
+                }
             }
-            MessageBox.Show("fix finish");
+            if (missingvars.Count > 0)
+            {
+                InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
+                this.BeginInvoke(showformMissingVars, missingvars);
+            }
+            else
+                MessageBox.Show("fix finish");
         }
 
         private void buttonFixRebuildLink_Click(object sender, EventArgs e)
         {
-            backgroundWorkerInstall.RunWorkerAsync("rebuildLink");
+            string message = "will analyze and repair symlinks in the AddonPackages folder, if your var file repository changes location";
+
+            const string caption = "RebuildLink";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+                backgroundWorkerInstall.RunWorkerAsync("rebuildLink");
         }
+
         private void buttonFixSavesDepend_Click(object sender, EventArgs e)
         {
-            backgroundWorkerInstall.RunWorkerAsync("savesDepend");
+            string message = "Analyze the json file in the Save directory to find installation dependencies";
+
+            const string caption = "SavesDependencies";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+                backgroundWorkerInstall.RunWorkerAsync("savesDepend");
         }
 
         private void comboBoxCreater_SelectedIndexChanged(object sender, EventArgs e)
@@ -1056,7 +1139,6 @@ namespace varManager
                 {
                     installed = true;
                 }
-               
 
                 string[] typenames = new string[5] { "scenes", "looks", "clothing", "hairstyle", "assets" };
                 foreach (string typename in typenames)
@@ -1157,14 +1239,28 @@ namespace varManager
 
         private void buttonStaleVars_Click(object sender, EventArgs e)
         {
+            string message = $"Stale var means:\r\n1,The version is not the latest.\r\n2,Not depended by other var.\r\nThey will be moved to the {staleVarsDirName} directory";
+
+            const string caption = "StaleVars";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+                backgroundWorkerInstall.RunWorkerAsync("StaleVars");
+        }
+
+        void StaleVars()
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             var query = varManagerDataSet.vars.GroupBy(g => g.creatorName + "." + g.packageName,
-                                         q => q.version,
-                                         (baseName, versions) => new
-                                         {
-                                             Key = baseName,
-                                             Count = versions.Count(),
-                                             Max = versions.Max()
-                                         });
+                                     q => q.version,
+                                     (baseName, versions) => new
+                                     {
+                                         Key = baseName,
+                                         Count = versions.Count(),
+                                         Max = versions.Max()
+                                     });
             List<string> listOldvar = new List<string>();
             foreach (var result in query)
             {
@@ -1177,29 +1273,32 @@ namespace varManager
                     }
                 }
             }
-            string stalepath = Path.Combine(Settings.Default.varspath, "StaleVars");
+            string stalepath = Path.Combine(Settings.Default.varspath, staleVarsDirName);
             if (!Directory.Exists(stalepath))
                 Directory.CreateDirectory(stalepath);
             foreach (var oldvar in listOldvar)
             {
                 if (varManagerDataSet.dependencies.Count(q => q.dependency == oldvar) == 0)
                 {
+                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, oldvar + ".var");
+                    if (File.Exists(linkvar))
+                        File.Delete(linkvar);
                     string oldv = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(oldvar).varPath, oldvar + ".var");
                     string stalev = Path.Combine(stalepath, oldvar + ".var");
                     try
                     {
                         File.Move(oldv, stalev);
+
                     }
                     catch (Exception ex)
                     {
-                        simpLog.Error(oldv + " move failed, " + ex.Message);
-                        listBoxLog.Items.Add(oldv + " move failed, " + ex.Message);
+                        this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}" });
                     }
                 }
             }
             System.Diagnostics.Process.Start(stalepath);
+            MessageBox.Show("Please run upd-db once");
         }
-
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
             FilterVars();
@@ -1373,7 +1472,17 @@ namespace varManager
 
         private void buttonLogAnalysis_Click(object sender, EventArgs e)
         {
-            LogAnalysis();
+            string message = "The log file will be analyzed to find the missing package, if it is found in the repository it will be installed, otherwise a processing window will be opened.\r\nThis feature requires the game to be closed";
+
+            const string caption = "LogAnalysis";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+            {
+                backgroundWorkerInstall.RunWorkerAsync("LogAnalysis");
+            }
         }
 
         private void LogAnalysis()
@@ -1420,9 +1529,8 @@ namespace varManager
                 }
                 if (missingvars.Count > 0)
                 {
-                    FormMissingVars formMissingVars = new FormMissingVars();
-                    formMissingVars.MissingVars = missingvars;
-                    formMissingVars.ShowDialog();
+                    InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
+                    this.BeginInvoke(showformMissingVars, missingvars);
                 }
             }
         }

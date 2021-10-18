@@ -17,7 +17,7 @@ namespace varManager
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
         private static int maxitemPerpage = 400;
-        private string strOrderBy = "Installdate";
+        private string strOrderBy = "_";
         public FormScenes()
         {
             InitializeComponent();
@@ -79,7 +79,6 @@ namespace varManager
                     listInstalledScene.Add(new InstalledScene(varscene.atomType, varscene.varName, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, false));
                 }
             }
-
         }
 
         private void toolStripComboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -198,7 +197,7 @@ namespace varManager
                 strOrderBy = toolStripComboBoxOrderBy.Text;
                 switch (strOrderBy)
                 {
-                    case "Installdate": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => q.Installdate).ToList();
+                    case "Installdate": listFilterCreatorScene = listFilterCreatorScene.OrderByDescending(q => q.Installdate).ToList();
                         break; 
                     case "VarName": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => q.Varname).ToList();
                         break;
@@ -456,7 +455,10 @@ namespace varManager
         private void toolStripComboBoxOrderBy_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listFilterCreatorScene != null)
-                GenerateItems();
+            {
+                if (listFilterCreatorScene.Count() > 0)
+                    GenerateItems();
+            }
         }
     }
 }
