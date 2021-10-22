@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 //using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using varManager.Properties;
 
@@ -27,10 +28,11 @@ namespace varManager
         private static string notComplyRuleDirName = "___VarnotComplyRule___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string staleVarsDirName = "___StaleVars___";
+        private static string deleVarsDirName = "___DeletedVars___";
 
         private static string installLinkDirName = "___VarsLink___";
         private static string missingVarLinkDirName = "___MissingVarLink___";
-        private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
+        //private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
 
         public Form1()
         {
@@ -76,7 +78,11 @@ namespace varManager
                 Directory.CreateDirectory(notComplRulepath);
 
             var vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
-                           .Where(q => q.IndexOf(tidypath) == -1 && q.IndexOf(redundantpath) == -1 && q.IndexOf(notComplRulepath) == -1 && q.IndexOf(staleVarsDirName) == -1);
+                           .Where(q => q.IndexOf(tidypath) == -1 
+                           && q.IndexOf(redundantpath) == -1 
+                           && q.IndexOf(notComplRulepath) == -1
+                           && q.IndexOf(staleVarsDirName) == -1
+                           && q.IndexOf(deleVarsDirName) == -1);
             
             string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
 
@@ -289,7 +295,7 @@ namespace varManager
                 }
             }
            
-        } */
+        } 
 
         private void FillInstalledDependencies()
         {
@@ -336,13 +342,40 @@ namespace varManager
             }
             installedDependencies.AcceptChanges();
         }
-
+        */
+        private bool Varislatest(string varname)
+        {
+            bool latest = true;
+            string[] varnamepart = varname.Split('.');
+            if (varnamepart.Length == 3)
+            {
+                int version = 0;
+                if (int.TryParse(varnamepart[2], out version))
+                {
+                    int maxversion = varManagerDataSet.vars.Where(q => q.creatorName == varnamepart[0] && q.packageName == varnamepart[1]).Max(q => q.version);
+                    if (version < maxversion)
+                        latest = false;
+                }
+            }
+            return latest;
+        }
         private List<string> ImplicatedVar(string varname)
         {
             List<string> varnames = new List<string>();
-            foreach (var row in installedDependencies.Where(q => q.dependency == varname))
+            if (Varislatest(varname))
             {
-                varnames.Add(row.varName);
+                string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
+                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname|| q.dependency == latest))
+                {
+                    varnames.Add(row.varName);
+                }
+            }
+            else
+            {
+                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname))
+                {
+                    varnames.Add(row.varName);
+                }
             }
             return varnames;
         }
@@ -381,19 +414,40 @@ namespace varManager
             }
         }
 
+        private void DelePreviewPics(string varname)
+        {
+            string[] typenames = { "scenes" , "looks", "hairstyle", "clothing", "assets"};
+            foreach (string typename in typenames)
+            {
+                string typepath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, varname);
+                if (Directory.Exists(typepath))
+                {
+                    try
+                    {
+                        Directory.Delete(typepath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+        }
+
         private void UnintallVars(List<string> varnames)
         {
-            FillInstalledDependencies();
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            //FillInstalledDependencies();
             List<string> varimplics = ImplicatedVars(varnames);
 
             FormUninstallVars formUninstallVars = new FormUninstallVars();
             formUninstallVars.previewpicsDirName = previewpicsDirName;
             foreach (string varname in varimplics)
             {
-                var row = varManagerDataSet.vars.FindByvarName(varname);
-                if (row != null)
-                    formUninstallVars.varManagerDataSet.vars.Rows.Add(row.ItemArray);
-
+                 foreach( var row in varManagerDataSet.varsView.Where(q => q.varName == varname&&q.Installed))
+                {
+                    formUninstallVars.varManagerDataSet.varsView.Rows.Add(row.ItemArray);
+                }
             }
             if (formUninstallVars.ShowDialog() == DialogResult.OK)
             {
@@ -404,9 +458,52 @@ namespace varManager
                         File.Delete(linkvar);
                 }
             }
-
         }
 
+        private void DeleteVars(List<string> varnames)
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+           // FillInstalledDependencies();
+            List<string> varimplics = ImplicatedVars(varnames);
+
+            FormUninstallVars formUninstallVars = new FormUninstallVars();
+            formUninstallVars.operationType = "delete";
+            formUninstallVars.deleVarsDirName = deleVarsDirName;
+            formUninstallVars.previewpicsDirName = previewpicsDirName;
+            foreach (string varname in varimplics)
+            {
+                foreach (var row in varManagerDataSet.varsView.Where(q => q.varName == varname))
+                {
+                    formUninstallVars.varManagerDataSet.varsView.Rows.Add(row.ItemArray);
+                }
+            }
+            if (formUninstallVars.ShowDialog() == DialogResult.OK)
+            {
+                string delevarspath = Path.Combine(Settings.Default.varspath, deleVarsDirName);
+                if (!Directory.Exists(delevarspath))
+                    Directory.CreateDirectory(delevarspath);
+
+                foreach (string varname in varimplics)
+                {
+                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varname + ".var");
+                    if (File.Exists(linkvar))
+                        File.Delete(linkvar);
+
+                    string operav = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(varname).varPath, varname + ".var");
+                    string deletedv = Path.Combine(delevarspath, varname + ".var");
+                    try
+                    {
+                        File.Move(operav, deletedv);
+                        CleanVar(varname);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                    }
+                }
+            }
+
+        }
         private void UpdateVarsInstalled()
         {
             foreach (var row in this.varManagerDataSet.installStatus)
@@ -432,6 +529,7 @@ namespace varManager
             //varsViewDataGridView.Update();
         }
 
+        private System.Threading.Mutex mut = new Mutex();
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Text ="VarManager  v"+ Assembly.GetEntryAssembly().GetName().Version.ToString();
@@ -439,6 +537,8 @@ namespace varManager
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
             this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
+            // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
+            this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.installStatus”中。您可以根据需要移动或删除它。
             this.installStatusTableAdapter.Fill(this.varManagerDataSet.installStatus);
             string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
@@ -478,6 +578,7 @@ namespace varManager
             varsViewDataGridView.Update();
 
             int firstindex = int.MaxValue;
+            varsViewDataGridView.ClearSelection();
             foreach (DataGridViewRow row in varsViewDataGridView.Rows)
             {
                 string varname=  row.Cells[0].Value.ToString();
@@ -558,6 +659,8 @@ namespace varManager
                     if (varnamepart.Length == 3)
                     {
                         varsrow.createDate = File.GetCreationTime(destvarfilename);
+                        FileInfo finfo = new FileInfo(destvarfilename);
+                        varsrow.filesize = finfo.Length;
                         varsrow.creatorName = varnamepart[0];
                         varsrow.packageName = varnamepart[1];
                         int version;
@@ -738,7 +841,10 @@ namespace varManager
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Length });
             }
             varManagerDataSet.AcceptChanges();
+
             List<string> deletevars = new List<string>();
+
+
             foreach (var row in varManagerDataSet.vars)
             {
                 if (!existVars.Contains(row.varName))
@@ -750,39 +856,47 @@ namespace varManager
 
             foreach (string deletevar in deletevars)
             {
-                try
-                {
-                    var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == deletevar).ToList();
-                    for (int i = dependencierows.Count() - 1; i >= 0; i--)
-                    {
-                        dependencierows[i].Delete();
-                    }
-                    dependenciesTableAdapter.Update(varManagerDataSet.dependencies);
-                    varManagerDataSet.dependencies.AcceptChanges();
-
-                }
-                catch (Exception ex)
-                {
-                    this.BeginInvoke(addlog, new Object[] { deletevar + ",delete dependences record error, " + ex.Message });
-                }
+                CleanVar(deletevar);
             }
-            
-            foreach (string deletevar in deletevars)
-            {
-                try
-                {
-                    varManagerDataSet.vars.FindByvarName(deletevar).Delete();
-                }
-                catch (Exception ex)
-                {
-                    this.BeginInvoke(addlog, new Object[] { deletevar + ",delete record error," + ex.Message });
-                }
-            }
-            varsTableAdapter.Update(varManagerDataSet.vars);
+            //UpdateVarsInstalled();
+            this.varManagerDataSet.varsView.Clear();
             this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
             MessageBox.Show("Update DB finish!Please reopen this tool!");
             return true;
-           
+        }
+
+        private bool CleanVar(string deletevar)
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            try
+            {
+                var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == deletevar).ToList();
+                for (int i = dependencierows.Count() - 1; i >= 0; i--)
+                {
+                    dependencierows[i].Delete();
+                }
+                dependenciesTableAdapter.Update(varManagerDataSet.dependencies);
+                varManagerDataSet.dependencies.AcceptChanges();
+
+                var scenes = varManagerDataSet.scenes.Where(q => q.varName == deletevar).ToList();
+                for (int i = scenes.Count() - 1; i >= 0; i--)
+                {
+                    scenes[i].Delete();
+                }
+                scenesTableAdapter.Update(varManagerDataSet.scenes);
+                varManagerDataSet.scenes.AcceptChanges();
+
+                varManagerDataSet.vars.FindByvarName(deletevar).Delete();
+                varsTableAdapter.Update(varManagerDataSet.vars);
+
+                DelePreviewPics(deletevar);
+
+            }
+            catch (Exception ex)
+            {
+                this.BeginInvoke(addlog, new Object[] { deletevar + ",delete record or preview error, " + ex.Message });
+            }
+            return true;
         }
 
         private bool VarInstall(string varName, int operate)
@@ -800,12 +914,7 @@ namespace varManager
                         return true;
 
                     string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
-                    /*
-                    ProcessStartInfo mklinkprecess = new ProcessStartInfo("cmd.exe", "/c mklink /j " + linkvar + " " + destvarfile);
-                    
-                    mklinkprecess.WindowStyle = ProcessWindowStyle.Hidden;
-                    Process.Start(mklinkprecess);
-                    */
+
                     if (!Comm.CreateSymbolicLink(linkvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File))
                     {
                         MessageBox.Show("Error: Unable to create symbolic link. " +
@@ -868,29 +977,29 @@ namespace varManager
             List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
             varfiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories));
 
-            foreach (string varfile in varfiles)
+            foreach (string linkvar in varfiles)
             {
                 try
                 {
-                    FileInfo pathInfo = new FileInfo(varfile);
+                    FileInfo pathInfo = new FileInfo(linkvar);
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
-                        string destfilename = Comm.ReparsePoint(varfile);
-                        if (File.Exists(destfilename))
-                            continue;
-                        this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {varfile} is missing, will rebuild symlink..." });
+                        string destfilename = Comm.ReparsePoint(linkvar);
+                       
+                        this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {linkvar} is missing, will rebuild symlink..." });
                         varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(destfilename));
-                        File.Delete(varfile);
+                        File.Delete(linkvar);
                         if (varsrow != null)
                         {
                             string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
-                            Comm.CreateSymbolicLink(varfile, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
+                            Comm.CreateSymbolicLink(linkvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
+                           
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { varfile + " rebuild symlink failed " + ex.Message });
+                    this.BeginInvoke(addlog, new Object[] { linkvar + " rebuild symlink failed " + ex.Message });
                 }
             }
 
@@ -1158,16 +1267,18 @@ namespace varManager
 
         private void PreviewInitType()
         {
+            mut.WaitOne();
             previewpicsfilter = previewpics;
             string previewtype = "all";
             if (new string[5] { "scenes", "looks", "clothing", "hairstyle", "assets" }.Contains(toolStripComboBoxPreviewType.Text))
                 previewtype = toolStripComboBoxPreviewType.Text;
-
             if (previewtype != "all")
                 previewpicsfilter = previewpics.Where(q => q.Pretype == previewtype).ToList();
-            toolStripComboBoxPreviewPage.Items.Clear();
+            mut.ReleaseMutex();
+            toolStripComboBoxPreviewPage.SelectedIndexChanged -= new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged); toolStripComboBoxPreviewPage.Items.Clear();
             previewPages = (previewpicsfilter.Count+ maxpicxPerpage - 1) / maxpicxPerpage;
             toolStripLabelPreviewCountItem.Text = "/" + previewpicsfilter.Count.ToString();
+            toolStripComboBoxPreviewPage.Items.Clear();
             if (previewPages >= 1)
             {
                 for(int page=0;page<previewPages;page++)
@@ -1180,41 +1291,90 @@ namespace varManager
                     toolStripComboBoxPreviewPage.Items.Add(strpage);
                 }
                 toolStripComboBoxPreviewPage.SelectedIndex = 0;
+                //PreviewPage();
             }
             else
             {
                 imageListPreviewPics.Images.Clear();
                 listViewPreviewPics.Items.Clear();
             }
+            toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
+            if (previewPages >= 1) 
+                PreviewPage();
         }
 
-        private void PreviewInitPage()
+
+        public delegate void InvokePreviewPics(string varname,string picpath, bool installed);
+        public void PreviewPics(string varname, string picpath, bool installed)
         {
-            int startpic = maxpicxPerpage * previewCurPage;
-            imageListPreviewPics.Images.Clear();
-            listViewPreviewPics.Items.Clear();
-            for (int i=0;i< maxpicxPerpage; i++)
+            if (varname == "clear")
             {
-              if(previewpicsfilter.Count>  startpic + i)
-                {
-                    imageListPreviewPics.Images.Add(Image.FromFile(previewpicsfilter[startpic + i].Picpath));
-                    var item = listViewPreviewPics.Items.Add(Path.GetFileNameWithoutExtension(previewpicsfilter[startpic + i].Picpath), imageListPreviewPics.Images.Count - 1);
-                    item.SubItems.Add(previewpicsfilter[startpic + i].Varname);
-                    item.SubItems.Add(previewpicsfilter[startpic + i].Picpath);
-                    item.SubItems.Add(previewpicsfilter[startpic + i].Installed.ToString());
-                }
+                imageListPreviewPics.Images.Clear();
+                listViewPreviewPics.Items.Clear();
+            }
+            else
+            {
+                imageListPreviewPics.Images.Add(Image.FromFile(picpath));
+                var item = listViewPreviewPics.Items.Add(Path.GetFileNameWithoutExtension(picpath), imageListPreviewPics.Images.Count - 1);
+                item.SubItems.Add(varname);
+                item.SubItems.Add(picpath);
+                item.SubItems.Add(installed.ToString());
             }
         }
+
+        private void backgroundWorkerPreview_DoWork(object sender, DoWorkEventArgs e)
+        {
+            InvokePreviewPics previewpics = new InvokePreviewPics(PreviewPics);
+            int startpic = maxpicxPerpage * previewCurPage;
+            listViewPreviewPics.BeginInvoke(previewpics, new Object[] { "clear", "", true });
+            for (int i = 0; i < maxpicxPerpage; i++)
+            {
+                Thread.Sleep(5);
+                if (backgroundWorkerPreview.CancellationPending)
+                {
+                    //Tell the Backgroundworker you are canceling and exit the for-loop
+                    e.Cancel = true;
+                    return;
+                }
+                mut.WaitOne();
+                if (previewpicsfilter.Count > startpic + i)
+                {
+                    this.BeginInvoke(previewpics, new Object[] { previewpicsfilter[startpic + i].Varname, 
+                                                                previewpicsfilter[startpic + i].Picpath,
+                                                                previewpicsfilter[startpic + i].Installed });
+                    
+                }
+                mut.ReleaseMutex();
+            }
+        }
+        private void backgroundWorkerPreview_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //MessageBox.Show(e.Cancelled.ToString());
+        }
+
+
+
         private void toolStripComboBoxPreviewType_SelectedIndexChanged(object sender, EventArgs e)
         {
             PreviewInitType();
         }
         private void toolStripComboBoxPreviewPage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            previewCurPage = toolStripComboBoxPreviewPage.SelectedIndex;
-            PreviewInitPage();
+            PreviewPage();
         }
 
+        private void PreviewPage()
+        {
+            previewCurPage = toolStripComboBoxPreviewPage.SelectedIndex;
+            while (backgroundWorkerPreview.IsBusy)
+            {
+                backgroundWorkerPreview.CancelAsync();
+                // Keep UI messages moving, so the form remains 
+                // responsive during the asynchronous operation.
+                Application.DoEvents();
+            }
+            backgroundWorkerPreview.RunWorkerAsync();
+        }
 
         private void toolStripButtonPreviewFirst_Click(object sender, EventArgs e)
         {
@@ -1288,7 +1448,7 @@ namespace varManager
                     try
                     {
                         File.Move(oldv, stalev);
-
+                        CleanVar(oldvar);
                     }
                     catch (Exception ex)
                     {
@@ -1297,7 +1457,7 @@ namespace varManager
                 }
             }
             System.Diagnostics.Process.Start(stalepath);
-            MessageBox.Show("Please run upd-db once");
+            //MessageBox.Show("Please run upd-db once");
         }
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
@@ -1578,9 +1738,40 @@ namespace varManager
             }
          }
 
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            List<string> varNames = new List<string>();
+            string varnamestype = "";
+            foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
+            {
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+
+                varNames.Add(varName);
+                varnamestype += varName + ",";
+
+            }
+            if (varNames.Count <= 0) return;
+            int max = 50;
+            if (varNames.Count > max)
+            {
+                MessageBox.Show($"Please do not delete more than {max} files at once");
+                return;
+            }
+            string message = varnamestype + " and dependencies will be delete, are you sure?";
+            string caption = "Delete Vars";
+            var result = MessageBox.Show(message, caption,
+                                  MessageBoxButtons.YesNo,
+                                  MessageBoxIcon.Question,
+                                  MessageBoxDefaultButton.Button2);
+            if (result == DialogResult.Yes)
+            {
+                DeleteVars(varNames);
+                UpdateVarsInstalled();
+            }
+        }
+
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {
-
             string varName = labelPreviewVarName.Text;
             if (varManagerDataSet.installStatus.Where(q => q.varName == varName && q.Installed).Count() > 0)
             {
@@ -1595,7 +1786,6 @@ namespace varManager
                     List<string> varnames = new List<string>();
                     varnames.Add(varName);
                     UnintallVars(varnames);
-                    UpdateVarsInstalled();
                 }
             }
             else
@@ -1615,9 +1805,10 @@ namespace varManager
                     {
                         VarInstall(varname, 1);
                     }
-                    UpdateVarsInstalled();
+                   
                 }
-            }
+            } 
+            UpdateVarsInstalled();
         }
     }
 }

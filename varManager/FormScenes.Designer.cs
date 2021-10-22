@@ -76,6 +76,8 @@ namespace varManager
             this.labelPreviewVarName = new System.Windows.Forms.Label();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorkerFillListView = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStripPreview.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -516,11 +518,26 @@ namespace varManager
             this.pictureBoxPreview.TabStop = false;
             this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(602, 128);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(536, 25);
+            this.progressBar1.TabIndex = 9;
+            this.progressBar1.Visible = false;
+            // 
+            // backgroundWorkerFillListView
+            // 
+            this.backgroundWorkerFillListView.WorkerSupportsCancellation = true;
+            this.backgroundWorkerFillListView.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerFillListView_DoWork);
+            // 
             // FormScenes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1343, 742);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -592,5 +609,7 @@ namespace varManager
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxOrderBy;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerFillListView;
     }
 }

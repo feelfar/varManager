@@ -31,8 +31,9 @@ namespace varManager
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
@@ -49,8 +50,6 @@ namespace varManager
             this.buttonInstall = new System.Windows.Forms.Button();
             this.buttonUninstallSels = new System.Windows.Forms.Button();
             this.varsBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
-            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.varManagerDataSet = new varManager.varManagerDataSet();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -70,20 +69,6 @@ namespace varManager
             this.labelProgress = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
-            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.packageNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.createDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.labelPreviewVarName = new System.Windows.Forms.Label();
@@ -105,6 +90,9 @@ namespace varManager
             this.toolStripButtonPreviewLast = new System.Windows.Forms.ToolStripButton();
             this.backgroundWorkerInstall = new System.ComponentModel.BackgroundWorker();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.backgroundWorkerPreview = new System.ComponentModel.BackgroundWorker();
+            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.varManagerDataSet = new varManager.varManagerDataSet();
             this.varsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesTableAdapter = new varManager.varManagerDataSetTableAdapters.dependenciesTableAdapter();
@@ -115,6 +103,19 @@ namespace varManager
             this.installStatusBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
+            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.createDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.buttonDelete = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -122,8 +123,6 @@ namespace varManager
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
             this.varsBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -134,6 +133,8 @@ namespace varManager
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.toolStripPreview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).BeginInit();
@@ -298,6 +299,7 @@ namespace varManager
             // 
             this.flowLayoutPanel1.Controls.Add(this.buttonInstall);
             this.flowLayoutPanel1.Controls.Add(this.buttonUninstallSels);
+            this.flowLayoutPanel1.Controls.Add(this.buttonDelete);
             this.flowLayoutPanel1.Controls.Add(this.varsBindingNavigator);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.comboBoxCreater);
@@ -355,27 +357,16 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(246, 2);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(369, 0);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 31);
             this.varsBindingNavigator.TabIndex = 3;
             this.varsBindingNavigator.Text = "bindingNavigator1";
-            // 
-            // varsViewBindingSource
-            // 
-            this.varsViewBindingSource.DataMember = "varsView";
-            this.varsViewBindingSource.DataSource = this.varManagerDataSet;
-            this.varsViewBindingSource.Sort = "createDate Desc";
-            // 
-            // varManagerDataSet
-            // 
-            this.varManagerDataSet.DataSetName = "varManagerDataSet";
-            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // bindingNavigatorCountItem
             // 
@@ -390,7 +381,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
             this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
             // 
             // bindingNavigatorMovePreviousItem
@@ -449,7 +440,7 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(486, 8);
+            this.label1.Location = new System.Drawing.Point(609, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 15);
             this.label1.TabIndex = 4;
@@ -461,7 +452,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(563, 4);
+            this.comboBoxCreater.Location = new System.Drawing.Point(686, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(153, 23);
             this.comboBoxCreater.TabIndex = 5;
@@ -472,7 +463,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(722, 8);
+            this.label2.Location = new System.Drawing.Point(845, 8);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 15);
             this.label2.TabIndex = 4;
@@ -481,7 +472,7 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(791, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(914, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(196, 25);
             this.textBoxFilter.TabIndex = 6;
@@ -494,7 +485,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(993, 6);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(1116, 6);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(101, 19);
             this.checkBoxInstalled.TabIndex = 7;
@@ -562,22 +553,20 @@ namespace varManager
             this.varsViewDataGridView.AllowUserToAddRows = false;
             this.varsViewDataGridView.AllowUserToDeleteRows = false;
             this.varsViewDataGridView.AutoGenerateColumns = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
             this.varPathDataGridViewTextBoxColumn,
-            this.creatorNameDataGridViewTextBoxColumn,
-            this.packageNameDataGridViewTextBoxColumn,
-            this.versionDataGridViewTextBoxColumn,
             this.createDateDataGridViewTextBoxColumn,
+            this.size,
             this.scenesDataGridViewTextBoxColumn,
             this.looksDataGridViewTextBoxColumn,
             this.clothingDataGridViewTextBoxColumn,
@@ -587,19 +576,19 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn,
             this.disabledDataGridViewCheckBoxColumn});
             this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle6;
             this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.varsViewDataGridView.Location = new System.Drawing.Point(0, 0);
             this.varsViewDataGridView.Name = "varsViewDataGridView";
             this.varsViewDataGridView.ReadOnly = true;
-            this.varsViewDataGridView.RowHeadersWidth = 40;
+            this.varsViewDataGridView.RowHeadersWidth = 30;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.Size = new System.Drawing.Size(510, 357);
@@ -608,139 +597,6 @@ namespace varManager
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
             this.varsViewDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.varsViewDataGridView_DataError);
             this.varsViewDataGridView.SelectionChanged += new System.EventHandler(this.varsDataGridView_SelectionChanged);
-            // 
-            // varNameDataGridViewTextBoxColumn
-            // 
-            this.varNameDataGridViewTextBoxColumn.DataPropertyName = "varName";
-            this.varNameDataGridViewTextBoxColumn.HeaderText = "varName";
-            this.varNameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.varNameDataGridViewTextBoxColumn.Name = "varNameDataGridViewTextBoxColumn";
-            this.varNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.varNameDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // varPathDataGridViewTextBoxColumn
-            // 
-            this.varPathDataGridViewTextBoxColumn.DataPropertyName = "varPath";
-            this.varPathDataGridViewTextBoxColumn.HeaderText = "varPath";
-            this.varPathDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.varPathDataGridViewTextBoxColumn.Name = "varPathDataGridViewTextBoxColumn";
-            this.varPathDataGridViewTextBoxColumn.ReadOnly = true;
-            this.varPathDataGridViewTextBoxColumn.Visible = false;
-            this.varPathDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // creatorNameDataGridViewTextBoxColumn
-            // 
-            this.creatorNameDataGridViewTextBoxColumn.DataPropertyName = "creatorName";
-            this.creatorNameDataGridViewTextBoxColumn.HeaderText = "creatorName";
-            this.creatorNameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.creatorNameDataGridViewTextBoxColumn.Name = "creatorNameDataGridViewTextBoxColumn";
-            this.creatorNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.creatorNameDataGridViewTextBoxColumn.Visible = false;
-            this.creatorNameDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // packageNameDataGridViewTextBoxColumn
-            // 
-            this.packageNameDataGridViewTextBoxColumn.DataPropertyName = "packageName";
-            this.packageNameDataGridViewTextBoxColumn.HeaderText = "packageName";
-            this.packageNameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.packageNameDataGridViewTextBoxColumn.Name = "packageNameDataGridViewTextBoxColumn";
-            this.packageNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.packageNameDataGridViewTextBoxColumn.Visible = false;
-            this.packageNameDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // versionDataGridViewTextBoxColumn
-            // 
-            this.versionDataGridViewTextBoxColumn.DataPropertyName = "version";
-            this.versionDataGridViewTextBoxColumn.HeaderText = "version";
-            this.versionDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.versionDataGridViewTextBoxColumn.Name = "versionDataGridViewTextBoxColumn";
-            this.versionDataGridViewTextBoxColumn.ReadOnly = true;
-            this.versionDataGridViewTextBoxColumn.Visible = false;
-            this.versionDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // createDateDataGridViewTextBoxColumn
-            // 
-            this.createDateDataGridViewTextBoxColumn.DataPropertyName = "createDate";
-            this.createDateDataGridViewTextBoxColumn.HeaderText = "createDate";
-            this.createDateDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.createDateDataGridViewTextBoxColumn.Name = "createDateDataGridViewTextBoxColumn";
-            this.createDateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.createDateDataGridViewTextBoxColumn.Width = 80;
-            // 
-            // scenesDataGridViewTextBoxColumn
-            // 
-            this.scenesDataGridViewTextBoxColumn.DataPropertyName = "scenes";
-            this.scenesDataGridViewTextBoxColumn.HeaderText = "scenes";
-            this.scenesDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.scenesDataGridViewTextBoxColumn.Name = "scenesDataGridViewTextBoxColumn";
-            this.scenesDataGridViewTextBoxColumn.ReadOnly = true;
-            this.scenesDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // looksDataGridViewTextBoxColumn
-            // 
-            this.looksDataGridViewTextBoxColumn.DataPropertyName = "looks";
-            this.looksDataGridViewTextBoxColumn.HeaderText = "looks";
-            this.looksDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.looksDataGridViewTextBoxColumn.Name = "looksDataGridViewTextBoxColumn";
-            this.looksDataGridViewTextBoxColumn.ReadOnly = true;
-            this.looksDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // clothingDataGridViewTextBoxColumn
-            // 
-            this.clothingDataGridViewTextBoxColumn.DataPropertyName = "clothing";
-            this.clothingDataGridViewTextBoxColumn.HeaderText = "clothing";
-            this.clothingDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.clothingDataGridViewTextBoxColumn.Name = "clothingDataGridViewTextBoxColumn";
-            this.clothingDataGridViewTextBoxColumn.ReadOnly = true;
-            this.clothingDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // hairstyleDataGridViewTextBoxColumn
-            // 
-            this.hairstyleDataGridViewTextBoxColumn.DataPropertyName = "hairstyle";
-            this.hairstyleDataGridViewTextBoxColumn.HeaderText = "hairstyle";
-            this.hairstyleDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.hairstyleDataGridViewTextBoxColumn.Name = "hairstyleDataGridViewTextBoxColumn";
-            this.hairstyleDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hairstyleDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // pluginsDataGridViewTextBoxColumn
-            // 
-            this.pluginsDataGridViewTextBoxColumn.DataPropertyName = "plugins";
-            this.pluginsDataGridViewTextBoxColumn.HeaderText = "plugins";
-            this.pluginsDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.pluginsDataGridViewTextBoxColumn.Name = "pluginsDataGridViewTextBoxColumn";
-            this.pluginsDataGridViewTextBoxColumn.ReadOnly = true;
-            this.pluginsDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // assetsDataGridViewTextBoxColumn
-            // 
-            this.assetsDataGridViewTextBoxColumn.DataPropertyName = "assets";
-            this.assetsDataGridViewTextBoxColumn.HeaderText = "assets";
-            this.assetsDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.assetsDataGridViewTextBoxColumn.Name = "assetsDataGridViewTextBoxColumn";
-            this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
-            this.assetsDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // installedDataGridViewCheckBoxColumn
-            // 
-            this.installedDataGridViewCheckBoxColumn.DataPropertyName = "Installed";
-            this.installedDataGridViewCheckBoxColumn.HeaderText = "Installed";
-            this.installedDataGridViewCheckBoxColumn.MinimumWidth = 6;
-            this.installedDataGridViewCheckBoxColumn.Name = "installedDataGridViewCheckBoxColumn";
-            this.installedDataGridViewCheckBoxColumn.ReadOnly = true;
-            this.installedDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.installedDataGridViewCheckBoxColumn.Width = 50;
-            // 
-            // disabledDataGridViewCheckBoxColumn
-            // 
-            this.disabledDataGridViewCheckBoxColumn.DataPropertyName = "Disabled";
-            this.disabledDataGridViewCheckBoxColumn.HeaderText = "Disabled";
-            this.disabledDataGridViewCheckBoxColumn.MinimumWidth = 6;
-            this.disabledDataGridViewCheckBoxColumn.Name = "disabledDataGridViewCheckBoxColumn";
-            this.disabledDataGridViewCheckBoxColumn.ReadOnly = true;
-            this.disabledDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.disabledDataGridViewCheckBoxColumn.Visible = false;
-            this.disabledDataGridViewCheckBoxColumn.Width = 50;
             // 
             // tableLayoutPanelPreview
             // 
@@ -828,10 +684,10 @@ namespace varManager
             this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewPreviewPics.HideSelection = false;
             this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 329);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(728, 326);
             this.listViewPreviewPics.TabIndex = 0;
             this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
@@ -858,7 +714,7 @@ namespace varManager
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(728, 28);
+            this.toolStripPreview.Size = new System.Drawing.Size(728, 31);
             this.toolStripPreview.TabIndex = 2;
             this.toolStripPreview.Text = "toolStrip1";
             // 
@@ -941,6 +797,24 @@ namespace varManager
             this.backgroundWorkerInstall.WorkerReportsProgress = true;
             this.backgroundWorkerInstall.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerInstall_DoWork);
             // 
+            // backgroundWorkerPreview
+            // 
+            this.backgroundWorkerPreview.WorkerReportsProgress = true;
+            this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
+            this.backgroundWorkerPreview.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerPreview_DoWork);
+            this.backgroundWorkerPreview.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerPreview_RunWorkerCompleted);
+            // 
+            // varsViewBindingSource
+            // 
+            this.varsViewBindingSource.DataMember = "varsView";
+            this.varsViewBindingSource.DataSource = this.varManagerDataSet;
+            this.varsViewBindingSource.Sort = "createDate Desc";
+            // 
+            // varManagerDataSet
+            // 
+            this.varManagerDataSet.DataSetName = "varManagerDataSet";
+            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
             // varsBindingSource
             // 
             this.varsBindingSource.DataMember = "vars";
@@ -990,6 +864,133 @@ namespace varManager
             // 
             this.scenesTableAdapter.ClearBeforeFill = true;
             // 
+            // varNameDataGridViewTextBoxColumn
+            // 
+            this.varNameDataGridViewTextBoxColumn.DataPropertyName = "varName";
+            this.varNameDataGridViewTextBoxColumn.HeaderText = "varName";
+            this.varNameDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.varNameDataGridViewTextBoxColumn.Name = "varNameDataGridViewTextBoxColumn";
+            this.varNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.varNameDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // varPathDataGridViewTextBoxColumn
+            // 
+            this.varPathDataGridViewTextBoxColumn.DataPropertyName = "varPath";
+            this.varPathDataGridViewTextBoxColumn.HeaderText = "varPath";
+            this.varPathDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.varPathDataGridViewTextBoxColumn.Name = "varPathDataGridViewTextBoxColumn";
+            this.varPathDataGridViewTextBoxColumn.ReadOnly = true;
+            this.varPathDataGridViewTextBoxColumn.Visible = false;
+            this.varPathDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // createDateDataGridViewTextBoxColumn
+            // 
+            this.createDateDataGridViewTextBoxColumn.DataPropertyName = "createDate";
+            this.createDateDataGridViewTextBoxColumn.HeaderText = "createDate";
+            this.createDateDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.createDateDataGridViewTextBoxColumn.Name = "createDateDataGridViewTextBoxColumn";
+            this.createDateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // size
+            // 
+            this.size.DataPropertyName = "size";
+            dataGridViewCellStyle5.Format = "N2";
+            dataGridViewCellStyle5.NullValue = null;
+            this.size.DefaultCellStyle = dataGridViewCellStyle5;
+            this.size.HeaderText = "fsize(MB)";
+            this.size.MinimumWidth = 6;
+            this.size.Name = "size";
+            this.size.ReadOnly = true;
+            this.size.Width = 80;
+            // 
+            // scenesDataGridViewTextBoxColumn
+            // 
+            this.scenesDataGridViewTextBoxColumn.DataPropertyName = "scenes";
+            this.scenesDataGridViewTextBoxColumn.HeaderText = "scenes";
+            this.scenesDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.scenesDataGridViewTextBoxColumn.Name = "scenesDataGridViewTextBoxColumn";
+            this.scenesDataGridViewTextBoxColumn.ReadOnly = true;
+            this.scenesDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // looksDataGridViewTextBoxColumn
+            // 
+            this.looksDataGridViewTextBoxColumn.DataPropertyName = "looks";
+            this.looksDataGridViewTextBoxColumn.HeaderText = "looks";
+            this.looksDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.looksDataGridViewTextBoxColumn.Name = "looksDataGridViewTextBoxColumn";
+            this.looksDataGridViewTextBoxColumn.ReadOnly = true;
+            this.looksDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // clothingDataGridViewTextBoxColumn
+            // 
+            this.clothingDataGridViewTextBoxColumn.DataPropertyName = "clothing";
+            this.clothingDataGridViewTextBoxColumn.HeaderText = "clothing";
+            this.clothingDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.clothingDataGridViewTextBoxColumn.Name = "clothingDataGridViewTextBoxColumn";
+            this.clothingDataGridViewTextBoxColumn.ReadOnly = true;
+            this.clothingDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // hairstyleDataGridViewTextBoxColumn
+            // 
+            this.hairstyleDataGridViewTextBoxColumn.DataPropertyName = "hairstyle";
+            this.hairstyleDataGridViewTextBoxColumn.HeaderText = "hairstyle";
+            this.hairstyleDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.hairstyleDataGridViewTextBoxColumn.Name = "hairstyleDataGridViewTextBoxColumn";
+            this.hairstyleDataGridViewTextBoxColumn.ReadOnly = true;
+            this.hairstyleDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // pluginsDataGridViewTextBoxColumn
+            // 
+            this.pluginsDataGridViewTextBoxColumn.DataPropertyName = "plugins";
+            this.pluginsDataGridViewTextBoxColumn.HeaderText = "plugins";
+            this.pluginsDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.pluginsDataGridViewTextBoxColumn.Name = "pluginsDataGridViewTextBoxColumn";
+            this.pluginsDataGridViewTextBoxColumn.ReadOnly = true;
+            this.pluginsDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // assetsDataGridViewTextBoxColumn
+            // 
+            this.assetsDataGridViewTextBoxColumn.DataPropertyName = "assets";
+            this.assetsDataGridViewTextBoxColumn.HeaderText = "assets";
+            this.assetsDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.assetsDataGridViewTextBoxColumn.Name = "assetsDataGridViewTextBoxColumn";
+            this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
+            this.assetsDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // installedDataGridViewCheckBoxColumn
+            // 
+            this.installedDataGridViewCheckBoxColumn.DataPropertyName = "Installed";
+            this.installedDataGridViewCheckBoxColumn.HeaderText = "Installed";
+            this.installedDataGridViewCheckBoxColumn.MinimumWidth = 6;
+            this.installedDataGridViewCheckBoxColumn.Name = "installedDataGridViewCheckBoxColumn";
+            this.installedDataGridViewCheckBoxColumn.ReadOnly = true;
+            this.installedDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.installedDataGridViewCheckBoxColumn.Width = 50;
+            // 
+            // disabledDataGridViewCheckBoxColumn
+            // 
+            this.disabledDataGridViewCheckBoxColumn.DataPropertyName = "Disabled";
+            this.disabledDataGridViewCheckBoxColumn.HeaderText = "Disabled";
+            this.disabledDataGridViewCheckBoxColumn.MinimumWidth = 6;
+            this.disabledDataGridViewCheckBoxColumn.Name = "disabledDataGridViewCheckBoxColumn";
+            this.disabledDataGridViewCheckBoxColumn.ReadOnly = true;
+            this.disabledDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.disabledDataGridViewCheckBoxColumn.Visible = false;
+            this.disabledDataGridViewCheckBoxColumn.Width = 50;
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.buttonDelete.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
+            this.buttonDelete.Location = new System.Drawing.Point(249, 3);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(117, 23);
+            this.buttonDelete.TabIndex = 8;
+            this.buttonDelete.Text = "DeleSels";
+            this.buttonDelete.UseVisualStyleBackColor = false;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1010,8 +1011,6 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).EndInit();
             this.varsBindingNavigator.ResumeLayout(false);
             this.varsBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1026,6 +1025,8 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.toolStripPreview.ResumeLayout(false);
             this.toolStripPreview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).EndInit();
@@ -1079,20 +1080,6 @@ namespace varManager
         private System.Windows.Forms.BindingSource installStatusBindingSource;
         private varManagerDataSetTableAdapters.installStatusTableAdapter installStatusTableAdapter;
         private System.Windows.Forms.CheckBox checkBoxInstalled;
-        private System.Windows.Forms.DataGridViewTextBoxColumn varNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn varPathDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn creatorNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn packageNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn versionDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn createDateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn scenesDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn looksDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clothingDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn hairstyleDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pluginsDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn assetsDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn installedDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
         private System.Windows.Forms.Button buttonInstall;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanelPreview;
         private System.Windows.Forms.Panel panel3;
@@ -1119,6 +1106,20 @@ namespace varManager
         private System.Windows.Forms.Button buttonFixSavesDepend;
         private System.Windows.Forms.Button buttonLogAnalysis;
         private System.Windows.Forms.Button buttonUninstallSels;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerPreview;
+        private System.Windows.Forms.DataGridViewTextBoxColumn varNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn varPathDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn createDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn scenesDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn looksDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clothingDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hairstyleDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pluginsDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn assetsDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn installedDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.Button buttonDelete;
     }
 }
 

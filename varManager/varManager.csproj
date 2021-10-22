@@ -159,8 +159,8 @@
       <DependentUpon>varManagerDataSet.xsd</DependentUpon>
     </None>
     <None Include="varManagerDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>varManagerDataSet.Designer.cs</LastGenOutput>
     </None>
     <None Include="varManagerDataSet.xss">

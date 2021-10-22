@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using varManager.Properties;
@@ -16,7 +17,7 @@ namespace varManager
     {
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
-        private static int maxitemPerpage = 400;
+        private static int maxitemPerpage = 100;
         private string strOrderBy = "_";
         public FormScenes()
         {
@@ -32,25 +33,27 @@ namespace varManager
         }
         public struct InstalledScene
         {
-            public InstalledScene(string atomtype,string varname,DateTime installdate, string scenepath, string picpath, bool installed)
+            public InstalledScene(string atomtype, string varname, DateTime installdate, string scenepath, string picpath, int hidefav)
             {
                 Atomtype = atomtype;
                 Varname = varname;
                 Installdate = installdate;
                 Scenepath = scenepath;
                 Picpath = picpath;
-                Installed = installed;
+                Hidefav = hidefav;
             }
             public string Atomtype { get; }
             public string Varname { get; }
             public DateTime Installdate { get; }
             public string Scenepath { get; }
             public string Picpath { get; }
-            public bool Installed { get; }
+            public int Hidefav { get; set; }
         }
 
         private List<InstalledScene> listInstalledScene = new List<InstalledScene>();
-        private List<InstalledScene> listFilterScene = new List<InstalledScene>();
+        private List<InstalledScene> listFilterScene1 = new List<InstalledScene>();
+        private List<InstalledScene> listFilterScene2 = new List<InstalledScene>();
+        private List<InstalledScene> listFilterScene3 = new List<InstalledScene>();
         private List<InstalledScene> listFilterCreatorScene = new List<InstalledScene>();
         private List<InstalledScene> listFilterPageScene = new List<InstalledScene>();
         private void FormScenes_Load(object sender, EventArgs e)
@@ -63,49 +66,86 @@ namespace varManager
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
            
             AllInstalledVars();
+            UpdateFileHidefav();
             FilterVars();
         }
-        
+
         private void AllInstalledVars()
         {
             DirectoryInfo dirinfoInstalled = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName));
 
-            IOrderedEnumerable<FileSystemInfo> fileinfos =  dirinfoInstalled.GetFileSystemInfos("*.var").OrderBy(f => f.CreationTime);
+            IOrderedEnumerable<FileSystemInfo> fileinfos = dirinfoInstalled.GetFileSystemInfos("*.var").OrderBy(f => f.CreationTime);
+            progressBar1.Dock = DockStyle.Top;
+            progressBar1.Visible = true;
+            int i = 0;
             foreach (var fileinfo in fileinfos)
             {
                 string varName = Path.GetFileNameWithoutExtension(fileinfo.Name);
-                foreach (var varscene in  this.varManagerDataSet.scenes.Where(q=>q.varName==varName))
+                foreach (var varscene in this.varManagerDataSet.scenes.Where(q => q.varName == varName))
                 {
-                    listInstalledScene.Add(new InstalledScene(varscene.atomType, varscene.varName, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, false));
+                    listInstalledScene.Add(new InstalledScene(varscene.atomType, varscene.varName, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, 0));
                 }
+                i++;
+                progressBar1.Value = (i * 100 / fileinfos.Count());
+               
             }
+            progressBar1.Visible = false;
         }
 
         private void toolStripComboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterVars();
         }
-
-        private void FilterVars()
+        
+        private void UpdateFileHidefav()
         {
-            if (!string.IsNullOrWhiteSpace(toolStripComboBoxCategory.Text))
-                listFilterScene = listInstalledScene.Where(q => q.Atomtype == toolStripComboBoxCategory.Text).ToList();
-            if (toolStripComboBoxHideFav.Text == "Hide")
-                listFilterScene = listFilterScene.Where(q => File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".hide"))).ToList();
-            if (toolStripComboBoxHideFav.Text == "Fav")
-                listFilterScene = listFilterScene.Where(q => File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".fav"))).ToList();
-            if (toolStripComboBoxHideFav.Text == "Normal")
-                listFilterScene = listFilterScene.Where(q => !(File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".fav")) 
-                                                            || File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", q.Varname, q.Scenepath + ".hide")))).ToList();
-            if (!string.IsNullOrWhiteSpace(toolStripTextBoxFilter.Text))
+            for (int i=0;i< listInstalledScene.Count;i++)
             {
-                string filtertext = toolStripTextBoxFilter.Text.Trim().ToLower();
-                listFilterScene = listFilterScene.Where(q => q.Varname.ToLower().IndexOf(filtertext) >= 0 ||
-                                     Path.GetFileNameWithoutExtension(q.Scenepath).ToLower().IndexOf(filtertext) >= 0).ToList();
+                var InstalledScene = listInstalledScene[i];
+                InstalledScene.Hidefav = GetHighFav(listInstalledScene[i].Varname, listInstalledScene[i].Scenepath);
+                listInstalledScene[i] = InstalledScene;
+            }
+            //strOrderBy = "";
+           // FilterVars();
+        }
+
+
+        private void FilterVars(int filterAt=10)
+        {
+            if (filterAt >= 10)
+            {
+                if (!string.IsNullOrWhiteSpace(toolStripComboBoxCategory.Text))
+                    listFilterScene1 = listInstalledScene.Where(q => q.Atomtype == toolStripComboBoxCategory.Text).ToList();
+            }
+            if (filterAt >= 9)
+            {
+                switch (toolStripComboBoxHideFav.Text)
+                {
+                    case "Hide":
+                        listFilterScene2 = listFilterScene1.Where(q => q.Hidefav == -1).ToList(); break;
+                    case "Fav":
+                        listFilterScene2 = listFilterScene1.Where(q => q.Hidefav == 1).ToList(); break;
+                    case "Normal":
+                        listFilterScene2 = listFilterScene1.Where(q => q.Hidefav == 0).ToList(); break;
+                    default:
+                        listFilterScene2 = listFilterScene1; break;
+
+                }
+            }
+            if (filterAt >= 8)
+            {
+                if (!string.IsNullOrWhiteSpace(toolStripTextBoxFilter.Text))
+                {
+                    string filtertext = toolStripTextBoxFilter.Text.Trim().ToLower();
+                    listFilterScene3 = listFilterScene2.Where(q => q.Varname.ToLower().IndexOf(filtertext) >= 0 ||
+                                         Path.GetFileNameWithoutExtension(q.Scenepath).ToLower().IndexOf(filtertext) >= 0).ToList();
+                }
+                else
+                    listFilterScene3 = listFilterScene2;
             }
             toolStripComboBoxCreator.SelectedIndexChanged -= new System.EventHandler(toolStripComboBoxCreator_SelectedIndexChanged);
             string creatorname = toolStripComboBoxCreator.Text;
-            var Creators = listFilterScene.Select(q => q.Varname.Substring(0, q.Varname.IndexOf('.'))).Distinct().OrderBy(o => o).ToArray();
+            var Creators = listFilterScene3.Select(q => q.Varname.Substring(0, q.Varname.IndexOf('.'))).Distinct().OrderBy(o => o).ToArray();
             toolStripComboBoxCreator.Items.Clear();
             toolStripComboBoxCreator.Items.Add("____ALL");
             toolStripComboBoxCreator.Items.AddRange(Creators);
@@ -114,13 +154,13 @@ namespace varManager
                 if (toolStripComboBoxCreator.Items.Contains(creatorname))
                 {
                     toolStripComboBoxCreator.SelectedItem = creatorname;
-                    listFilterCreatorScene = listFilterScene.Where(q => q.Varname.StartsWith(creatorname)).ToList();
+                    listFilterCreatorScene = listFilterScene3.Where(q => q.Varname.StartsWith(creatorname)).ToList();
                 }
             }
             else
             {
                 toolStripComboBoxCreator.SelectedIndex = 0;
-                listFilterCreatorScene = listFilterScene.ToList();
+                listFilterCreatorScene = listFilterScene3.ToList();
             }
             toolStripComboBoxCreator.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxCreator_SelectedIndexChanged);
             FilterVarsCreator();
@@ -128,7 +168,7 @@ namespace varManager
 
         private void toolStripTextBoxFilter_TextChanged(object sender, EventArgs e)
         {
-            FilterVars();
+            FilterVars(8);
         }
 
         private void toolStripComboBoxCreator_SelectedIndexChanged(object sender, EventArgs e)
@@ -142,11 +182,11 @@ namespace varManager
 
             if (!string.IsNullOrEmpty(creatorname) && creatorname != "____ALL")
             {
-                listFilterCreatorScene = listFilterScene.Where(q => q.Varname.StartsWith(creatorname)).ToList();
+                listFilterCreatorScene = listFilterScene3.Where(q => q.Varname.StartsWith(creatorname)).ToList();
             }
             else
             {
-                listFilterCreatorScene = listFilterScene.ToList();
+                listFilterCreatorScene = listFilterScene3.ToList();
             }
             toolStripComboBoxScenePage.SelectedIndexChanged -= new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
             toolStripLabelSceneCount.Text = "/" + listFilterCreatorScene.Count.ToString();
@@ -161,15 +201,19 @@ namespace varManager
                 string strpage = min.ToString("000") + " - " + max.ToString("000");
                 toolStripComboBoxScenePage.Items.Add(strpage);
             }
-           
-            toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
-            if (pages > 0) 
+
+            if (pages > 0)
                 toolStripComboBoxScenePage.SelectedIndex = 0;
             else
             {
                 imageListScenes.Images.Clear();
                 listSceneItem.Clear();
-            }            
+                listViewHide.Items.Clear();
+                listViewNormal.Items.Clear();
+                listViewFav.Items.Clear();
+            }
+            toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
+            GenerateItems();
         }
 
         private void toolStripComboBoxScenePage_SelectedIndexChanged(object sender, EventArgs e)
@@ -188,7 +232,26 @@ namespace varManager
             else
                 return "";
         }
+        private int GetHighFav( string varName, string scenepath)
+        {
+            if (File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", varName, scenepath + ".hide")))
+            {
+                return -1;
+            }
+            if (File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", varName, scenepath + ".fav")))
+            {
+                return 1;
+            }
+            return 0;
+        }
+        private void UpdateHidefav(string varName, string scenepath)
+        {
 
+            int index = listInstalledScene.FindIndex(q => q.Varname == varName && q.Scenepath == scenepath);
+            var installedScene = listInstalledScene[index];
+            installedScene.Hidefav = GetHighFav(varName, scenepath);
+            listInstalledScene[index] = installedScene;
+        }
         private void GenerateItems()
         {
             if (toolStripComboBoxScenePage.SelectedIndex < 0) return;
@@ -204,7 +267,6 @@ namespace varManager
                     case "SceneName": listFilterCreatorScene = listFilterCreatorScene.OrderBy(q => Path.GetFileNameWithoutExtension(q.Scenepath)).ToList();
                         break;
                 }
-                
             }
             int startpic = maxitemPerpage * toolStripComboBoxScenePage.SelectedIndex;
             imageListScenes.Images.Clear();
@@ -225,6 +287,8 @@ namespace varManager
                 item.SubItems.Add(listFilterCreatorScene[cur].Varname);
                 item.SubItems.Add(listFilterCreatorScene[cur].Scenepath);
                 item.SubItems.Add(picpath);
+
+               // item.SubItems.Add(listFilterCreatorScene[cur].Hidefav.ToString());
                 listSceneItem.Add(item);
             }
             FillItems();
@@ -253,24 +317,44 @@ namespace varManager
                 if (rect.Bottom + rect.Height >= listViewFav.Height)
                     break;
             }
+            while (backgroundWorkerFillListView.IsBusy)
+            {
+                backgroundWorkerFillListView.CancelAsync();
+                // Keep UI messages moving, so the form remains 
+                // responsive during the asynchronous operation.
+                Application.DoEvents();
+            }
+            backgroundWorkerFillListView.RunWorkerAsync(new int[] { hideIndex, nomalIndex, favIndex });
+
+        }
+
+        private void backgroundWorkerFillListView_DoWork(object sender, DoWorkEventArgs e)
+        {
+            InvokeFillListView fillListView = new InvokeFillListView(FillListView);
+            int[] index = (int[])e.Argument;
+            this.BeginInvoke(fillListView, new Object[] { index[0], index[1], index[2] });
+
+        }
+        public delegate void InvokeFillListView(ref int hideIndex, ref int nomalIndex, ref int favIndex);
+        public void FillListView(ref int hideIndex, ref int nomalIndex, ref int favIndex)
+        {
             listViewHide.Items.Clear();
             listViewNormal.Items.Clear();
             listViewFav.Items.Clear();
             foreach (var item in listSceneItem)
             {
-                string scenepath = Path.GetDirectoryName(item.SubItems[2].Text);
-                string scenename = Path.GetFileName(item.SubItems[2].Text);
-                string hide = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".hide");
-                string fav = Path.Combine(Settings.Default.vampath, "AddonPackagesFilePrefs", item.SubItems[1].Text, scenepath, scenename + ".fav");
-
-                if (File.Exists(hide))
-                    listViewHide.Items.Add(item);
-                else
+                Thread.Sleep(1);
+                if (backgroundWorkerFillListView.CancellationPending)
                 {
-                    if (File.Exists(fav))
-                        listViewFav.Items.Add(item);
-                    else
-                        listViewNormal.Items.Add(item);
+                    //Tell the Backgroundworker you are canceling and exit the for-loop
+                    //e.Cancel = true;
+                    return;
+                }
+                switch (GetHighFav(item.SubItems[1].Text, item.SubItems[2].Text))
+                {
+                    case -1: listViewHide.Items.Add(item); break;
+                    case 0: listViewNormal.Items.Add(item); break;
+                    case 1: listViewFav.Items.Add(item); break;
                 }
             }
             if (hideIndex >= listViewHide.Items.Count)
@@ -281,8 +365,7 @@ namespace varManager
             if (nomalIndex >= 0) listViewNormal.EnsureVisible(nomalIndex);
             if (favIndex >= listViewFav.Items.Count)
                 favIndex = listViewFav.Items.Count - 1;
-            if (favIndex >=0) listViewFav.EnsureVisible(favIndex);
-
+            if (favIndex >= 0) listViewFav.EnsureVisible(favIndex);
         }
 
         private void toolStripButtonSceneFirst_Click(object sender, EventArgs e)
@@ -329,7 +412,10 @@ namespace varManager
                         Directory.CreateDirectory(Path.GetDirectoryName(hide));
                         using (File.Create(hide)) { }
                     }
+                    UpdateHidefav(item.SubItems[1].Text, item.SubItems[2].Text);
                 }
+                //UpdateFileHidefav();
+                //FilterVars();
                 FillItems();
             }
         }
@@ -352,7 +438,9 @@ namespace varManager
                         Directory.CreateDirectory(Path.GetDirectoryName(fav));
                         using (File.Create(fav)) { }
                     }
+                    UpdateHidefav(item.SubItems[1].Text, item.SubItems[2].Text);
                 }
+                //UpdateFileHidefav();
                 FillItems();
             }
         }
@@ -370,7 +458,9 @@ namespace varManager
 
                     if (File.Exists(hide))
                         File.Delete(hide);
+                    UpdateHidefav(item.SubItems[1].Text, item.SubItems[2].Text);
                 }
+                //UpdateFileHidefav();
                 FillItems();
             }
         }
@@ -388,7 +478,9 @@ namespace varManager
 
                     if (File.Exists(fav))
                         File.Delete(fav);
+                    UpdateHidefav(item.SubItems[1].Text, item.SubItems[2].Text);
                 }
+                //UpdateFileHidefav();
                 FillItems();
             }
         }
@@ -449,7 +541,7 @@ namespace varManager
 
         private void toolStripComboBoxHideFav_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FilterVars();
+            FilterVars(9);
         }
 
         private void toolStripComboBoxOrderBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -460,5 +552,6 @@ namespace varManager
                     GenerateItems();
             }
         }
+
     }
 }
