@@ -44,7 +44,7 @@ namespace varManager
             dependenciesBindingSource.Filter = "1=2";
             foreach (DataGridViewRow row in dataGridViewVars.SelectedRows)
             {
-                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString().Replace("'", "''");
                 dependenciesBindingSource.Filter += $" or varName='{varName}'";
             }
             UpdatePreviewPics();

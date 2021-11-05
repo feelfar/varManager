@@ -36,10 +36,18 @@ namespace varManager
                     string missingvarname = missingvar;
                     if (missingvarname.LastIndexOf('/') > 1)
                         missingvarname = missingvarname.Substring(missingvarname.LastIndexOf('/') + 1);
-                    string searchPattern = missingvarname.Substring(0, missingvarname.LastIndexOf('.')+1) + "*.var";
-                    
-                    if (Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), searchPattern, SearchOption.AllDirectories).Length == 0)
+                    string searchPattern = missingvarname + ".var";
+                    if (missingvarname.IndexOf(".latest")>0)
+                      searchPattern = missingvarname.Substring(0, missingvarname.LastIndexOf('.')+1) + "*.var";
+                    var files = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), searchPattern, SearchOption.AllDirectories).OrderByDescending(q => Path.GetFileNameWithoutExtension(q)).ToArray();
+                    if (files.Length == 0)
                         dataGridViewMissingVars.Rows.Add(new string[] { missingvarname, "", "UnLink", "Google" });
+                    else
+                    {
+                        string destfilename =Path.GetFileNameWithoutExtension( Comm.ReparsePoint(files[0]));
+                        dataGridViewMissingVars.Rows.Add(new string[] { missingvarname, destfilename, "UnLink", "Google" });
+                    }
+                   
                 }
             }
         }
@@ -137,7 +145,18 @@ namespace varManager
             {
                 string missingvarname = row.Cells[0].Value.ToString();
                 string destvarname = row.Cells[1].Value.ToString();
-                if(!string.IsNullOrEmpty(destvarname))
+                string searchPattern = missingvarname + ".var";
+                if (missingvarname.IndexOf(".latest") > 0)
+                    searchPattern = missingvarname.Substring(0, missingvarname.LastIndexOf('.') + 1) + "*.var";
+                var files = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), searchPattern, SearchOption.AllDirectories).OrderByDescending(q => Path.GetFileNameWithoutExtension(q)).ToArray();
+                if (files.Length > 0)
+                {
+                    File.Delete(files[0]);
+                    if (File.Exists(files[0] + ".disabled"))
+                        File.Delete(files[0] + ".disabled");
+                }
+
+                if (!string.IsNullOrEmpty(destvarname))
                 {
                     varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(destvarname);
                     if(missingvarname.Substring(missingvarname.LastIndexOf('.'))==".latest")
@@ -147,12 +166,7 @@ namespace varManager
                     if (varsrow != null)
                     {
                         string missingvar = Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName, missingvarname + ".var");
-                        if (File.Exists(missingvar + ".disabled"))
-                            File.Delete(missingvar + ".disabled");
-                        if (File.Exists(missingvar)) continue ; 
-
                         string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
-
                         Comm.CreateSymbolicLink(missingvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
                     }
                 }

@@ -183,8 +183,8 @@ namespace varManager
                         this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
                     }
                 }
-                curVarfile++;
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
+                curVarfile++;
             }
             // System.Diagnostics.Process.Start(tidypath);
         }
@@ -964,10 +964,62 @@ namespace varManager
             {
                 LogAnalysis();
             }
+            if ((string)e.Argument == "MissingDepends")
+            {
+                MissingDepends();
+            }
             if ((string)e.Argument == "StaleVars")
             {
                 StaleVars();
             }
+        }
+
+        private void buttonMissingDepends_Click(object sender, EventArgs e)
+        {
+            string message = "Analyzing dependencies from Installed Vars, if it is found in the repository it will be installed, otherwise a processing window will be opened.";
+
+            const string caption = "MissingDepends";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+            {
+                backgroundWorkerInstall.RunWorkerAsync("MissingDepends");
+            }
+        }
+
+        private void MissingDepends()
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            this.BeginInvoke(addlog, new Object[] { "Search for dependencies..." });
+            List<string> dependencies = new List<string>();
+            foreach (var varrow in varManagerDataSet.varsView.Where(q => q.Installed == true))
+            {
+                dependencies.AddRange(varManagerDataSet.dependencies.Where(q => q.varName == varrow.varName).Select(q => q.dependency));
+            }
+            dependencies = dependencies.Distinct().ToList();
+            List<string> missingvars = new List<string>();
+            foreach (string varname in dependencies)
+            {
+                string varexistname = VarExistName(varname);
+                if (varexistname != "missing")
+                {
+                    VarInstall(varexistname, 1);
+                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                }
+                else
+                {
+                    missingvars.Add(varname);
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing" });
+                }
+            }
+            if (missingvars.Count > 0)
+            {
+                InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
+                this.BeginInvoke(showformMissingVars, missingvars);
+            }
+
         }
 
         private void FixRebuildLink()
@@ -1033,10 +1085,10 @@ namespace varManager
             {
                 varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
             }
-            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories))
-            {
-                varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
-            }
+            //foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories))
+            //{
+            //    varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
+            //}
             dependencies = dependencies.Except(varinstalled).ToList();
             this.BeginInvoke(addlog, new Object[] { $"{dependencies.Count()} var files will be installed" });
             List<string> missingvars = new List<string>();
@@ -1077,7 +1129,7 @@ namespace varManager
 
         private void buttonFixSavesDepend_Click(object sender, EventArgs e)
         {
-            string message = "Analyze the json file in the Save directory to find installation dependencies";
+            string message = "Analyzing dependencies from json files in \"Saves\" folder";
 
             const string caption = "SavesDependencies";
             var result = MessageBox.Show(message, caption,
@@ -1632,7 +1684,7 @@ namespace varManager
 
         private void buttonLogAnalysis_Click(object sender, EventArgs e)
         {
-            string message = "The log file will be analyzed to find the missing package, if it is found in the repository it will be installed, otherwise a processing window will be opened.\r\nThis feature requires the game to be closed";
+            string message = "Analyzing dependencies from log file, otherwise a processing window will be opened.\r\nThis feature requires the game to be closed";
 
             const string caption = "LogAnalysis";
             var result = MessageBox.Show(message, caption,
