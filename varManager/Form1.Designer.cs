@@ -51,6 +51,7 @@ namespace varManager
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.labelProgress = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.buttonUninstallSels = new System.Windows.Forms.Button();
@@ -58,7 +59,6 @@ namespace varManager
             this.buttonMove = new System.Windows.Forms.Button();
             this.buttonExpInsted = new System.Windows.Forms.Button();
             this.buttonInstFormTxt = new System.Windows.Forms.Button();
-            this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.varsBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -137,8 +137,8 @@ namespace varManager
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsViewDataGridView)).BeginInit();
+            this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
             this.varsBindingNavigator.SuspendLayout();
@@ -366,6 +366,66 @@ namespace varManager
             this.splitContainer1.SplitterDistance = 567;
             this.splitContainer1.TabIndex = 8;
             // 
+            // varsViewDataGridView
+            // 
+            this.varsViewDataGridView.AllowUserToAddRows = false;
+            this.varsViewDataGridView.AllowUserToDeleteRows = false;
+            this.varsViewDataGridView.AutoGenerateColumns = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.varNamedataGridViewTextBoxColumn,
+            this.varPathDataGridViewTextBoxColumn,
+            this.creatorNameDataGridViewTextBoxColumn,
+            this.packageNameDataGridViewTextBoxColumn,
+            this.versionDataGridViewTextBoxColumn,
+            this.metaDateDataGridViewTextBoxColumn,
+            this.varDateDataGridViewTextBoxColumn,
+            this.sizeDataGridViewTextBoxColumn,
+            this.scenesDataGridViewTextBoxColumn,
+            this.looksDataGridViewTextBoxColumn,
+            this.clothingDataGridViewTextBoxColumn,
+            this.hairstyleDataGridViewTextBoxColumn,
+            this.pluginsDataGridViewTextBoxColumn,
+            this.assetsDataGridViewTextBoxColumn,
+            this.installedDataGridViewCheckBoxColumn,
+            this.disabledDataGridViewCheckBoxColumn});
+            this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.varsViewDataGridView.Location = new System.Drawing.Point(0, 62);
+            this.varsViewDataGridView.Name = "varsViewDataGridView";
+            this.varsViewDataGridView.ReadOnly = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.varsViewDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.varsViewDataGridView.RowHeadersWidth = 20;
+            this.varsViewDataGridView.RowTemplate.Height = 27;
+            this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.varsViewDataGridView.Size = new System.Drawing.Size(567, 288);
+            this.varsViewDataGridView.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.varsViewDataGridView, "Right click on the column header to custom filter");
+            this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
+            // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.AutoScroll = true;
@@ -463,66 +523,6 @@ namespace varManager
             this.buttonInstFormTxt.UseVisualStyleBackColor = true;
             this.buttonInstFormTxt.Click += new System.EventHandler(this.buttonInstFormTxt_Click);
             // 
-            // varsViewDataGridView
-            // 
-            this.varsViewDataGridView.AllowUserToAddRows = false;
-            this.varsViewDataGridView.AllowUserToDeleteRows = false;
-            this.varsViewDataGridView.AutoGenerateColumns = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.varsViewDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.varsViewDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.varNamedataGridViewTextBoxColumn,
-            this.varPathDataGridViewTextBoxColumn,
-            this.creatorNameDataGridViewTextBoxColumn,
-            this.packageNameDataGridViewTextBoxColumn,
-            this.versionDataGridViewTextBoxColumn,
-            this.metaDateDataGridViewTextBoxColumn,
-            this.varDateDataGridViewTextBoxColumn,
-            this.sizeDataGridViewTextBoxColumn,
-            this.scenesDataGridViewTextBoxColumn,
-            this.looksDataGridViewTextBoxColumn,
-            this.clothingDataGridViewTextBoxColumn,
-            this.hairstyleDataGridViewTextBoxColumn,
-            this.pluginsDataGridViewTextBoxColumn,
-            this.assetsDataGridViewTextBoxColumn,
-            this.installedDataGridViewCheckBoxColumn,
-            this.disabledDataGridViewCheckBoxColumn});
-            this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.varsViewDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
-            this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.varsViewDataGridView.Location = new System.Drawing.Point(0, 62);
-            this.varsViewDataGridView.Name = "varsViewDataGridView";
-            this.varsViewDataGridView.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.varsViewDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.varsViewDataGridView.RowHeadersWidth = 20;
-            this.varsViewDataGridView.RowTemplate.Height = 27;
-            this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(567, 288);
-            this.varsViewDataGridView.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.varsViewDataGridView, "Right click on the column header to custom filter");
-            this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
-            // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.AutoScroll = true;
@@ -603,6 +603,7 @@ namespace varManager
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "位置";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -1152,8 +1153,8 @@ namespace varManager
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.varsViewDataGridView)).EndInit();
+            this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).EndInit();
