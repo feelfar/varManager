@@ -111,6 +111,12 @@
     <Compile Include="FormUninstallVars.Designer.cs">
       <DependentUpon>FormUninstallVars.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormVarsMove.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVarsMove.Designer.cs">
+      <DependentUpon>FormVarsMove.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleLogger.cs" />
@@ -133,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormUninstallVars.resx">
       <DependentUpon>FormUninstallVars.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormVarsMove.resx">
+      <DependentUpon>FormVarsMove.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -190,6 +199,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DgvFilterPopup\DgvFilterPopup\DgvFilterPopup.csproj">
+      <Project>{4b9be5fd-303e-4270-9c4d-fa3bde6c34eb}</Project>
+      <Name>DgvFilterPopup</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
