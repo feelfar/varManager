@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DgvFilterPopup;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -30,10 +31,11 @@ namespace varManager
         private static string staleVarsDirName = "___StaleVars___";
         private static string deleVarsDirName = "___DeletedVars___";
 
+        private static string addonPacksSwitch = "___AddonPacksSwitch ___";
+
         private static string installLinkDirName = "___VarsLink___";
         private static string missingVarLinkDirName = "___MissingVarLink___";
         //private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
-        private bool isDepend;
 
         public Form1()
         {
@@ -54,8 +56,9 @@ namespace varManager
            
             if (varnamepart.Length == 3)
             {
-                int version = 0;
-                if (int.TryParse(varnamepart[2], out version))
+                //int version = 0;
+                if (Regex.IsMatch(varnamepart[2], "^[0-9]+$"))
+                //if (int.TryParse(varnamepart[2], out version))
                 {
                     complyRule = true;
                 }
@@ -106,13 +109,15 @@ namespace varManager
                 if (ComplyVarFile(varfile))
                 {
                     FileInfo pathInfo = new FileInfo(varfile);
+                    string varfilename = Path.GetFileNameWithoutExtension(varfile);
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
-                        string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
-                        this.BeginInvoke(addlog, new Object[] { errlog });
+                        //string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
+                        //this.BeginInvoke(addlog, new Object[] { errlog });
+                        varsForInstall.Remove(varfilename);
                         continue;
                     }
-                    string varfilename = Path.GetFileNameWithoutExtension(varfile);
+                    
                     string[] varnamepart = varfilename.Split('.');
                     string createrpath = Path.Combine(tidypath, varnamepart[0]);
                     if (!Directory.Exists(createrpath))
@@ -200,7 +205,7 @@ namespace varManager
                 //JsonDocument jsondoc = JsonDocument.Parse(jsonstring);
                 // dependencies = jsondoc.RootElement.GetProperty("dependencies").GetRawText().ToString();
                 dependencies = jsonstring;
-                Regex regexObj = new Regex(@"\x22(([^\x3A\x2E]{1,60})\x2E([^\x3A\x2E]{1,80})\x2E(\d+|latest))(\x22?\s*)\x3A", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                Regex regexObj = new Regex(@"\x22(([^\r\n\x22\x3A\x2E]{1,60})\x2E([^\r\n\x22\x3A\x2E]{1,80})\x2E(\d+|latest))(\x22?\s*)\x3A", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 Match matchResults = regexObj.Match(dependencies);
                 while (matchResults.Success)
                 {
@@ -360,6 +365,7 @@ namespace varManager
             }
             return latest;
         }
+        
         private List<string> ImplicatedVar(string varname)
         {
             List<string> varnames = new List<string>();
@@ -385,7 +391,7 @@ namespace varManager
         {
             List<string> varnameexist = new List<string>();
             List<string> varsProccessed = new List<string>();
-
+            List<string> varimplics = new List<string>();
             foreach (string varname in varnames)
             {
                 if (varname[varname.Length - 1] == '^')
@@ -393,32 +399,23 @@ namespace varManager
                 else
                     varnameexist.Add(varname);
             }
-            if (isDepend)
+
+            foreach (string varname in varnameexist)
             {
-                List<string> varimplics = new List<string>();
-                foreach (string varname in varnameexist)
+                varimplics.AddRange(ImplicatedVar(varname));
+            }
+            varsProccessed.AddRange(varnameexist);
+            varimplics = varimplics.Distinct().Except(varsProccessed).ToList();
+            if (varimplics.Count() > 0)
+            {
+                foreach (string varname in varsProccessed)
                 {
-                    varimplics.AddRange(ImplicatedVar(varname));
+                    varimplics.Add(varname + "^");
                 }
-                varsProccessed.AddRange(varnameexist);
-                varimplics = varimplics.Distinct().Except(varsProccessed).ToList();
-                if (varimplics.Count() > 0)
-                {
-                    foreach (string varname in varsProccessed)
-                    {
-                        varimplics.Add(varname + "^");
-                    }
-                    return ImplicatedVars(varimplics);
-                }
-                else
-                {
-                    varsProccessed = varsProccessed.Select(q => q.Trim('^')).Distinct().ToList();
-                    return varsProccessed;
-                }
+                return ImplicatedVars(varimplics);
             }
             else
             {
-                varsProccessed.AddRange(varnameexist);
                 varsProccessed = varsProccessed.Select(q => q.Trim('^')).Distinct().ToList();
                 return varsProccessed;
             }
@@ -461,11 +458,13 @@ namespace varManager
             }
             if (formUninstallVars.ShowDialog() == DialogResult.OK)
             {
+                var installedvars = GetInstalledVars();
                 foreach (string varname in varimplics)
                 {
-                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varname + ".var");
-                    if (File.Exists(linkvar))
-                        File.Delete(linkvar);
+                    string linkvar;
+                    if (installedvars.TryGetValue(varname, out linkvar))
+                        if (File.Exists(linkvar))
+                            File.Delete(linkvar);
                 }
             }
         }
@@ -493,11 +492,13 @@ namespace varManager
                 if (!Directory.Exists(delevarspath))
                     Directory.CreateDirectory(delevarspath);
 
+                var installedvars = GetInstalledVars();
                 foreach (string varname in varimplics)
                 {
-                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varname + ".var");
-                    if (File.Exists(linkvar))
-                        File.Delete(linkvar);
+                    string linkvar;
+                    if (installedvars.TryGetValue(varname, out linkvar))
+                        if (File.Exists(linkvar))
+                            File.Delete(linkvar);
 
                     string operav = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(varname).varPath, varname + ".var");
                     string deletedv = Path.Combine(delevarspath, varname + ".var");
@@ -514,12 +515,36 @@ namespace varManager
             }
 
         }
+
+        private Dictionary<string, string> GetInstalledVars()
+        {
+            Dictionary<string,string> installedVars = new Dictionary<string, string>();
+            DirectoryInfo dilink= Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName));
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
+            {
+                FileInfo fileInfo = new FileInfo(varfile);
+                if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    installedVars[Path.GetFileNameWithoutExtension(varfile)] = varfile;
+                }
+            }
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.TopDirectoryOnly))
+            {
+                FileInfo fileInfo = new FileInfo(varfile);
+                if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    installedVars[Path.GetFileNameWithoutExtension(varfile)] = varfile;
+                }
+            }
+            return installedVars;
+        }
         private void UpdateVarsInstalled()
         {
             foreach (var row in this.varManagerDataSet.installStatus)
                 row.Delete();
             installStatusTableAdapter.Update(varManagerDataSet.installStatus);
             this.varManagerDataSet.installStatus.AcceptChanges();
+            /*
             foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
             {
                 string varName = Path.GetFileNameWithoutExtension(varfile);
@@ -529,6 +554,31 @@ namespace varManager
                     varManagerDataSet.installStatus.AddinstallStatusRow(varName, true, isdisable);
                 }
             }
+            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.TopDirectoryOnly))
+            {
+                FileInfo pathInfo = new FileInfo(varfile);
+                if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    string varName = Path.GetFileNameWithoutExtension(varfile);
+                    if (varManagerDataSet.vars.FindByvarName(varName) != null)
+                    {
+                        bool isdisable = File.Exists(varfile + ".disabled");
+                        varManagerDataSet.installStatus.AddinstallStatusRow(varName, true, isdisable);
+                    }
+                }
+            }
+            */
+            
+            foreach (string varfile in GetInstalledVars().Values)
+            {
+                string varName = Path.GetFileNameWithoutExtension(varfile);
+                if (varManagerDataSet.vars.FindByvarName(varName) != null)
+                {
+                    bool isdisable = File.Exists(varfile + ".disabled");
+                    varManagerDataSet.installStatus.AddinstallStatusRow(varName, true, isdisable);
+                }
+            }
+           
             installStatusTableAdapter.Update(varManagerDataSet.installStatus);
             this.varManagerDataSet.installStatus.AcceptChanges();
             // TODO: 这行代码将数据加载到表“varManagerDataSet1.varsView”中。您可以根据需要移动或删除它。
@@ -553,15 +603,13 @@ namespace varManager
             this.installStatusTableAdapter.Fill(this.varManagerDataSet.installStatus);
             string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
             string packpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages")).FullName.ToLower();
+            string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
             if (varspath == packpath)
             {
                 MessageBox.Show("Vars Path can't be {VamInstallDir}\\AddonPackages");
                 FormSettings formSettings = new FormSettings();
                 formSettings.ShowDialog();
             }
-
-            Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName));
-
             toolStripComboBoxPreviewType.SelectedIndex = 0;
             comboBoxCreater.Items.Add("____ALL");
             foreach (var row in this.varManagerDataSet.vars.GroupBy(g => g.creatorName))
@@ -569,7 +617,70 @@ namespace varManager
                 comboBoxCreater.Items.Add(row.Key);
             }
             comboBoxCreater.SelectedIndex = 0;
+
+
+            DirectoryInfo dipacksswitch =Directory.CreateDirectory(packsSwitchpath);
+            DirectoryInfo[] packswitchdirs = dipacksswitch.GetDirectories("*", SearchOption.TopDirectoryOnly);
+            List<string> packnames = new List<string>();
+            foreach (DirectoryInfo dipack in packswitchdirs)
+            {
+                packnames.Add(dipack.Name);
+            }
+            if (packnames.IndexOf("default") == -1)
+            {
+                Directory.CreateDirectory(Path.Combine(packsSwitchpath, "default"));
+                packnames.Add("default");
+            }
+            comboBoxPacksSwitch.Items.Add("default");
+            foreach (string packname in packnames)
+            {
+                if (packname != "default")
+                    comboBoxPacksSwitch.Items.Add(packname);
+            }
+
+            DirectoryInfo dipackpath = new DirectoryInfo(packpath);
+            
+            if (dipackpath.Exists)
+            {
+                if ( !dipackpath.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    Comm.DirectoryMoveAll(packpath, Path.Combine(packsSwitchpath, "default"));
+                }
+                   
+            }
+            dipackpath = new DirectoryInfo(packpath);
+            if (dipackpath.Exists)
+            {
+                if (!dipackpath.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    dipackpath.MoveTo(Path.Combine(Settings.Default.vampath, $"AddonPackages_{DateTime.Now.ToString("yyyyMMddHHmmss")}"));                  
+                }
+                
+            }
+            dipackpath = new DirectoryInfo(packpath);
+            if (!dipackpath.Exists)
+            {
+                Comm.CreateSymbolicLink(packpath, Path.Combine(packsSwitchpath, "default"), Comm.SYMBOLIC_LINK_FLAG.Directory);
+            }
+
+            DirectoryInfo diswitch = new DirectoryInfo(Comm.ReparsePoint(packpath));
+            if (!diswitch.Exists)
+            {
+                dipackpath.Delete();
+                Comm.CreateSymbolicLink(packpath, Path.Combine(packsSwitchpath, "default"), Comm.SYMBOLIC_LINK_FLAG.Directory);
+            }
+            diswitch = new DirectoryInfo(Comm.ReparsePoint(packpath));
+            if (comboBoxPacksSwitch.Items.IndexOf(diswitch.Name) >= 0)
+            {
+                comboBoxPacksSwitch.SelectedItem = diswitch.Name;
+            }
+
+            //string[] packswitchdirs = Directory.GetDirectories(packsSwitchpath, "*", SearchOption.TopDirectoryOnly);
+
+
+
             UpdateVarsInstalled();
+            new DgvFilterManager(varsViewDataGridView);
 
         }
 
@@ -668,20 +779,33 @@ namespace varManager
                     string[] varnamepart = basename.Split('.');
                     if (varnamepart.Length == 3)
                     {
-                        varsrow.createDate = File.GetCreationTime(destvarfilename);
+                        //varsrow.createDate = File.GetCreationTime(destvarfilename);
                         FileInfo finfo = new FileInfo(destvarfilename);
                         varsrow.filesize = finfo.Length;
                         varsrow.creatorName = varnamepart[0];
                         varsrow.packageName = varnamepart[1];
+                        varsrow.varDate = finfo.LastWriteTime;
                         int version;
                         if (!int.TryParse(varnamepart[2], out version))
                             version = 1;
                         varsrow.version = version;
                         varsrow.varPath = curpath;
                         ZipArchive varzipfile = ZipFile.OpenRead(destvarfilename);
+                        var metajson = varzipfile.GetEntry("meta.json");
 
+                        if (metajson == null)
+                        {
+                            string notComplRulefilename = Path.Combine(Settings.Default.varspath, notComplyRuleDirName, Path.GetFileName(destvarfilename));
+                            string errlog = $"{basename}, Invalid var package structure, move into {notComplyRuleDirName} directory";
+                            //string errorMessage = destvarfilename + " is invalid,please check";
+                            this.BeginInvoke(addlog, new Object[] { errlog });
+                            varzipfile.Dispose();
+                            File.Move(destvarfilename, notComplRulefilename);
+                            return;
+                        }
+                        varsrow.metaDate = metajson.LastWriteTime.DateTime;
 
-                        int countscene = 0, countlook = 0, countclothing = 0, counthair = 0, countplugin = 0, countasset = 0;
+                        int countscene = 0, countlook = 0, countclothing = 0, counthair = 0, countplugincs = 0, countplugincslist = 0, countasset = 0;
                         foreach (var zfile in varzipfile.Entries)
                         {
                             string typename = "";
@@ -722,13 +846,21 @@ namespace varManager
                                     typename = "hairstyle";
                                     counthair++;
                                 }
+                                if (Regex.IsMatch(zfile.FullName, @"custom/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                {
+                                    countplugincs++;
+                                }
+                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                {
+                                    countplugincs++;
+                                }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
-                                    countplugin++;
+                                    countplugincslist++;
                                 }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
-                                    countplugin++;
+                                    countplugincslist++;
                                 }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/assets/.*?\x2e(?:assetbundle)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
@@ -779,18 +911,15 @@ namespace varManager
                         varsrow.looks = countlook;
                         varsrow.clothing = countclothing;
                         varsrow.hairstyle = counthair;
-                        varsrow.plugins = countplugin;
+                        if (countplugincslist>0) 
+                            varsrow.plugins = countplugincslist;
+                        else
+                            varsrow.plugins = countplugincs;
                         varsrow.assets = countasset;
                         varsTableAdapter.Update(varManagerDataSet.vars);
                         varManagerDataSet.vars.AcceptChanges();
 
-                        var metajson = varzipfile.GetEntry("meta.json");
-                        if (metajson == null)
-                        {
-                            string errorMessage = destvarfilename + " is invalid,please check";
-                            this.BeginInvoke(addlog, new Object[] { errorMessage });
-                            return;
-                        }
+                        
                         List<string> dependencies = new List<string>();
                         var metajsonsteam = new StreamReader(metajson.Open());
                         string jsonstring = metajsonsteam.ReadToEnd();
@@ -869,9 +998,9 @@ namespace varManager
                 CleanVar(deletevar);
             }
             //UpdateVarsInstalled();
-            this.varManagerDataSet.varsView.Clear();
-            this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
-            MessageBox.Show("Update DB finish!Please reopen this tool!");
+            //this.varManagerDataSet.varsView.Clear();
+            //this.varsViewTableAdapter.Fill(this.varManagerDataSet.varsView);
+            //MessageBox.Show("Update DB finish!Please reopen this tool!");
             return true;
         }
 
@@ -917,6 +1046,7 @@ namespace varManager
                 varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(varName);
                 if (varsrow != null)
                 {
+                    //string[] varexist = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), varName + ".var");
                     string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varName + ".var");
                     if (File.Exists(linkvar + ".disabled")&& operate == 1)
                         File.Delete(linkvar + ".disabled");
@@ -935,6 +1065,8 @@ namespace varManager
                     {
                         using (File.Create(linkvar + ".disabled")) { }
                     }
+                    Comm.SetSymboLinkFileTime(linkvar, File.GetCreationTime(destvarfile), File.GetLastWriteTime(destvarfile));
+                    
                     success = true;
                 }
 
@@ -948,6 +1080,7 @@ namespace varManager
             {
                 TidyVars();
                 UpdDB();
+                
                 if (varsForInstall.Count() > 0)
                 {
                     var varNames = VarsDependencies(varsForInstall);
@@ -958,8 +1091,10 @@ namespace varManager
                         VarInstall(varname, 1);
                     }
                 }
-                Application.Restart();
-                Environment.Exit(0);
+                UpdateVarsInstalled();
+                //Application.Restart();
+                //Environment.Exit(0);
+
             }
 
             if ((string)e.Argument == "rebuildLink")
@@ -969,19 +1104,27 @@ namespace varManager
             if ((string)e.Argument == "savesDepend")
             {
                 FixSavseDependencies();
+                UpdateVarsInstalled();
             }
             if ((string)e.Argument == "LogAnalysis")
             {
                 LogAnalysis();
+                UpdateVarsInstalled();
             }
             if ((string)e.Argument == "MissingDepends")
             {
                 MissingDepends();
+                UpdateVarsInstalled();
             }
             if ((string)e.Argument == "StaleVars")
             {
                 StaleVars();
             }
+        }
+
+        private void backgroundWorkerInstall_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
         }
 
         private void buttonMissingDepends_Click(object sender, EventArgs e)
@@ -1036,7 +1179,8 @@ namespace varManager
         {
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             this.BeginInvoke(addlog, new Object[] { "Check Installed symlink"});
-            List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
+            //List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
+            List<string> varfiles = GetInstalledVars().Values.ToList();
             varfiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories));
 
             foreach (string linkvar in varfiles)
@@ -1047,15 +1191,16 @@ namespace varManager
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
                         string destfilename = Comm.ReparsePoint(linkvar);
-                       
-                        this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {linkvar} is missing, will rebuild symlink..." });
+
+                        //this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {linkvar} is missing, will rebuild symlink..." });
+                        this.BeginInvoke(addlog, new Object[] { $"symlink {linkvar} rebuilding ..." });
                         varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(destfilename));
                         File.Delete(linkvar);
                         if (varsrow != null)
                         {
                             string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                             Comm.CreateSymbolicLink(linkvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
-                           
+                            Comm.SetSymboLinkFileTime(linkvar, File.GetCreationTime(destvarfile), File.GetLastWriteTime(destvarfile));
                         }
                     }
                 }
@@ -1073,32 +1218,70 @@ namespace varManager
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> dependencies = new List<string>();
             this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory" });
-            foreach (string jsonfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "Saves"), "*.json", SearchOption.AllDirectories))
+            this.varManagerDataSet.savedepens.Clear();
+            this.varManagerDataSet.savedepens.AcceptChanges();
+            this.savedepensTableAdapter.Fill(this.varManagerDataSet.savedepens);
+            List<string> savefiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "Saves"), "*.json", SearchOption.AllDirectories).ToList();
+            savefiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "Custom"), "*.vap", SearchOption.AllDirectories));
+            foreach (string jsonfile in savefiles)
             {
+                FileInfo fi = new FileInfo(jsonfile);
+                string savepath=jsonfile.Substring(Settings.Default.vampath.Length);
+                if (savepath.Length > 255) savepath = savepath.Substring(savepath.Length - 255);
+                
                 this.BeginInvoke(addlog, new Object[] { $"Analyze { Path.GetFileName(jsonfile)} ..."});
-                try
+               
+                var rows = this.varManagerDataSet.savedepens.Where(q => q.savepath == savepath && Math.Abs((q.modidate - fi.LastWriteTime).TotalSeconds)<=2);
+                
+                if (rows.Count() > 0)
                 {
-                    var metajsonsteam = new StreamReader(jsonfile);
-                    string jsonstring = metajsonsteam.ReadToEnd();
-                    dependencies.AddRange(Getdependencies(jsonstring));
+                    foreach (var row in rows)
+                    {
+                        row.SetModified();
+                        //dependencies.Add(row.dependency);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.BeginInvoke(addlog, new Object[] { jsonfile + " Get dependencies failed " + ex.Message });
+                    try
+                    {
+                        var metajsonsteam = new StreamReader(jsonfile);
+                        string jsonstring = metajsonsteam.ReadToEnd();
+                        foreach (string dependency in Getdependencies(jsonstring))
+                        {
+                            this.varManagerDataSet.savedepens.AddsavedepensRow(savepath, fi.LastWriteTime, dependency);
+                            //dependencies.Add(dependency);
+                        }
+                       
+                    }
+                    catch (Exception ex)
+                    {
+                        this.BeginInvoke(addlog, new Object[] { jsonfile + " Get dependencies failed " + ex.Message });
+                    }
                 }
             }
-            dependencies = dependencies.Distinct().ToList();
+            foreach (var row in this.varManagerDataSet.savedepens)
+            {
+                if (row.RowState == DataRowState.Unchanged) 
+                    row.Delete();
+            }
+            this.savedepensTableAdapter.Update(this.varManagerDataSet.savedepens);
+            this.varManagerDataSet.savedepens.AcceptChanges();
+            dependencies = this.varManagerDataSet.savedepens.Select(q => q.dependency).Distinct().ToList();
+            //dependencies = dependencies.Distinct().ToList();
             var dependencies2 = VarsDependencies(dependencies);
             dependencies = dependencies.Concat(dependencies2).Distinct().OrderBy(q=>q).ToList();
-            List<string> varinstalled = new List<string>();
-            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
-            {
-                varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
-            }
+
+            //List<string> varinstalled = new List<string>();
+            //foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
+            //{
+            //    varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
+            //}
             //foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories))
             //{
             //    varinstalled.Add(Path.GetFileNameWithoutExtension(varfile));
             //}
+            List<string> varinstalled = GetInstalledVars().Keys.ToList();
             dependencies = dependencies.Except(varinstalled).ToList();
             this.BeginInvoke(addlog, new Object[] { $"{dependencies.Count()} var files will be installed" });
             List<string> missingvars = new List<string>();
@@ -1498,13 +1681,18 @@ namespace varManager
             string stalepath = Path.Combine(Settings.Default.varspath, staleVarsDirName);
             if (!Directory.Exists(stalepath))
                 Directory.CreateDirectory(stalepath);
+            var installedvars = GetInstalledVars();
             foreach (var oldvar in listOldvar)
             {
                 if (varManagerDataSet.dependencies.Count(q => q.dependency == oldvar) == 0)
                 {
-                    string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, oldvar + ".var");
-                    if (File.Exists(linkvar))
-                        File.Delete(linkvar);
+                   if( installedvars.ContainsKey(oldvar))
+                    {
+                        File.Delete(installedvars[oldvar]);
+                    }
+                    //string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, oldvar + ".var");
+                    //if (File.Exists(linkvar))
+                    //    File.Delete(linkvar);
                     string oldv = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(oldvar).varPath, oldvar + ".var");
                     string stalev = Path.Combine(stalepath, oldvar + ".var");
                     try
@@ -1585,7 +1773,6 @@ namespace varManager
         private void buttonInstall_Click(object sender, EventArgs e)
         {
             List<string> varNames = new List<string>();
-            string varnamestype = "";
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
             {
                 string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
@@ -1601,17 +1788,16 @@ namespace varManager
                 if (!install)
                 {
                     varNames.Add(varName);
-                    varnamestype += varName + ",";
                 }
             }
             if (varNames.Count <= 0) return;
-            int max = 50;
+            int max = 500;
             if (varNames.Count > max)
             {
                 MessageBox.Show($"Please do not install more than {max} files at once");
                 return;
             }
-            string message = varnamestype + " and dependencies  will be installed, are you sure?";
+            string message =  $"There are {varNames.Count} vars and their dependencies will be installed, are you sure?";
             string caption = "Install Var";
             var result = MessageBox.Show(message, caption,
                                   MessageBoxButtons.YesNo,
@@ -1766,7 +1952,6 @@ namespace varManager
         private void buttonUninstallSels_Click(object sender, EventArgs e)
         {
             List<string> varNames = new List<string>();
-            string varnamestype = "";
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
             {
                 string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
@@ -1776,18 +1961,17 @@ namespace varManager
                     if( varsrow.Installed)
                     {
                         varNames.Add(varName);
-                        varnamestype += varName + ",";
                     }
                 }
             }
             if (varNames.Count <= 0) return;
-            int max = 50;
+            int max = 500;
             if (varNames.Count > max)
             {
                 MessageBox.Show($"Please do not install more than {max} files at once");
                 return;
             }
-            string message = varnamestype + " and dependencies will be Uninstall, are you sure?";
+            string message = $"There are {varNames.Count} vars and their dependencies will be Uninstall, are you sure?";
             string caption = "Uninstall Vars";
             var result = MessageBox.Show(message, caption,
                                   MessageBoxButtons.YesNo,
@@ -1803,14 +1987,11 @@ namespace varManager
         private void buttonDelete_Click(object sender, EventArgs e)
         {
             List<string> varNames = new List<string>();
-            string varnamestype = "";
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
             {
                 string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
 
                 varNames.Add(varName);
-                varnamestype += varName + ",";
-
             }
             if (varNames.Count <= 0) return;
             int max = 50;
@@ -1819,7 +2000,7 @@ namespace varManager
                 MessageBox.Show($"Please do not delete more than {max} files at once");
                 return;
             }
-            string message = varnamestype + " and dependencies will be delete, are you sure?";
+            string message = $"There are {varNames.Count} vars and their dependencies will be delete, are you sure?";
             string caption = "Delete Vars";
             var result = MessageBox.Show(message, caption,
                                   MessageBoxButtons.YesNo,
@@ -1832,9 +2013,176 @@ namespace varManager
             }
         }
 
-        private void checkBoxDependency_CheckedChanged(object sender, EventArgs e)
+        private void buttonMove_Click(object sender, EventArgs e)
         {
-            isDepend = checkBoxDependency.Checked;
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            List<string> varNames = new List<string>();
+            foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
+            {
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+
+                varNames.Add(varName);
+            }
+            if (varNames.Count <= 0) return;
+            FormVarsMove fvm = new FormVarsMove();
+            fvm.TidiedDirName = tidiedDirName;
+            fvm.VarsToMove = varNames;
+            if (fvm.ShowDialog() == DialogResult.OK)
+            {
+
+                string movetovarspath = Path.Combine(Settings.Default.varspath, tidiedDirName, fvm.MovetoDirName);
+                if (!Directory.Exists(movetovarspath))
+                    Directory.CreateDirectory(movetovarspath);
+
+                foreach (string varname in varNames)
+                {
+                    string operav = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(varname).varPath, varname + ".var");
+                    string movetodv = Path.Combine(movetovarspath, varname + ".var");
+                    if(File.Exists(movetodv))
+                    {
+                        string errlog = $"{varname} has same filename in tidy directory,moved into the {redundantDirName} directory";
+                        this.BeginInvoke(addlog, new Object[] { errlog });
+                    }
+                    else
+                    try
+                    {
+                        File.Move(operav, movetodv);
+                        //CleanVar(varname);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                    }
+                }
+            }
+
+        }
+
+        private void buttonExpInsted_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialogExportInstalled.ShowDialog() == DialogResult.OK)
+            {
+                List<string> varNames = new List<string>();
+                foreach (var varstatus in this.varManagerDataSet.installStatus)
+                {
+                    if (varstatus.Installed) varNames.Add(varstatus.varName);
+                }
+                File.WriteAllLines(saveFileDialogExportInstalled.FileName, varNames.ToArray());
+            }
+        }
+
+        private void buttonInstFormTxt_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogInstByTXT.ShowDialog() == DialogResult.OK)
+            {
+                string[] varNames = File.ReadAllLines(openFileDialogInstByTXT.FileName);
+                foreach (string varname in varNames)
+                {
+                    VarInstall(varname, 1);
+                }
+                UpdateVarsInstalled();
+            }
+        }
+
+        private void comboBoxPacksSwitch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string sw = (string)comboBoxPacksSwitch.SelectedItem;
+            if(!string.IsNullOrEmpty(sw))
+            {
+                buttonPacksDelete.Enabled = (sw != "default");
+                varpacksSwitch(sw);
+
+            }
+            else
+            {
+                buttonPacksDelete.Enabled = false;
+            }
+        }
+
+        private void varpacksSwitch(string sw)
+        {
+            string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
+            DirectoryInfo diswitch = new DirectoryInfo(Path.Combine(packsSwitchpath, sw));
+            if (!diswitch.Exists) diswitch.Create();
+            DirectoryInfo dipack = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages"));
+            if (dipack.Exists)
+            {
+                if (Comm.ReparsePoint(dipack.FullName).ToLower() != diswitch.FullName.ToLower())
+                {
+                    dipack.Delete();
+                    if (!Comm.CreateSymbolicLink(dipack.FullName, diswitch.FullName, Comm.SYMBOLIC_LINK_FLAG.Directory))
+                    {
+                        MessageBox.Show("Error: create AddonPackages symbolic link. " +
+                                "(Error Code: " + Marshal.GetLastWin32Error() + ")");
+                    }
+                    else
+                        UpdateVarsInstalled();
+                }
+            }
+            else
+            {
+                if (!Comm.CreateSymbolicLink(dipack.FullName, diswitch.FullName, Comm.SYMBOLIC_LINK_FLAG.Directory))
+                {
+                    MessageBox.Show("Error: create AddonPackages symbolic link. " +
+                            "(Error Code: " + Marshal.GetLastWin32Error() + ")");
+                }
+                else
+                    UpdateVarsInstalled();
+            }
+        }
+
+        private void buttonPacksAdd_Click(object sender, EventArgs e)
+        {
+            FormSwitchAdd formSwitchAdd = new FormSwitchAdd();
+            if( formSwitchAdd.ShowDialog() == DialogResult.OK)
+            {
+                if (comboBoxPacksSwitch.Items.IndexOf(formSwitchAdd.SwitchName) < 0)
+                {
+                    comboBoxPacksSwitch.Items.Add(formSwitchAdd.SwitchName);
+                    comboBoxPacksSwitch.SelectedItem = formSwitchAdd.SwitchName;
+                }
+                else
+                {
+                    MessageBox.Show("Switch space already exists!");
+                }
+
+            }
+        }
+
+        private void buttonPacksDelete_Click(object sender, EventArgs e)
+        {
+            string curswitch = (string)comboBoxPacksSwitch.SelectedItem;
+            if (!string.IsNullOrEmpty(curswitch) && curswitch != "default")
+            {
+                if (MessageBox.Show($"Will delete {curswitch} AddonPackagesSwitch, sure?", "delete switch", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
+                    DirectoryInfo diswitch = new DirectoryInfo(Path.Combine(packsSwitchpath, curswitch));
+                    diswitch.Delete(true);
+                    comboBoxPacksSwitch.Items.Remove(curswitch);
+                    comboBoxPacksSwitch.SelectedItem = "default";
+                }
+            }
+           
+        }
+
+        private void buttonPacksRename_Click(object sender, EventArgs e)
+        {
+            string curswitch = (string)comboBoxPacksSwitch.SelectedItem;
+            if (!string.IsNullOrEmpty(curswitch) && curswitch != "default")
+            {
+                FormSwitchRename formSwitchRename = new FormSwitchRename();
+                formSwitchRename.OldName = curswitch;
+                if (formSwitchRename.ShowDialog()== DialogResult.OK)
+                {
+                    string newName = formSwitchRename.NewName;
+                    string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
+                    DirectoryInfo diswitch = new DirectoryInfo(Path.Combine(packsSwitchpath, curswitch));
+                    diswitch.MoveTo(Path.Combine(packsSwitchpath, newName));
+                    comboBoxPacksSwitch.Items[comboBoxPacksSwitch.SelectedIndex] = newName;
+                    this.varpacksSwitch(newName);
+                }
+            }
         }
 
         private void buttonpreviewinstall_Click(object sender, EventArgs e)

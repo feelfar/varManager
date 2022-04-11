@@ -49,6 +49,7 @@ namespace varManager
                     }
                    
                 }
+                bindingNavigatorCountItem.Text = "/" + dataGridViewMissingVars.Rows.Count;
             }
         }
 
@@ -141,6 +142,13 @@ namespace varManager
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            Createlink();
+
+            this.Close();
+        }
+
+        private void Createlink()
+        {
             foreach (DataGridViewRow row in dataGridViewMissingVars.Rows)
             {
                 string missingvarname = row.Cells[0].Value.ToString();
@@ -159,7 +167,7 @@ namespace varManager
                 if (!string.IsNullOrEmpty(destvarname))
                 {
                     varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(destvarname);
-                    if(missingvarname.Substring(missingvarname.LastIndexOf('.'))==".latest")
+                    if (missingvarname.Substring(missingvarname.LastIndexOf('.')) == ".latest")
                     {
                         missingvarname = missingvarname.Substring(0, missingvarname.LastIndexOf('.')) + destvarname.Substring(destvarname.LastIndexOf('.'));
                     }
@@ -168,16 +176,113 @@ namespace varManager
                         string missingvar = Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName, missingvarname + ".var");
                         string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                         Comm.CreateSymbolicLink(missingvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
+                        File.SetCreationTime(missingvar, File.GetCreationTime(destvarfile));
+                        File.SetLastWriteTime(missingvar, File.GetLastWriteTime(destvarfile));
                     }
                 }
             }
-
-            this.Close();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void dataGridViewMissingVars_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            bindingNavigatorPositionItem.Text = (e.RowIndex+1).ToString();
+        }
+
+        private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e)
+        {
+            int nRow = dataGridViewMissingVars.CurrentCell.RowIndex;
+            if (nRow < dataGridViewMissingVars.RowCount-1)
+            {
+                dataGridViewMissingVars.CurrentCell = dataGridViewMissingVars.Rows[++nRow].Cells[0];
+            }
+        }
+
+        private void bindingNavigatorMovePreviousItem_Click(object sender, EventArgs e)
+        {
+            int nRow = dataGridViewMissingVars.CurrentCell.RowIndex;
+            if (nRow > 0)
+            {
+                dataGridViewMissingVars.CurrentCell = dataGridViewMissingVars.Rows[--nRow].Cells[0];
+            }
+        }
+
+        private void bindingNavigatorMoveLastItem_Click(object sender, EventArgs e)
+        {
+            int nRow = dataGridViewMissingVars.CurrentCell.RowIndex;
+            if (nRow < dataGridViewMissingVars.RowCount - 1)
+            {
+                dataGridViewMissingVars.CurrentCell = dataGridViewMissingVars.Rows[dataGridViewMissingVars.RowCount - 1].Cells[0];
+            }
+        }
+
+        private void bindingNavigatorMoveFirstItem_Click(object sender, EventArgs e)
+        {
+            int nRow = dataGridViewMissingVars.CurrentCell.RowIndex;
+            if (nRow > 0)
+            {
+                dataGridViewMissingVars.CurrentCell = dataGridViewMissingVars.Rows[0].Cells[0];
+            }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialogSaveTxt.ShowDialog() == DialogResult.OK)
+            {
+                List<string> varNames = new List<string>();
+                foreach (var varstatus in this.varManagerDataSet.installStatus)
+                {
+                    if (varstatus.Installed) varNames.Add(varstatus.varName);
+                }
+                File.WriteAllLines(saveFileDialogSaveTxt.FileName, varNames.ToArray());
+            }
+        }
+        private void buttonSaveTxt_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialogSaveTxt.ShowDialog() == DialogResult.OK)
+            {
+                List<string> varlinktoList = new List<string>();
+                foreach (DataGridViewRow row in dataGridViewMissingVars.Rows)
+                {
+                    string missingvarname = row.Cells[0].Value.ToString();
+                    string destvarname = row.Cells[1].Value.ToString();
+                    if (!string.IsNullOrEmpty(destvarname))
+                    {
+                        varlinktoList.Add($"{missingvarname}|{destvarname}");
+                    }
+                }
+               
+                File.WriteAllLines(saveFileDialogSaveTxt.FileName, varlinktoList.ToArray());
+            }
+        }
+        private void buttonLoadTxt_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogLoadTXT.ShowDialog() == DialogResult.OK)
+            {
+                Dictionary<string,string> varlinktoDict = new Dictionary<string, string>();
+                foreach (string varlinkto in File.ReadAllLines(openFileDialogLoadTXT.FileName))
+                {
+                    string[] varlinktos = varlinkto.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (varlinktos.Length==2)
+                    {
+                        varlinktoDict[varlinktos[0]] = varlinktos[1];
+                    }
+                }
+                foreach (DataGridViewRow row in dataGridViewMissingVars.Rows)
+                {
+                    string missingvarname = row.Cells[0].Value.ToString();
+                    if (varlinktoDict.ContainsKey(missingvarname))
+                    {
+                        row.Cells[1].Value = varlinktoDict[missingvarname];
+                    }
+                }
+            }
+           
+        }
+
     }
 }

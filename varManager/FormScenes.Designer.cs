@@ -36,6 +36,8 @@ namespace varManager
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxCategory = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel7 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxPerPage = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButtonSceneFirst = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonScenePrev = new System.Windows.Forms.ToolStripButton();
             this.toolStripComboBoxScenePage = new System.Windows.Forms.ToolStripComboBox();
@@ -44,6 +46,8 @@ namespace varManager
             this.toolStripButtonSceneLast = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxLocation = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxHideFav = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxCreator = new System.Windows.Forms.ToolStripComboBox();
@@ -66,10 +70,6 @@ namespace varManager
             this.imageListScenes = new System.Windows.Forms.ImageList(this.components);
             this.listViewNormal = new System.Windows.Forms.ListView();
             this.listViewFav = new System.Windows.Forms.ListView();
-            this.varManagerDataSet = new varManager.varManagerDataSet();
-            this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
-            this.tableAdapterManager = new varManager.varManagerDataSetTableAdapters.TableAdapterManager();
             this.panelImage = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -78,16 +78,20 @@ namespace varManager
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backgroundWorkerFillListView = new System.ComponentModel.BackgroundWorker();
+            this.varManagerDataSet = new varManager.varManagerDataSet();
+            this.scenesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
+            this.tableAdapterManager = new varManager.varManagerDataSetTableAdapters.TableAdapterManager();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStripPreview.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scenesBindingSource)).BeginInit();
             this.panelImage.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scenesBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -111,10 +115,10 @@ namespace varManager
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1343, 742);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1655, 841);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // toolStripPreview
@@ -125,6 +129,8 @@ namespace varManager
             this.toolStripLabel3,
             this.toolStripComboBoxCategory,
             this.toolStripSeparator1,
+            this.toolStripLabel7,
+            this.toolStripComboBoxPerPage,
             this.toolStripButtonSceneFirst,
             this.toolStripButtonScenePrev,
             this.toolStripComboBoxScenePage,
@@ -133,6 +139,8 @@ namespace varManager
             this.toolStripButtonSceneLast,
             this.toolStripSeparator2,
             this.toolStripLabel4,
+            this.toolStripComboBoxLocation,
+            this.toolStripLabel6,
             this.toolStripComboBoxHideFav,
             this.toolStripLabel1,
             this.toolStripComboBoxCreator,
@@ -144,14 +152,14 @@ namespace varManager
             this.toolStripComboBoxOrderBy});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(1343, 28);
+            this.toolStripPreview.Size = new System.Drawing.Size(1655, 31);
             this.toolStripPreview.TabIndex = 3;
             this.toolStripPreview.Text = "toolStrip1";
             // 
             // toolStripLabel3
             // 
             this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(80, 25);
+            this.toolStripLabel3.Size = new System.Drawing.Size(80, 28);
             this.toolStripLabel3.Text = "Category:";
             // 
             // toolStripComboBoxCategory
@@ -163,20 +171,38 @@ namespace varManager
             "clothing",
             "hairstyle"});
             this.toolStripComboBoxCategory.Name = "toolStripComboBoxCategory";
-            this.toolStripComboBoxCategory.Size = new System.Drawing.Size(100, 28);
+            this.toolStripComboBoxCategory.Size = new System.Drawing.Size(100, 31);
             this.toolStripComboBoxCategory.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxCategory_SelectedIndexChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // toolStripLabel7
+            // 
+            this.toolStripLabel7.Name = "toolStripLabel7";
+            this.toolStripLabel7.Size = new System.Drawing.Size(113, 28);
+            this.toolStripLabel7.Text = "ItemsPerPage:";
+            // 
+            // toolStripComboBoxPerPage
+            // 
+            this.toolStripComboBoxPerPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxPerPage.Items.AddRange(new object[] {
+            "100",
+            "200",
+            "400",
+            "800"});
+            this.toolStripComboBoxPerPage.Name = "toolStripComboBoxPerPage";
+            this.toolStripComboBoxPerPage.Size = new System.Drawing.Size(80, 31);
+            this.toolStripComboBoxPerPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPerPage_SelectedIndexChanged);
             // 
             // toolStripButtonSceneFirst
             // 
             this.toolStripButtonSceneFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneFirst.Name = "toolStripButtonSceneFirst";
-            this.toolStripButtonSceneFirst.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonSceneFirst.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonSceneFirst.Text = "|<";
             this.toolStripButtonSceneFirst.Click += new System.EventHandler(this.toolStripButtonSceneFirst_Click);
             // 
@@ -185,7 +211,7 @@ namespace varManager
             this.toolStripButtonScenePrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonScenePrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonScenePrev.Name = "toolStripButtonScenePrev";
-            this.toolStripButtonScenePrev.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonScenePrev.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonScenePrev.Text = "<";
             this.toolStripButtonScenePrev.Click += new System.EventHandler(this.toolStripButtonScenePrev_Click);
             // 
@@ -193,13 +219,13 @@ namespace varManager
             // 
             this.toolStripComboBoxScenePage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxScenePage.Name = "toolStripComboBoxScenePage";
-            this.toolStripComboBoxScenePage.Size = new System.Drawing.Size(120, 28);
+            this.toolStripComboBoxScenePage.Size = new System.Drawing.Size(120, 31);
             this.toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxScenePage_SelectedIndexChanged);
             // 
             // toolStripLabelSceneCount
             // 
             this.toolStripLabelSceneCount.Name = "toolStripLabelSceneCount";
-            this.toolStripLabelSceneCount.Size = new System.Drawing.Size(34, 25);
+            this.toolStripLabelSceneCount.Size = new System.Drawing.Size(34, 28);
             this.toolStripLabelSceneCount.Text = "/{0}";
             // 
             // toolStripButtonSceneNext
@@ -207,7 +233,7 @@ namespace varManager
             this.toolStripButtonSceneNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneNext.Name = "toolStripButtonSceneNext";
-            this.toolStripButtonSceneNext.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonSceneNext.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonSceneNext.Text = ">";
             this.toolStripButtonSceneNext.Click += new System.EventHandler(this.toolStripButtonSceneNext_Click);
             // 
@@ -216,20 +242,37 @@ namespace varManager
             this.toolStripButtonSceneLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonSceneLast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSceneLast.Name = "toolStripButtonSceneLast";
-            this.toolStripButtonSceneLast.Size = new System.Drawing.Size(29, 25);
+            this.toolStripButtonSceneLast.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonSceneLast.Text = ">|";
             this.toolStripButtonSceneLast.Click += new System.EventHandler(this.toolStripButtonSceneLast_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripLabel4
             // 
             this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(72, 25);
-            this.toolStripLabel4.Text = "HideFav:";
+            this.toolStripLabel4.Size = new System.Drawing.Size(76, 28);
+            this.toolStripLabel4.Text = "Location:";
+            // 
+            // toolStripComboBoxLocation
+            // 
+            this.toolStripComboBoxLocation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxLocation.Items.AddRange(new object[] {
+            "____ALL",
+            "VarsLink",
+            "MissingVarLink"});
+            this.toolStripComboBoxLocation.Name = "toolStripComboBoxLocation";
+            this.toolStripComboBoxLocation.Size = new System.Drawing.Size(100, 31);
+            this.toolStripComboBoxLocation.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxLocation_SelectedIndexChanged);
+            // 
+            // toolStripLabel6
+            // 
+            this.toolStripLabel6.Name = "toolStripLabel6";
+            this.toolStripLabel6.Size = new System.Drawing.Size(72, 28);
+            this.toolStripLabel6.Text = "HideFav:";
             // 
             // toolStripComboBoxHideFav
             // 
@@ -240,49 +283,49 @@ namespace varManager
             "Normal",
             "Fav"});
             this.toolStripComboBoxHideFav.Name = "toolStripComboBoxHideFav";
-            this.toolStripComboBoxHideFav.Size = new System.Drawing.Size(100, 28);
+            this.toolStripComboBoxHideFav.Size = new System.Drawing.Size(100, 31);
             this.toolStripComboBoxHideFav.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxHideFav_SelectedIndexChanged);
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(68, 25);
+            this.toolStripLabel1.Size = new System.Drawing.Size(68, 28);
             this.toolStripLabel1.Text = "Creator:";
             // 
             // toolStripComboBoxCreator
             // 
             this.toolStripComboBoxCreator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxCreator.Name = "toolStripComboBoxCreator";
-            this.toolStripComboBoxCreator.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBoxCreator.Size = new System.Drawing.Size(121, 31);
             this.toolStripComboBoxCreator.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxCreator_SelectedIndexChanged);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripLabel2
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(50, 25);
+            this.toolStripLabel2.Size = new System.Drawing.Size(50, 28);
             this.toolStripLabel2.Text = "Filter:";
             // 
             // toolStripTextBoxFilter
             // 
             this.toolStripTextBoxFilter.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.toolStripTextBoxFilter.Name = "toolStripTextBoxFilter";
-            this.toolStripTextBoxFilter.Size = new System.Drawing.Size(160, 28);
+            this.toolStripTextBoxFilter.Size = new System.Drawing.Size(160, 31);
             this.toolStripTextBoxFilter.TextChanged += new System.EventHandler(this.toolStripTextBoxFilter_TextChanged);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripLabel5
             // 
             this.toolStripLabel5.Name = "toolStripLabel5";
-            this.toolStripLabel5.Size = new System.Drawing.Size(73, 25);
+            this.toolStripLabel5.Size = new System.Drawing.Size(73, 28);
             this.toolStripLabel5.Text = "OrderBy:";
             // 
             // toolStripComboBoxOrderBy
@@ -293,7 +336,7 @@ namespace varManager
             "VarName",
             "SceneName"});
             this.toolStripComboBoxOrderBy.Name = "toolStripComboBoxOrderBy";
-            this.toolStripComboBoxOrderBy.Size = new System.Drawing.Size(100, 28);
+            this.toolStripComboBoxOrderBy.Size = new System.Drawing.Size(100, 31);
             this.toolStripComboBoxOrderBy.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxOrderBy_SelectedIndexChanged);
             // 
             // panel5
@@ -302,17 +345,17 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(397, 68);
+            this.panel5.Location = new System.Drawing.Point(501, 77);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(74, 671);
+            this.panel5.Size = new System.Drawing.Size(74, 761);
             this.panel5.TabIndex = 4;
             // 
             // buttonRemoveHide
             // 
             this.buttonRemoveHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveHide.Location = new System.Drawing.Point(10, 417);
+            this.buttonRemoveHide.Location = new System.Drawing.Point(10, 473);
             this.buttonRemoveHide.Name = "buttonRemoveHide";
-            this.buttonRemoveHide.Size = new System.Drawing.Size(50, 32);
+            this.buttonRemoveHide.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveHide.TabIndex = 0;
             this.buttonRemoveHide.Text = ">>";
             this.toolTip1.SetToolTip(this.buttonRemoveHide, "Selected items in the Hide list will be moved to the Normal list");
@@ -322,9 +365,9 @@ namespace varManager
             // buttonAddHide
             // 
             this.buttonAddHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddHide.Location = new System.Drawing.Point(10, 205);
+            this.buttonAddHide.Location = new System.Drawing.Point(10, 232);
             this.buttonAddHide.Name = "buttonAddHide";
-            this.buttonAddHide.Size = new System.Drawing.Size(50, 32);
+            this.buttonAddHide.Size = new System.Drawing.Size(50, 36);
             this.buttonAddHide.TabIndex = 0;
             this.buttonAddHide.Text = "<<";
             this.toolTip1.SetToolTip(this.buttonAddHide, "Selected items in the normal list will be moved to the Hide list");
@@ -336,17 +379,17 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(871, 68);
+            this.panel6.Location = new System.Drawing.Point(1079, 77);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(74, 671);
+            this.panel6.Size = new System.Drawing.Size(74, 761);
             this.panel6.TabIndex = 5;
             // 
             // buttonAddFav
             // 
             this.buttonAddFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddFav.Location = new System.Drawing.Point(12, 205);
+            this.buttonAddFav.Location = new System.Drawing.Point(12, 232);
             this.buttonAddFav.Name = "buttonAddFav";
-            this.buttonAddFav.Size = new System.Drawing.Size(50, 32);
+            this.buttonAddFav.Size = new System.Drawing.Size(50, 36);
             this.buttonAddFav.TabIndex = 0;
             this.buttonAddFav.Text = ">>";
             this.toolTip1.SetToolTip(this.buttonAddFav, "Selected items in the normal list will be moved to the Fav list");
@@ -356,9 +399,9 @@ namespace varManager
             // buttonRemoveFav
             // 
             this.buttonRemoveFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveFav.Location = new System.Drawing.Point(12, 417);
+            this.buttonRemoveFav.Location = new System.Drawing.Point(12, 473);
             this.buttonRemoveFav.Name = "buttonRemoveFav";
-            this.buttonRemoveFav.Size = new System.Drawing.Size(50, 32);
+            this.buttonRemoveFav.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveFav.TabIndex = 0;
             this.buttonRemoveFav.Text = "<<";
             this.toolTip1.SetToolTip(this.buttonRemoveFav, "Selected items in the Fav list will be moved to the Normal list");
@@ -369,9 +412,9 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(177, 42);
+            this.label1.Location = new System.Drawing.Point(230, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 15);
+            this.label1.Size = new System.Drawing.Size(37, 17);
             this.label1.TabIndex = 6;
             this.label1.Text = "Hide";
             // 
@@ -379,9 +422,9 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(643, 42);
+            this.label2.Location = new System.Drawing.Point(799, 48);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 15);
+            this.label2.Size = new System.Drawing.Size(55, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Normal";
             // 
@@ -389,9 +432,9 @@ namespace varManager
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1130, 42);
+            this.label3.Location = new System.Drawing.Point(1390, 48);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 15);
+            this.label3.Size = new System.Drawing.Size(30, 17);
             this.label3.TabIndex = 6;
             this.label3.Text = "Fav";
             // 
@@ -400,9 +443,9 @@ namespace varManager
             this.listViewHide.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewHide.HideSelection = false;
             this.listViewHide.LargeImageList = this.imageListScenes;
-            this.listViewHide.Location = new System.Drawing.Point(3, 68);
+            this.listViewHide.Location = new System.Drawing.Point(3, 77);
             this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(388, 671);
+            this.listViewHide.Size = new System.Drawing.Size(492, 761);
             this.listViewHide.TabIndex = 7;
             this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
             this.listViewHide.UseCompatibleStateImageBehavior = false;
@@ -419,9 +462,9 @@ namespace varManager
             this.listViewNormal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewNormal.HideSelection = false;
             this.listViewNormal.LargeImageList = this.imageListScenes;
-            this.listViewNormal.Location = new System.Drawing.Point(477, 68);
+            this.listViewNormal.Location = new System.Drawing.Point(581, 77);
             this.listViewNormal.Name = "listViewNormal";
-            this.listViewNormal.Size = new System.Drawing.Size(388, 671);
+            this.listViewNormal.Size = new System.Drawing.Size(492, 761);
             this.listViewNormal.TabIndex = 7;
             this.listViewNormal.UseCompatibleStateImageBehavior = false;
             this.listViewNormal.ItemActivate += new System.EventHandler(this.listViewNormal_ItemActivate);
@@ -431,12 +474,83 @@ namespace varManager
             this.listViewFav.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFav.HideSelection = false;
             this.listViewFav.LargeImageList = this.imageListScenes;
-            this.listViewFav.Location = new System.Drawing.Point(951, 68);
+            this.listViewFav.Location = new System.Drawing.Point(1159, 77);
             this.listViewFav.Name = "listViewFav";
-            this.listViewFav.Size = new System.Drawing.Size(389, 671);
+            this.listViewFav.Size = new System.Drawing.Size(493, 761);
             this.listViewFav.TabIndex = 7;
             this.listViewFav.UseCompatibleStateImageBehavior = false;
             this.listViewFav.ItemActivate += new System.EventHandler(this.listViewFav_ItemActivate);
+            // 
+            // panelImage
+            // 
+            this.panelImage.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelImage.Controls.Add(this.tableLayoutPanel2);
+            this.panelImage.Location = new System.Drawing.Point(288, 130);
+            this.panelImage.Name = "panelImage";
+            this.panelImage.Size = new System.Drawing.Size(415, 141);
+            this.panelImage.TabIndex = 1;
+            this.panelImage.Visible = false;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.panel1, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.pictureBoxPreview, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(415, 141);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.tableLayoutPanel2.SetColumnSpan(this.panel1, 2);
+            this.panel1.Controls.Add(this.labelPreviewVarName);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 99);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(409, 39);
+            this.panel1.TabIndex = 0;
+            // 
+            // labelPreviewVarName
+            // 
+            this.labelPreviewVarName.AutoSize = true;
+            this.labelPreviewVarName.Location = new System.Drawing.Point(3, 11);
+            this.labelPreviewVarName.Name = "labelPreviewVarName";
+            this.labelPreviewVarName.Size = new System.Drawing.Size(46, 17);
+            this.labelPreviewVarName.TabIndex = 0;
+            this.labelPreviewVarName.Text = "label4";
+            // 
+            // pictureBoxPreview
+            // 
+            this.tableLayoutPanel2.SetColumnSpan(this.pictureBoxPreview, 2);
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(409, 90);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(602, 145);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(848, 28);
+            this.progressBar1.TabIndex = 9;
+            this.progressBar1.Visible = false;
+            // 
+            // backgroundWorkerFillListView
+            // 
+            this.backgroundWorkerFillListView.WorkerSupportsCancellation = true;
+            this.backgroundWorkerFillListView.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerFillListView_DoWork);
             // 
             // varManagerDataSet
             // 
@@ -457,89 +571,20 @@ namespace varManager
             this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
             this.tableAdapterManager.dependenciesTableAdapter = null;
             this.tableAdapterManager.installStatusTableAdapter = null;
+            this.tableAdapterManager.savedepensTableAdapter = null;
             this.tableAdapterManager.scenesTableAdapter = this.scenesTableAdapter;
             this.tableAdapterManager.UpdateOrder = varManager.varManagerDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             this.tableAdapterManager.varsTableAdapter = null;
             // 
-            // panelImage
-            // 
-            this.panelImage.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.panelImage.Controls.Add(this.tableLayoutPanel2);
-            this.panelImage.Location = new System.Drawing.Point(132, 115);
-            this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(415, 124);
-            this.panelImage.TabIndex = 1;
-            this.panelImage.Visible = false;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.panel1, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.pictureBoxPreview, 0, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(415, 124);
-            this.tableLayoutPanel2.TabIndex = 0;
-            // 
-            // panel1
-            // 
-            this.tableLayoutPanel2.SetColumnSpan(this.panel1, 2);
-            this.panel1.Controls.Add(this.labelPreviewVarName);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 87);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(409, 34);
-            this.panel1.TabIndex = 0;
-            // 
-            // labelPreviewVarName
-            // 
-            this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(3, 10);
-            this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(55, 15);
-            this.labelPreviewVarName.TabIndex = 0;
-            this.labelPreviewVarName.Text = "label4";
-            // 
-            // pictureBoxPreview
-            // 
-            this.tableLayoutPanel2.SetColumnSpan(this.pictureBoxPreview, 2);
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(409, 78);
-            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
-            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(602, 128);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(536, 25);
-            this.progressBar1.TabIndex = 9;
-            this.progressBar1.Visible = false;
-            // 
-            // backgroundWorkerFillListView
-            // 
-            this.backgroundWorkerFillListView.WorkerSupportsCancellation = true;
-            this.backgroundWorkerFillListView.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerFillListView_DoWork);
-            // 
             // FormScenes
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1343, 742);
+            this.ClientSize = new System.Drawing.Size(1655, 841);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormScenes";
             this.Text = "Hide &  Fav";
@@ -551,13 +596,13 @@ namespace varManager
             this.toolStripPreview.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scenesBindingSource)).EndInit();
             this.panelImage.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scenesBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -611,5 +656,9 @@ namespace varManager
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorkerFillListView;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxLocation;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel6;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxPerPage;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel7;
     }
 }

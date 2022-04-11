@@ -13,6 +13,31 @@ namespace varManager
 {
     static class Comm
     {
+        public static void  DirectoryMoveAll(string sourceDir,string destDir)
+        {
+            if (Directory.Exists(destDir))
+            {
+                foreach (string sourcefile in Directory.GetFiles(sourceDir, "*", SearchOption.TopDirectoryOnly))
+                {
+                    string destfile = sourcefile.Replace(sourceDir, destDir);
+                    if (!File.Exists(destfile))
+                        File.Move(sourcefile, destfile);
+                }
+                foreach (string sourcesubdir in Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly))
+                {
+                    string destsubdir = sourcesubdir.Replace(sourceDir, destDir);
+                    DirectoryMoveAll(sourcesubdir, destsubdir);
+                }
+                if((Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories).Length<=0)&&(Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly).Length <= 0))
+                {
+                    Directory.Delete(sourceDir);
+                }
+            }
+            else
+            { 
+                Directory.Move(sourceDir, destDir); 
+            }
+        }
 
         [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool CreateHardLink(
@@ -134,7 +159,7 @@ namespace varManager
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern IntPtr CreateFile(
             string fileName,
-            [MarshalAs(UnmanagedType.U4)] FileAccess fileAccess,
+            [MarshalAs(UnmanagedType.U4)] uint fileAccess,
             [MarshalAs(UnmanagedType.U4)] FileShare fileShare,
             int securityAttributes,
             [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
@@ -176,9 +201,6 @@ namespace varManager
             JunctionPoint = 3
         }
 
-       
-       
-
         /// <summary>
         /// Takes a full path to a reparse point and finds the target.
         /// </summary>
@@ -213,7 +235,7 @@ namespace varManager
             if (success)
             {
                 // Open the file and get its handle
-                IntPtr handle = CreateFile(path, FileAccess.Read, FileShare.None, 0, FileMode.Open, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
+                IntPtr handle = CreateFile(path, 0x80000000, FileShare.None, 0, FileMode.Open, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
                 lastError = Marshal.GetLastWin32Error();
                 if (handle.ToInt32() >= 0)
                 {
@@ -309,6 +331,114 @@ namespace varManager
             } 
             return normalisedTarget;
         }
+
+        public static bool SetSymboLinkFileTime(string path, DateTime createtime, DateTime lastwritetime)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path) && path.Length > 2 && path[1] == ':' && path[2] == '\\');
+            bool success;
+            int lastError;
+            // Apparently we need to have backup privileges
+            IntPtr token;
+            TOKEN_PRIVILEGES tokenPrivileges = new TOKEN_PRIVILEGES();
+            tokenPrivileges.Privileges = new LUID_AND_ATTRIBUTES[1];
+            success = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, out token);
+            lastError = Marshal.GetLastWin32Error();
+            if (success)
+            {
+                success = LookupPrivilegeValue(null, SE_BACKUP_NAME, out tokenPrivileges.Privileges[0].Luid);			// null for local system
+                lastError = Marshal.GetLastWin32Error();
+                if (success)
+                {
+                    tokenPrivileges.PrivilegeCount = 1;
+                    tokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+                    success = AdjustTokenPrivileges(token, false, ref tokenPrivileges, Marshal.SizeOf(tokenPrivileges), IntPtr.Zero, IntPtr.Zero);
+                    lastError = Marshal.GetLastWin32Error();
+                }
+                CloseHandle(token);
+            }
+
+            if (success)
+            {
+                // Open the file and get its handle
+                IntPtr handle = CreateFile(path, 0x40000000, FileShare.ReadWrite | FileShare.Delete,
+                    0, FileMode.Open, 0x00200000, IntPtr.Zero);
+                lastError = Marshal.GetLastWin32Error();
+                if (handle.ToInt32() >= 0)
+                {
+                    var basicInfo =  new FileInformation();
+                    //basicInfo.FILE_BASIC_INFO.CreationTime = createtime.ToFileTime();
+                    //basicInfo.FILE_BASIC_INFO.LastWriteTime = lastwritetime.ToFileTime();
+                    basicInfo.FILE_BASIC_INFO = new FILE_BASIC_INFO()
+                    {
+                        CreationTime = createtime.ToFileTime(),
+                        LastAccessTime = -1,
+                        LastWriteTime = lastwritetime.ToFileTime(),
+                        ChangeTime = -1,
+                        FileAttributes = 0
+                    };
+                    success = SetFileInformationByHandle(handle, FileInformationClass.FileBasicInfo, ref basicInfo, Marshal.SizeOf(basicInfo.FILE_BASIC_INFO));
+                    if (!success)
+                    {
+                        throw new Win32Exception(Marshal.GetLastWin32Error());
+                    }
+                    CloseHandle(handle);
+                }
+            }
+            return success;
+        }
+
+        enum FileInformationClass : int
+        {
+            FileBasicInfo = 0,
+            FileStandardInfo = 1,
+            FileNameInfo = 2,
+            FileRenameInfo = 3,
+            FileDispositionInfo = 4,
+            FileAllocationInfo = 5,
+            FileEndOfFileInfo = 6,
+            FileStreamInfo = 7,
+            FileCompressionInfo = 8,
+            FileAttributeTagInfo = 9,
+            FileIdBothDirectoryInfo = 10, // 0xA
+            FileIdBothDirectoryRestartInfo = 11, // 0xB
+            FileIoPriorityHintInfo = 12, // 0xC
+            FileRemoteProtocolInfo = 13, // 0xD
+            FileFullDirectoryInfo = 14, // 0xE
+            FileFullDirectoryRestartInfo = 15, // 0xF
+            FileStorageInfo = 16, // 0x10
+            FileAlignmentInfo = 17, // 0x11
+            FileIdInfo = 18, // 0x12
+            FileIdExtdDirectoryInfo = 19, // 0x13
+            FileIdExtdDirectoryRestartInfo = 20, // 0x14
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FILE_BASIC_INFO
+        {
+            public Int64 CreationTime;
+            public Int64 LastAccessTime;
+            public Int64 LastWriteTime;
+            public Int64 ChangeTime;
+            public UInt32 FileAttributes;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        struct FILE_DISPOSITION_INFO
+        {
+            public bool DeleteFile;
+        }
+        [StructLayout(LayoutKind.Explicit)]
+        struct FileInformation
+        {
+            [FieldOffset(0)]
+            public FILE_BASIC_INFO FILE_BASIC_INFO;
+            [FieldOffset(0)]
+            public FILE_DISPOSITION_INFO FILE_DISPOSITION_INFO;
+        }
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        private static extern bool SetFileInformationByHandle(IntPtr hFile, 
+            FileInformationClass FileInformationClass, 
+            ref FileInformation FileInformation, 
+            Int32 dwBufferSize);
+
 
     }
 }

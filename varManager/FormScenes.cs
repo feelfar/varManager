@@ -17,6 +17,7 @@ namespace varManager
     {
         private static string previewpicsDirName = "___PreviewPics___";
         private static string installLinkDirName = "___VarsLink___";
+        private static string missingLinkDirName = "___MissingVarLink___";
         private static int maxitemPerpage = 100;
         private string strOrderBy = "_";
         public FormScenes()
@@ -33,17 +34,21 @@ namespace varManager
         }
         public struct InstalledScene
         {
-            public InstalledScene(string atomtype, string varname, DateTime installdate, string scenepath, string picpath, int hidefav)
+            public InstalledScene(string location,string atomtype, string varname, string destvarname, DateTime installdate, string scenepath, string picpath, int hidefav)
             {
+                Location = location;
                 Atomtype = atomtype;
                 Varname = varname;
+                Destvarname = destvarname;
                 Installdate = installdate;
                 Scenepath = scenepath;
                 Picpath = picpath;
                 Hidefav = hidefav;
             }
+            public string Location { get; }
             public string Atomtype { get; }
             public string Varname { get; }
+            public string Destvarname { get; }
             public DateTime Installdate { get; }
             public string Scenepath { get; }
             public string Picpath { get; }
@@ -60,6 +65,8 @@ namespace varManager
         {
             panelImage.Dock = DockStyle.Fill;
             toolStripComboBoxCategory.SelectedIndex = 0;
+            toolStripComboBoxPerPage.SelectedIndex = 0;
+            toolStripComboBoxLocation.SelectedIndex = 0;
             toolStripComboBoxHideFav.SelectedIndex = 0;
             toolStripComboBoxOrderBy.SelectedIndex = 0;
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
@@ -81,13 +88,37 @@ namespace varManager
             foreach (var fileinfo in fileinfos)
             {
                 string varName = Path.GetFileNameWithoutExtension(fileinfo.Name);
-                foreach (var varscene in this.varManagerDataSet.scenes.Where(q => q.varName == varName))
+                string destfilename = varName;
+                if (fileinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 {
-                    listInstalledScene.Add(new InstalledScene(varscene.atomType, varscene.varName, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, 0));
+                    destfilename = Comm.ReparsePoint(fileinfo.FullName);
+                    destfilename = Path.GetFileNameWithoutExtension(destfilename);
                 }
-                i++;
+                foreach (var varscene in this.varManagerDataSet.scenes.Where(q => q.varName == destfilename))
+                {
+                    listInstalledScene.Add(new InstalledScene("VarsLink", varscene.atomType, varName, destfilename, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, 0));
+                }
                 progressBar1.Value = (i * 100 / fileinfos.Count());
-               
+                i++;
+            }
+            DirectoryInfo dirinfoMissinglink = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages", missingLinkDirName));
+            IOrderedEnumerable<FileSystemInfo> fileinfosmisslink = dirinfoMissinglink.GetFileSystemInfos("*.var").OrderBy(f => f.CreationTime);
+            i = 0;
+            foreach (var fileinfo in fileinfosmisslink)
+            {
+                string varName = Path.GetFileNameWithoutExtension(fileinfo.Name);
+                string destfilename = varName;
+                if (fileinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    destfilename = Comm.ReparsePoint(fileinfo.FullName);
+                    destfilename = Path.GetFileNameWithoutExtension(destfilename);
+                }
+                foreach (var varscene in this.varManagerDataSet.scenes.Where(q => q.varName == destfilename))
+                {
+                    listInstalledScene.Add(new InstalledScene("MissingVarLink", varscene.atomType, varName, destfilename, fileinfo.CreationTime, varscene.scenePath, varscene.previewPic, 0));
+                }
+                progressBar1.Value = (i * 100 / fileinfos.Count());
+                i++;
             }
             progressBar1.Visible = false;
         }
@@ -116,6 +147,10 @@ namespace varManager
             {
                 if (!string.IsNullOrWhiteSpace(toolStripComboBoxCategory.Text))
                     listFilterScene1 = listInstalledScene.Where(q => q.Atomtype == toolStripComboBoxCategory.Text).ToList();
+                if (toolStripComboBoxLocation.Text != "____ALL")
+                {
+                    listFilterScene1 = listFilterScene1.Where(q =>q.Location== toolStripComboBoxLocation.Text).ToList();
+                }
             }
             if (filterAt >= 9)
             {
@@ -278,7 +313,7 @@ namespace varManager
                 string scenePath = listFilterCreatorScene[cur].Scenepath;
                 string sceneName = listFilterCreatorScene[cur].Varname + " - " + Path.GetFileNameWithoutExtension(scenePath);
                 Image previwPic = Image.FromHbitmap(Properties.Resources.icoVarManager.ToBitmap().GetHbitmap());
-                string picpath = GetPreviewPicPath(listFilterCreatorScene[cur].Atomtype, listFilterCreatorScene[cur].Varname, listFilterCreatorScene[cur].Picpath);
+                string picpath = GetPreviewPicPath(listFilterCreatorScene[cur].Atomtype, listFilterCreatorScene[cur].Destvarname, listFilterCreatorScene[cur].Picpath);
                 if(!string.IsNullOrEmpty(picpath))
                       previwPic = Image.FromFile(picpath);
                 
@@ -553,5 +588,16 @@ namespace varManager
             }
         }
 
+        private void toolStripComboBoxLocation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterVars();
+        }
+
+        private void toolStripComboBoxPerPage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            maxitemPerpage = 100;
+            int.TryParse(toolStripComboBoxPerPage.Text, out maxitemPerpage);
+            FilterVarsCreator();
+        }
     }
 }
