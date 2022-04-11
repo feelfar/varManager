@@ -37,15 +37,6 @@ namespace varManager
             this.labelWarning = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.dataGridViewVars = new System.Windows.Forms.DataGridView();
-            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.varManagerDataSet = new varManager.varManagerDataSet();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
@@ -74,6 +65,17 @@ namespace varManager
             this.dependenciesTableAdapter = new varManager.varManagerDataSetTableAdapters.dependenciesTableAdapter();
             this.tableAdapterManager = new varManager.varManagerDataSetTableAdapters.TableAdapterManager();
             this.backgroundWorkerPreview = new System.ComponentModel.BackgroundWorker();
+            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.metaDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewVars)).BeginInit();
@@ -163,6 +165,8 @@ namespace varManager
             this.dataGridViewVars.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewVars.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
+            this.metaDate,
+            this.varDate,
             this.size,
             this.scenesDataGridViewTextBoxColumn,
             this.looksDataGridViewTextBoxColumn,
@@ -183,90 +187,6 @@ namespace varManager
             this.dataGridViewVars.Size = new System.Drawing.Size(586, 239);
             this.dataGridViewVars.TabIndex = 1;
             this.dataGridViewVars.SelectionChanged += new System.EventHandler(this.dataGridViewVars_SelectionChanged);
-            // 
-            // varNameDataGridViewTextBoxColumn
-            // 
-            this.varNameDataGridViewTextBoxColumn.DataPropertyName = "varName";
-            this.varNameDataGridViewTextBoxColumn.HeaderText = "varName";
-            this.varNameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.varNameDataGridViewTextBoxColumn.Name = "varNameDataGridViewTextBoxColumn";
-            this.varNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.varNameDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // size
-            // 
-            this.size.DataPropertyName = "size";
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.size.DefaultCellStyle = dataGridViewCellStyle1;
-            this.size.HeaderText = "fsize(MB)";
-            this.size.MinimumWidth = 6;
-            this.size.Name = "size";
-            this.size.ReadOnly = true;
-            this.size.Width = 80;
-            // 
-            // scenesDataGridViewTextBoxColumn
-            // 
-            this.scenesDataGridViewTextBoxColumn.DataPropertyName = "scenes";
-            this.scenesDataGridViewTextBoxColumn.HeaderText = "scenes";
-            this.scenesDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.scenesDataGridViewTextBoxColumn.Name = "scenesDataGridViewTextBoxColumn";
-            this.scenesDataGridViewTextBoxColumn.ReadOnly = true;
-            this.scenesDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // looksDataGridViewTextBoxColumn
-            // 
-            this.looksDataGridViewTextBoxColumn.DataPropertyName = "looks";
-            this.looksDataGridViewTextBoxColumn.HeaderText = "looks";
-            this.looksDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.looksDataGridViewTextBoxColumn.Name = "looksDataGridViewTextBoxColumn";
-            this.looksDataGridViewTextBoxColumn.ReadOnly = true;
-            this.looksDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // clothingDataGridViewTextBoxColumn
-            // 
-            this.clothingDataGridViewTextBoxColumn.DataPropertyName = "clothing";
-            this.clothingDataGridViewTextBoxColumn.HeaderText = "clothing";
-            this.clothingDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.clothingDataGridViewTextBoxColumn.Name = "clothingDataGridViewTextBoxColumn";
-            this.clothingDataGridViewTextBoxColumn.ReadOnly = true;
-            this.clothingDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // hairstyleDataGridViewTextBoxColumn
-            // 
-            this.hairstyleDataGridViewTextBoxColumn.DataPropertyName = "hairstyle";
-            this.hairstyleDataGridViewTextBoxColumn.HeaderText = "hairstyle";
-            this.hairstyleDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.hairstyleDataGridViewTextBoxColumn.Name = "hairstyleDataGridViewTextBoxColumn";
-            this.hairstyleDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hairstyleDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // pluginsDataGridViewTextBoxColumn
-            // 
-            this.pluginsDataGridViewTextBoxColumn.DataPropertyName = "plugins";
-            this.pluginsDataGridViewTextBoxColumn.HeaderText = "plugins";
-            this.pluginsDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.pluginsDataGridViewTextBoxColumn.Name = "pluginsDataGridViewTextBoxColumn";
-            this.pluginsDataGridViewTextBoxColumn.ReadOnly = true;
-            this.pluginsDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // assetsDataGridViewTextBoxColumn
-            // 
-            this.assetsDataGridViewTextBoxColumn.DataPropertyName = "assets";
-            this.assetsDataGridViewTextBoxColumn.HeaderText = "assets";
-            this.assetsDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.assetsDataGridViewTextBoxColumn.Name = "assetsDataGridViewTextBoxColumn";
-            this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
-            this.assetsDataGridViewTextBoxColumn.Width = 40;
-            // 
-            // Installed
-            // 
-            this.Installed.DataPropertyName = "Installed";
-            this.Installed.HeaderText = "Installed";
-            this.Installed.MinimumWidth = 6;
-            this.Installed.Name = "Installed";
-            this.Installed.ReadOnly = true;
-            this.Installed.Width = 40;
             // 
             // varManagerDataSet
             // 
@@ -540,6 +460,108 @@ namespace varManager
             this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
             this.backgroundWorkerPreview.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerPreview_DoWork);
             // 
+            // varNameDataGridViewTextBoxColumn
+            // 
+            this.varNameDataGridViewTextBoxColumn.DataPropertyName = "varName";
+            this.varNameDataGridViewTextBoxColumn.HeaderText = "varName";
+            this.varNameDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.varNameDataGridViewTextBoxColumn.Name = "varNameDataGridViewTextBoxColumn";
+            this.varNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.varNameDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // metaDate
+            // 
+            this.metaDate.DataPropertyName = "metaDate";
+            this.metaDate.HeaderText = "Date";
+            this.metaDate.MinimumWidth = 6;
+            this.metaDate.Name = "metaDate";
+            this.metaDate.ReadOnly = true;
+            this.metaDate.Width = 80;
+            // 
+            // varDate
+            // 
+            this.varDate.DataPropertyName = "varDate";
+            this.varDate.HeaderText = "varDate";
+            this.varDate.MinimumWidth = 6;
+            this.varDate.Name = "varDate";
+            this.varDate.ReadOnly = true;
+            this.varDate.Width = 80;
+            // 
+            // size
+            // 
+            this.size.DataPropertyName = "size";
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.size.DefaultCellStyle = dataGridViewCellStyle1;
+            this.size.HeaderText = "fsize(MB)";
+            this.size.MinimumWidth = 6;
+            this.size.Name = "size";
+            this.size.ReadOnly = true;
+            this.size.Width = 80;
+            // 
+            // scenesDataGridViewTextBoxColumn
+            // 
+            this.scenesDataGridViewTextBoxColumn.DataPropertyName = "scenes";
+            this.scenesDataGridViewTextBoxColumn.HeaderText = "scenes";
+            this.scenesDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.scenesDataGridViewTextBoxColumn.Name = "scenesDataGridViewTextBoxColumn";
+            this.scenesDataGridViewTextBoxColumn.ReadOnly = true;
+            this.scenesDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // looksDataGridViewTextBoxColumn
+            // 
+            this.looksDataGridViewTextBoxColumn.DataPropertyName = "looks";
+            this.looksDataGridViewTextBoxColumn.HeaderText = "looks";
+            this.looksDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.looksDataGridViewTextBoxColumn.Name = "looksDataGridViewTextBoxColumn";
+            this.looksDataGridViewTextBoxColumn.ReadOnly = true;
+            this.looksDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // clothingDataGridViewTextBoxColumn
+            // 
+            this.clothingDataGridViewTextBoxColumn.DataPropertyName = "clothing";
+            this.clothingDataGridViewTextBoxColumn.HeaderText = "clothing";
+            this.clothingDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.clothingDataGridViewTextBoxColumn.Name = "clothingDataGridViewTextBoxColumn";
+            this.clothingDataGridViewTextBoxColumn.ReadOnly = true;
+            this.clothingDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // hairstyleDataGridViewTextBoxColumn
+            // 
+            this.hairstyleDataGridViewTextBoxColumn.DataPropertyName = "hairstyle";
+            this.hairstyleDataGridViewTextBoxColumn.HeaderText = "hairstyle";
+            this.hairstyleDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.hairstyleDataGridViewTextBoxColumn.Name = "hairstyleDataGridViewTextBoxColumn";
+            this.hairstyleDataGridViewTextBoxColumn.ReadOnly = true;
+            this.hairstyleDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // pluginsDataGridViewTextBoxColumn
+            // 
+            this.pluginsDataGridViewTextBoxColumn.DataPropertyName = "plugins";
+            this.pluginsDataGridViewTextBoxColumn.HeaderText = "plugins";
+            this.pluginsDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.pluginsDataGridViewTextBoxColumn.Name = "pluginsDataGridViewTextBoxColumn";
+            this.pluginsDataGridViewTextBoxColumn.ReadOnly = true;
+            this.pluginsDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // assetsDataGridViewTextBoxColumn
+            // 
+            this.assetsDataGridViewTextBoxColumn.DataPropertyName = "assets";
+            this.assetsDataGridViewTextBoxColumn.HeaderText = "assets";
+            this.assetsDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.assetsDataGridViewTextBoxColumn.Name = "assetsDataGridViewTextBoxColumn";
+            this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
+            this.assetsDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // Installed
+            // 
+            this.Installed.DataPropertyName = "Installed";
+            this.Installed.HeaderText = "Installed";
+            this.Installed.MinimumWidth = 6;
+            this.Installed.Name = "Installed";
+            this.Installed.ReadOnly = true;
+            this.Installed.Width = 40;
+            // 
             // FormUninstallVars
             // 
             this.AcceptButton = this.buttonOK;
@@ -610,7 +632,8 @@ namespace varManager
         private System.Windows.Forms.ToolStripButton toolStripButtonPreviewLast;
         private System.ComponentModel.BackgroundWorker backgroundWorkerPreview;
         private System.Windows.Forms.DataGridViewTextBoxColumn varNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn createDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn metaDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn varDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn size;
         private System.Windows.Forms.DataGridViewTextBoxColumn scenesDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn looksDataGridViewTextBoxColumn;

@@ -46,7 +46,12 @@ namespace varManager
         private void buttonSetting_Click(object sender, EventArgs e)
         {
             FormSettings formSettings = new FormSettings();
-            formSettings.ShowDialog();
+            if (formSettings.ShowDialog() == DialogResult.OK) 
+            {
+                Application.Restart();
+                Environment.Exit(0);
+            }
+            
         }
         private static bool ComplyVarFile(string varfile)
         {

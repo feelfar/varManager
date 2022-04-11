@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -536,9 +536,9 @@ namespace varManager
             // sizeDataGridViewTextBoxColumn
             // 
             this.sizeDataGridViewTextBoxColumn.DataPropertyName = "size";
-            dataGridViewCellStyle4.Format = "N2";
-            dataGridViewCellStyle4.NullValue = null;
-            this.sizeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.sizeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
             this.sizeDataGridViewTextBoxColumn.HeaderText = "size(MB)";
             this.sizeDataGridViewTextBoxColumn.MinimumWidth = 6;
             this.sizeDataGridViewTextBoxColumn.Name = "sizeDataGridViewTextBoxColumn";
@@ -856,7 +856,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(305, 3);
+            this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(153, 25);
             this.comboBoxCreater.TabIndex = 5;
@@ -1022,7 +1022,7 @@ namespace varManager
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(106, 28);
+            this.toolStripLabel1.Size = new System.Drawing.Size(106, 29);
             this.toolStripLabel1.Text = "PreviewType:";
             // 
             // toolStripComboBoxPreviewType
@@ -1036,20 +1036,20 @@ namespace varManager
             "hairstyle",
             "assets"});
             this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
-            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 32);
             this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 32);
             // 
             // toolStripButtonPreviewFirst
             // 
             this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 29);
             this.toolStripButtonPreviewFirst.Text = "|<";
             this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
             // 
@@ -1058,7 +1058,7 @@ namespace varManager
             this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 29);
             this.toolStripButtonPreviewPrev.Text = "<";
             this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
             // 
@@ -1066,13 +1066,13 @@ namespace varManager
             // 
             this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
             this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
             // 
             // toolStripLabelPreviewCountItem
             // 
             this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 28);
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 20);
             this.toolStripLabelPreviewCountItem.Text = "/{0}";
             // 
             // toolStripButtonPreviewNext
@@ -1080,7 +1080,7 @@ namespace varManager
             this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 24);
             this.toolStripButtonPreviewNext.Text = ">";
             this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
             // 
@@ -1089,7 +1089,7 @@ namespace varManager
             this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 24);
             this.toolStripButtonPreviewLast.Text = ">|";
             this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
             // 
