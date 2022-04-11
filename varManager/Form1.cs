@@ -2166,6 +2166,24 @@ namespace varManager
            
         }
 
+        private void buttonPacksRename_Click(object sender, EventArgs e)
+        {
+            string curswitch = (string)comboBoxPacksSwitch.SelectedItem;
+            if (!string.IsNullOrEmpty(curswitch) && curswitch != "default")
+            {
+                FormSwitchRename formSwitchRename = new FormSwitchRename();
+                formSwitchRename.OldName = curswitch;
+                if (formSwitchRename.ShowDialog()== DialogResult.OK)
+                {
+                    string newName = formSwitchRename.NewName;
+                    string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
+                    DirectoryInfo diswitch = new DirectoryInfo(Path.Combine(packsSwitchpath, curswitch));
+                    diswitch.MoveTo(Path.Combine(packsSwitchpath, newName));
+                    comboBoxPacksSwitch.Items[comboBoxPacksSwitch.SelectedIndex] = newName;
+                    this.varpacksSwitch(newName);
+                }
+            }
+        }
 
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {

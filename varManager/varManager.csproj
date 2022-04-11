@@ -105,6 +105,12 @@
     <Compile Include="FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormSwitchRename.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSwitchRename.Designer.cs">
+      <DependentUpon>FormSwitchRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSwitchAdd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSwitchRename.resx">
+      <DependentUpon>FormSwitchRename.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSwitchAdd.resx">
       <DependentUpon>FormSwitchAdd.cs</DependentUpon>

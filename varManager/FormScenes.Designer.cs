@@ -115,10 +115,10 @@ namespace varManager
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1655, 742);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1655, 841);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // toolStripPreview
@@ -345,17 +345,17 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(501, 68);
+            this.panel5.Location = new System.Drawing.Point(501, 77);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(74, 671);
+            this.panel5.Size = new System.Drawing.Size(74, 761);
             this.panel5.TabIndex = 4;
             // 
             // buttonRemoveHide
             // 
             this.buttonRemoveHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveHide.Location = new System.Drawing.Point(10, 417);
+            this.buttonRemoveHide.Location = new System.Drawing.Point(10, 473);
             this.buttonRemoveHide.Name = "buttonRemoveHide";
-            this.buttonRemoveHide.Size = new System.Drawing.Size(50, 32);
+            this.buttonRemoveHide.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveHide.TabIndex = 0;
             this.buttonRemoveHide.Text = ">>";
             this.toolTip1.SetToolTip(this.buttonRemoveHide, "Selected items in the Hide list will be moved to the Normal list");
@@ -365,9 +365,9 @@ namespace varManager
             // buttonAddHide
             // 
             this.buttonAddHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddHide.Location = new System.Drawing.Point(10, 205);
+            this.buttonAddHide.Location = new System.Drawing.Point(10, 232);
             this.buttonAddHide.Name = "buttonAddHide";
-            this.buttonAddHide.Size = new System.Drawing.Size(50, 32);
+            this.buttonAddHide.Size = new System.Drawing.Size(50, 36);
             this.buttonAddHide.TabIndex = 0;
             this.buttonAddHide.Text = "<<";
             this.toolTip1.SetToolTip(this.buttonAddHide, "Selected items in the normal list will be moved to the Hide list");
@@ -379,17 +379,17 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(1079, 68);
+            this.panel6.Location = new System.Drawing.Point(1079, 77);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(74, 671);
+            this.panel6.Size = new System.Drawing.Size(74, 761);
             this.panel6.TabIndex = 5;
             // 
             // buttonAddFav
             // 
             this.buttonAddFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddFav.Location = new System.Drawing.Point(12, 205);
+            this.buttonAddFav.Location = new System.Drawing.Point(12, 232);
             this.buttonAddFav.Name = "buttonAddFav";
-            this.buttonAddFav.Size = new System.Drawing.Size(50, 32);
+            this.buttonAddFav.Size = new System.Drawing.Size(50, 36);
             this.buttonAddFav.TabIndex = 0;
             this.buttonAddFav.Text = ">>";
             this.toolTip1.SetToolTip(this.buttonAddFav, "Selected items in the normal list will be moved to the Fav list");
@@ -399,9 +399,9 @@ namespace varManager
             // buttonRemoveFav
             // 
             this.buttonRemoveFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveFav.Location = new System.Drawing.Point(12, 417);
+            this.buttonRemoveFav.Location = new System.Drawing.Point(12, 473);
             this.buttonRemoveFav.Name = "buttonRemoveFav";
-            this.buttonRemoveFav.Size = new System.Drawing.Size(50, 32);
+            this.buttonRemoveFav.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveFav.TabIndex = 0;
             this.buttonRemoveFav.Text = "<<";
             this.toolTip1.SetToolTip(this.buttonRemoveFav, "Selected items in the Fav list will be moved to the Normal list");
@@ -412,9 +412,9 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(229, 42);
+            this.label1.Location = new System.Drawing.Point(230, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 15);
+            this.label1.Size = new System.Drawing.Size(37, 17);
             this.label1.TabIndex = 6;
             this.label1.Text = "Hide";
             // 
@@ -422,9 +422,9 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(799, 42);
+            this.label2.Location = new System.Drawing.Point(799, 48);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 15);
+            this.label2.Size = new System.Drawing.Size(55, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Normal";
             // 
@@ -432,9 +432,9 @@ namespace varManager
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1390, 42);
+            this.label3.Location = new System.Drawing.Point(1390, 48);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 15);
+            this.label3.Size = new System.Drawing.Size(30, 17);
             this.label3.TabIndex = 6;
             this.label3.Text = "Fav";
             // 
@@ -443,9 +443,9 @@ namespace varManager
             this.listViewHide.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewHide.HideSelection = false;
             this.listViewHide.LargeImageList = this.imageListScenes;
-            this.listViewHide.Location = new System.Drawing.Point(3, 68);
+            this.listViewHide.Location = new System.Drawing.Point(3, 77);
             this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(492, 671);
+            this.listViewHide.Size = new System.Drawing.Size(492, 761);
             this.listViewHide.TabIndex = 7;
             this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
             this.listViewHide.UseCompatibleStateImageBehavior = false;
@@ -462,9 +462,9 @@ namespace varManager
             this.listViewNormal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewNormal.HideSelection = false;
             this.listViewNormal.LargeImageList = this.imageListScenes;
-            this.listViewNormal.Location = new System.Drawing.Point(581, 68);
+            this.listViewNormal.Location = new System.Drawing.Point(581, 77);
             this.listViewNormal.Name = "listViewNormal";
-            this.listViewNormal.Size = new System.Drawing.Size(492, 671);
+            this.listViewNormal.Size = new System.Drawing.Size(492, 761);
             this.listViewNormal.TabIndex = 7;
             this.listViewNormal.UseCompatibleStateImageBehavior = false;
             this.listViewNormal.ItemActivate += new System.EventHandler(this.listViewNormal_ItemActivate);
@@ -474,9 +474,9 @@ namespace varManager
             this.listViewFav.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFav.HideSelection = false;
             this.listViewFav.LargeImageList = this.imageListScenes;
-            this.listViewFav.Location = new System.Drawing.Point(1159, 68);
+            this.listViewFav.Location = new System.Drawing.Point(1159, 77);
             this.listViewFav.Name = "listViewFav";
-            this.listViewFav.Size = new System.Drawing.Size(493, 671);
+            this.listViewFav.Size = new System.Drawing.Size(493, 761);
             this.listViewFav.TabIndex = 7;
             this.listViewFav.UseCompatibleStateImageBehavior = false;
             this.listViewFav.ItemActivate += new System.EventHandler(this.listViewFav_ItemActivate);
@@ -485,9 +485,9 @@ namespace varManager
             // 
             this.panelImage.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panelImage.Controls.Add(this.tableLayoutPanel2);
-            this.panelImage.Location = new System.Drawing.Point(288, 115);
+            this.panelImage.Location = new System.Drawing.Point(288, 130);
             this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(415, 124);
+            this.panelImage.Size = new System.Drawing.Size(415, 141);
             this.panelImage.TabIndex = 1;
             this.panelImage.Visible = false;
             // 
@@ -503,8 +503,8 @@ namespace varManager
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(415, 124);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(415, 141);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel1
@@ -512,17 +512,17 @@ namespace varManager
             this.tableLayoutPanel2.SetColumnSpan(this.panel1, 2);
             this.panel1.Controls.Add(this.labelPreviewVarName);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 87);
+            this.panel1.Location = new System.Drawing.Point(3, 99);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(409, 34);
+            this.panel1.Size = new System.Drawing.Size(409, 39);
             this.panel1.TabIndex = 0;
             // 
             // labelPreviewVarName
             // 
             this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(3, 10);
+            this.labelPreviewVarName.Location = new System.Drawing.Point(3, 11);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(55, 15);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(46, 17);
             this.labelPreviewVarName.TabIndex = 0;
             this.labelPreviewVarName.Text = "label4";
             // 
@@ -532,7 +532,7 @@ namespace varManager
             this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(409, 78);
+            this.pictureBoxPreview.Size = new System.Drawing.Size(409, 90);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxPreview.TabIndex = 1;
             this.pictureBoxPreview.TabStop = false;
@@ -541,9 +541,9 @@ namespace varManager
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(602, 128);
+            this.progressBar1.Location = new System.Drawing.Point(602, 145);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(848, 25);
+            this.progressBar1.Size = new System.Drawing.Size(848, 28);
             this.progressBar1.TabIndex = 9;
             this.progressBar1.Visible = false;
             // 
@@ -571,18 +571,20 @@ namespace varManager
             this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
             this.tableAdapterManager.dependenciesTableAdapter = null;
             this.tableAdapterManager.installStatusTableAdapter = null;
+            this.tableAdapterManager.savedepensTableAdapter = null;
             this.tableAdapterManager.scenesTableAdapter = this.scenesTableAdapter;
             this.tableAdapterManager.UpdateOrder = varManager.varManagerDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             this.tableAdapterManager.varsTableAdapter = null;
             // 
             // FormScenes
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1655, 742);
+            this.ClientSize = new System.Drawing.Size(1655, 841);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormScenes";
             this.Text = "Hide &  Fav";
