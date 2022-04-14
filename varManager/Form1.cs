@@ -391,7 +391,7 @@ namespace varManager
         {
             List<string> varnameexist = new List<string>();
             List<string> varsProccessed = new List<string>();
-            List<string> varimplics = new List<string>();
+
             foreach (string varname in varnames)
             {
                 if (varname[varname.Length - 1] == '^')
@@ -399,27 +399,37 @@ namespace varManager
                 else
                     varnameexist.Add(varname);
             }
-
-            foreach (string varname in varnameexist)
+            if (isDepend)
             {
-                varimplics.AddRange(ImplicatedVar(varname));
-            }
-            varsProccessed.AddRange(varnameexist);
-            varimplics = varimplics.Distinct().Except(varsProccessed).ToList();
-            if (varimplics.Count() > 0)
-            {
-                foreach (string varname in varsProccessed)
+                List<string> varimplics = new List<string>();
+                foreach (string varname in varnameexist)
                 {
-                    varimplics.Add(varname + "^");
+                    varimplics.AddRange(ImplicatedVar(varname));
                 }
-                return ImplicatedVars(varimplics);
+                varsProccessed.AddRange(varnameexist);
+                varimplics = varimplics.Distinct().Except(varsProccessed).ToList();
+                if (varimplics.Count() > 0)
+                {
+                    foreach (string varname in varsProccessed)
+                    {
+                        varimplics.Add(varname + "^");
+                    }
+                    return ImplicatedVars(varimplics);
+                }
+                else
+                {
+                    varsProccessed = varsProccessed.Select(q => q.Trim('^')).Distinct().ToList();
+                    return varsProccessed;
+                }
             }
             else
             {
+                varsProccessed.AddRange(varnameexist);
                 varsProccessed = varsProccessed.Select(q => q.Trim('^')).Distinct().ToList();
                 return varsProccessed;
             }
         }
+
 
         private void DelePreviewPics(string varname)
         {
@@ -1479,6 +1489,7 @@ namespace varManager
 
         private static int maxpicxPerpage = 100;
         private int previewPages = 0, previewCurPage = -1;
+        private bool isDepend;
 
         private void UpdatePreviewPics()
         {
@@ -2183,6 +2194,11 @@ namespace varManager
                     this.varpacksSwitch(newName);
                 }
             }
+        }
+
+        private void checkBoxDependency_CheckedChanged(object sender, EventArgs e)
+        {
+            isDepend = checkBoxDependency.Checked;
         }
 
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
