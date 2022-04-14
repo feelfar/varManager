@@ -37,6 +37,15 @@ namespace varManager
             this.labelWarning = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.dataGridViewVars = new System.Windows.Forms.DataGridView();
+            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.metaDateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.varManagerDataSet = new varManager.varManagerDataSet();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
@@ -65,17 +74,6 @@ namespace varManager
             this.dependenciesTableAdapter = new varManager.varManagerDataSetTableAdapters.dependenciesTableAdapter();
             this.tableAdapterManager = new varManager.varManagerDataSetTableAdapters.TableAdapterManager();
             this.backgroundWorkerPreview = new System.ComponentModel.BackgroundWorker();
-            this.varNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.metaDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewVars)).BeginInit();
@@ -100,13 +98,14 @@ namespace varManager
             this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 57F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1185, 547);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1037, 482);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // panel1
@@ -117,18 +116,20 @@ namespace varManager
             this.panel1.Controls.Add(this.labelWarning);
             this.panel1.Controls.Add(this.buttonOK);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 493);
+            this.panel1.Location = new System.Drawing.Point(2, 434);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1179, 51);
+            this.panel1.Size = new System.Drawing.Size(1033, 46);
             this.panel1.TabIndex = 0;
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(1077, 10);
+            this.buttonCancel.Location = new System.Drawing.Point(945, 9);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 26);
+            this.buttonCancel.Size = new System.Drawing.Size(65, 22);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -138,7 +139,8 @@ namespace varManager
             this.labelWarning.AutoSize = true;
             this.labelWarning.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.labelWarning.ForeColor = System.Drawing.Color.Crimson;
-            this.labelWarning.Location = new System.Drawing.Point(24, 15);
+            this.labelWarning.Location = new System.Drawing.Point(21, 12);
+            this.labelWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarning.Name = "labelWarning";
             this.labelWarning.Size = new System.Drawing.Size(439, 15);
             this.labelWarning.TabIndex = 1;
@@ -150,9 +152,10 @@ namespace varManager
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonOK.ForeColor = System.Drawing.Color.Crimson;
-            this.buttonOK.Location = new System.Drawing.Point(968, 10);
+            this.buttonOK.Location = new System.Drawing.Point(849, 9);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 26);
+            this.buttonOK.Size = new System.Drawing.Size(65, 22);
             this.buttonOK.TabIndex = 0;
             this.buttonOK.Text = "Sure!";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -165,300 +168,27 @@ namespace varManager
             this.dataGridViewVars.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewVars.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNameDataGridViewTextBoxColumn,
-            this.metaDate,
-            this.varDate,
-            this.size,
+            this.metaDateColumn,
+            this.sizeColumn,
             this.scenesDataGridViewTextBoxColumn,
             this.looksDataGridViewTextBoxColumn,
             this.clothingDataGridViewTextBoxColumn,
             this.hairstyleDataGridViewTextBoxColumn,
             this.pluginsDataGridViewTextBoxColumn,
-            this.assetsDataGridViewTextBoxColumn,
-            this.Installed});
+            this.assetsDataGridViewTextBoxColumn});
             this.dataGridViewVars.DataMember = "varsView";
             this.dataGridViewVars.DataSource = this.varManagerDataSet;
             this.dataGridViewVars.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewVars.Location = new System.Drawing.Point(3, 3);
+            this.dataGridViewVars.Location = new System.Drawing.Point(2, 2);
+            this.dataGridViewVars.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewVars.Name = "dataGridViewVars";
             this.dataGridViewVars.ReadOnly = true;
             this.dataGridViewVars.RowHeadersWidth = 40;
             this.dataGridViewVars.RowTemplate.Height = 27;
             this.dataGridViewVars.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewVars.Size = new System.Drawing.Size(586, 239);
+            this.dataGridViewVars.Size = new System.Drawing.Size(514, 212);
             this.dataGridViewVars.TabIndex = 1;
             this.dataGridViewVars.SelectionChanged += new System.EventHandler(this.dataGridViewVars_SelectionChanged);
-            // 
-            // varManagerDataSet
-            // 
-            this.varManagerDataSet.DataSetName = "varManagerDataSet";
-            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.tableLayoutPanelPreview);
-            this.panel2.Controls.Add(this.listViewPreviewPics);
-            this.panel2.Controls.Add(this.toolStripPreview);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(595, 3);
-            this.panel2.Name = "panel2";
-            this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
-            this.panel2.Size = new System.Drawing.Size(587, 484);
-            this.panel2.TabIndex = 2;
-            // 
-            // tableLayoutPanelPreview
-            // 
-            this.tableLayoutPanelPreview.ColumnCount = 1;
-            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
-            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(30, 185);
-            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
-            this.tableLayoutPanelPreview.RowCount = 2;
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(336, 139);
-            this.tableLayoutPanelPreview.TabIndex = 5;
-            this.tableLayoutPanelPreview.Visible = false;
-            // 
-            // pictureBoxPreview
-            // 
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(330, 88);
-            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
-            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.labelPreviewVarName);
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.buttonpreviewback);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 97);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(330, 39);
-            this.panel3.TabIndex = 0;
-            // 
-            // labelPreviewVarName
-            // 
-            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 9);
-            this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(36, 17);
-            this.labelPreviewVarName.TabIndex = 2;
-            this.labelPreviewVarName.Text = "a.a.1";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 17);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "VarName:";
-            // 
-            // buttonpreviewback
-            // 
-            this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewback.Location = new System.Drawing.Point(241, 9);
-            this.buttonpreviewback.Name = "buttonpreviewback";
-            this.buttonpreviewback.Size = new System.Drawing.Size(75, 26);
-            this.buttonpreviewback.TabIndex = 0;
-            this.buttonpreviewback.Text = "return";
-            this.buttonpreviewback.UseVisualStyleBackColor = true;
-            this.buttonpreviewback.Click += new System.EventHandler(this.buttonpreviewback_Click);
-            // 
-            // listViewPreviewPics
-            // 
-            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPreviewPics.HideSelection = false;
-            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 28);
-            this.listViewPreviewPics.MultiSelect = false;
-            this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(587, 456);
-            this.listViewPreviewPics.SmallImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.TabIndex = 4;
-            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
-            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
-            // 
-            // imageListPreviewPics
-            // 
-            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
-            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // toolStripPreview
-            // 
-            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.toolStripComboBoxPreviewType,
-            this.toolStripSeparator1,
-            this.toolStripButtonPreviewFirst,
-            this.toolStripButtonPreviewPrev,
-            this.toolStripComboBoxPreviewPage,
-            this.toolStripLabelPreviewCountItem,
-            this.toolStripButtonPreviewNext,
-            this.toolStripButtonPreviewLast});
-            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
-            this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(587, 28);
-            this.toolStripPreview.TabIndex = 3;
-            this.toolStripPreview.Text = "toolStrip1";
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(106, 25);
-            this.toolStripLabel1.Text = "PreviewType:";
-            // 
-            // toolStripComboBoxPreviewType
-            // 
-            this.toolStripComboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxPreviewType.Items.AddRange(new object[] {
-            "_All",
-            "scenes",
-            "looks",
-            "clothing",
-            "hairstyle",
-            "assets"});
-            this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
-            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(121, 28);
-            this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripButtonPreviewFirst
-            // 
-            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewFirst.Text = "|<";
-            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
-            // 
-            // toolStripButtonPreviewPrev
-            // 
-            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewPrev.Text = "<";
-            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
-            // 
-            // toolStripComboBoxPreviewPage
-            // 
-            this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
-            this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
-            // 
-            // toolStripLabelPreviewCountItem
-            // 
-            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
-            this.toolStripLabelPreviewCountItem.Text = "/{0}";
-            // 
-            // toolStripButtonPreviewNext
-            // 
-            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewNext.Text = ">";
-            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
-            // 
-            // toolStripButtonPreviewLast
-            // 
-            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewLast.Text = ">|";
-            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.iDDataGridViewTextBoxColumn,
-            this.varNameDataGridViewTextBoxColumn1,
-            this.dependencyDataGridViewTextBoxColumn});
-            this.dataGridView1.DataSource = this.dependenciesBindingSource;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 248);
-            this.dataGridView1.MultiSelect = false;
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersWidth = 40;
-            this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(586, 239);
-            this.dataGridView1.TabIndex = 1;
-            // 
-            // iDDataGridViewTextBoxColumn
-            // 
-            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
-            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
-            this.iDDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
-            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.iDDataGridViewTextBoxColumn.Visible = false;
-            this.iDDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // varNameDataGridViewTextBoxColumn1
-            // 
-            this.varNameDataGridViewTextBoxColumn1.DataPropertyName = "varName";
-            this.varNameDataGridViewTextBoxColumn1.HeaderText = "varName";
-            this.varNameDataGridViewTextBoxColumn1.MinimumWidth = 6;
-            this.varNameDataGridViewTextBoxColumn1.Name = "varNameDataGridViewTextBoxColumn1";
-            this.varNameDataGridViewTextBoxColumn1.ReadOnly = true;
-            this.varNameDataGridViewTextBoxColumn1.Width = 125;
-            // 
-            // dependencyDataGridViewTextBoxColumn
-            // 
-            this.dependencyDataGridViewTextBoxColumn.DataPropertyName = "dependency";
-            this.dependencyDataGridViewTextBoxColumn.HeaderText = "dependency";
-            this.dependencyDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.dependencyDataGridViewTextBoxColumn.Name = "dependencyDataGridViewTextBoxColumn";
-            this.dependencyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dependencyDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // dependenciesBindingSource
-            // 
-            this.dependenciesBindingSource.DataMember = "dependencies";
-            this.dependenciesBindingSource.DataSource = this.varManagerDataSet;
-            // 
-            // dependenciesTableAdapter
-            // 
-            this.dependenciesTableAdapter.ClearBeforeFill = true;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.dependenciesTableAdapter = this.dependenciesTableAdapter;
-            this.tableAdapterManager.installStatusTableAdapter = null;
-            this.tableAdapterManager.savedepensTableAdapter = null;
-            this.tableAdapterManager.scenesTableAdapter = null;
-            this.tableAdapterManager.UpdateOrder = varManager.varManagerDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
-            this.tableAdapterManager.varsTableAdapter = null;
-            // 
-            // backgroundWorkerPreview
-            // 
-            this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
-            this.backgroundWorkerPreview.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerPreview_DoWork);
             // 
             // varNameDataGridViewTextBoxColumn
             // 
@@ -469,35 +199,26 @@ namespace varManager
             this.varNameDataGridViewTextBoxColumn.ReadOnly = true;
             this.varNameDataGridViewTextBoxColumn.Width = 125;
             // 
-            // metaDate
+            // metaDateColumn
             // 
-            this.metaDate.DataPropertyName = "metaDate";
-            this.metaDate.HeaderText = "Date";
-            this.metaDate.MinimumWidth = 6;
-            this.metaDate.Name = "metaDate";
-            this.metaDate.ReadOnly = true;
-            this.metaDate.Width = 80;
+            this.metaDateColumn.DataPropertyName = "metaDate";
+            this.metaDateColumn.HeaderText = "metaDate";
+            this.metaDateColumn.MinimumWidth = 6;
+            this.metaDateColumn.Name = "metaDateColumn";
+            this.metaDateColumn.ReadOnly = true;
+            this.metaDateColumn.Width = 80;
             // 
-            // varDate
+            // sizeColumn
             // 
-            this.varDate.DataPropertyName = "varDate";
-            this.varDate.HeaderText = "varDate";
-            this.varDate.MinimumWidth = 6;
-            this.varDate.Name = "varDate";
-            this.varDate.ReadOnly = true;
-            this.varDate.Width = 80;
-            // 
-            // size
-            // 
-            this.size.DataPropertyName = "size";
+            this.sizeColumn.DataPropertyName = "size";
             dataGridViewCellStyle1.Format = "N2";
             dataGridViewCellStyle1.NullValue = null;
-            this.size.DefaultCellStyle = dataGridViewCellStyle1;
-            this.size.HeaderText = "fsize(MB)";
-            this.size.MinimumWidth = 6;
-            this.size.Name = "size";
-            this.size.ReadOnly = true;
-            this.size.Width = 80;
+            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.sizeColumn.HeaderText = "fsize(MB)";
+            this.sizeColumn.MinimumWidth = 6;
+            this.sizeColumn.Name = "sizeColumn";
+            this.sizeColumn.ReadOnly = true;
+            this.sizeColumn.Width = 80;
             // 
             // scenesDataGridViewTextBoxColumn
             // 
@@ -553,25 +274,298 @@ namespace varManager
             this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
             this.assetsDataGridViewTextBoxColumn.Width = 40;
             // 
-            // Installed
+            // varManagerDataSet
             // 
-            this.Installed.DataPropertyName = "Installed";
-            this.Installed.HeaderText = "Installed";
-            this.Installed.MinimumWidth = 6;
-            this.Installed.Name = "Installed";
-            this.Installed.ReadOnly = true;
-            this.Installed.Width = 40;
+            this.varManagerDataSet.DataSetName = "varManagerDataSet";
+            this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.tableLayoutPanelPreview);
+            this.panel2.Controls.Add(this.listViewPreviewPics);
+            this.panel2.Controls.Add(this.toolStripPreview);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(520, 2);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2);
+            this.panel2.Name = "panel2";
+            this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
+            this.panel2.Size = new System.Drawing.Size(515, 428);
+            this.panel2.TabIndex = 2;
+            // 
+            // tableLayoutPanelPreview
+            // 
+            this.tableLayoutPanelPreview.ColumnCount = 1;
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
+            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
+            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(26, 162);
+            this.tableLayoutPanelPreview.Margin = new System.Windows.Forms.Padding(2);
+            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
+            this.tableLayoutPanelPreview.RowCount = 2;
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(294, 122);
+            this.tableLayoutPanelPreview.TabIndex = 5;
+            this.tableLayoutPanelPreview.Visible = false;
+            // 
+            // pictureBoxPreview
+            // 
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(2, 2);
+            this.pictureBoxPreview.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(290, 78);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.labelPreviewVarName);
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.buttonpreviewback);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(2, 84);
+            this.panel3.Margin = new System.Windows.Forms.Padding(2);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(290, 36);
+            this.panel3.TabIndex = 0;
+            // 
+            // labelPreviewVarName
+            // 
+            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelPreviewVarName.AutoSize = true;
+            this.labelPreviewVarName.Location = new System.Drawing.Point(71, 10);
+            this.labelPreviewVarName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelPreviewVarName.Name = "labelPreviewVarName";
+            this.labelPreviewVarName.Size = new System.Drawing.Size(36, 16);
+            this.labelPreviewVarName.TabIndex = 2;
+            this.labelPreviewVarName.Text = "a.a.1";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 10);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 16);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "VarName:";
+            // 
+            // buttonpreviewback
+            // 
+            this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonpreviewback.Location = new System.Drawing.Point(212, 10);
+            this.buttonpreviewback.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonpreviewback.Name = "buttonpreviewback";
+            this.buttonpreviewback.Size = new System.Drawing.Size(65, 22);
+            this.buttonpreviewback.TabIndex = 0;
+            this.buttonpreviewback.Text = "return";
+            this.buttonpreviewback.UseVisualStyleBackColor = true;
+            this.buttonpreviewback.Click += new System.EventHandler(this.buttonpreviewback_Click);
+            // 
+            // listViewPreviewPics
+            // 
+            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPreviewPics.HideSelection = false;
+            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
+            this.listViewPreviewPics.Margin = new System.Windows.Forms.Padding(2);
+            this.listViewPreviewPics.MultiSelect = false;
+            this.listViewPreviewPics.Name = "listViewPreviewPics";
+            this.listViewPreviewPics.Size = new System.Drawing.Size(515, 397);
+            this.listViewPreviewPics.SmallImageList = this.imageListPreviewPics;
+            this.listViewPreviewPics.TabIndex = 4;
+            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
+            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
+            // 
+            // imageListPreviewPics
+            // 
+            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
+            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // toolStripPreview
+            // 
+            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.toolStripComboBoxPreviewType,
+            this.toolStripSeparator1,
+            this.toolStripButtonPreviewFirst,
+            this.toolStripButtonPreviewPrev,
+            this.toolStripComboBoxPreviewPage,
+            this.toolStripLabelPreviewCountItem,
+            this.toolStripButtonPreviewNext,
+            this.toolStripButtonPreviewLast});
+            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
+            this.toolStripPreview.Name = "toolStripPreview";
+            this.toolStripPreview.Size = new System.Drawing.Size(515, 31);
+            this.toolStripPreview.TabIndex = 3;
+            this.toolStripPreview.Text = "toolStrip1";
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(106, 28);
+            this.toolStripLabel1.Text = "PreviewType:";
+            // 
+            // toolStripComboBoxPreviewType
+            // 
+            this.toolStripComboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxPreviewType.Items.AddRange(new object[] {
+            "_All",
+            "scenes",
+            "looks",
+            "clothing",
+            "hairstyle",
+            "assets"});
+            this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
+            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(107, 31);
+            this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // toolStripButtonPreviewFirst
+            // 
+            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewFirst.Text = "|<";
+            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
+            // 
+            // toolStripButtonPreviewPrev
+            // 
+            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewPrev.Text = "<";
+            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
+            // 
+            // toolStripComboBoxPreviewPage
+            // 
+            this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
+            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(107, 31);
+            this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
+            // 
+            // toolStripLabelPreviewCountItem
+            // 
+            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 28);
+            this.toolStripLabelPreviewCountItem.Text = "/{0}";
+            // 
+            // toolStripButtonPreviewNext
+            // 
+            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewNext.Text = ">";
+            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
+            // 
+            // toolStripButtonPreviewLast
+            // 
+            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewLast.Text = ">|";
+            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AutoGenerateColumns = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.iDDataGridViewTextBoxColumn,
+            this.varNameDataGridViewTextBoxColumn1,
+            this.dependencyDataGridViewTextBoxColumn});
+            this.dataGridView1.DataSource = this.dependenciesBindingSource;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(2, 218);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersWidth = 40;
+            this.dataGridView1.RowTemplate.Height = 27;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(514, 212);
+            this.dataGridView1.TabIndex = 1;
+            // 
+            // iDDataGridViewTextBoxColumn
+            // 
+            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
+            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
+            this.iDDataGridViewTextBoxColumn.Visible = false;
+            this.iDDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // varNameDataGridViewTextBoxColumn1
+            // 
+            this.varNameDataGridViewTextBoxColumn1.DataPropertyName = "varName";
+            this.varNameDataGridViewTextBoxColumn1.HeaderText = "varName";
+            this.varNameDataGridViewTextBoxColumn1.MinimumWidth = 6;
+            this.varNameDataGridViewTextBoxColumn1.Name = "varNameDataGridViewTextBoxColumn1";
+            this.varNameDataGridViewTextBoxColumn1.ReadOnly = true;
+            this.varNameDataGridViewTextBoxColumn1.Width = 125;
+            // 
+            // dependencyDataGridViewTextBoxColumn
+            // 
+            this.dependencyDataGridViewTextBoxColumn.DataPropertyName = "dependency";
+            this.dependencyDataGridViewTextBoxColumn.HeaderText = "dependency";
+            this.dependencyDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.dependencyDataGridViewTextBoxColumn.Name = "dependencyDataGridViewTextBoxColumn";
+            this.dependencyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dependencyDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // dependenciesBindingSource
+            // 
+            this.dependenciesBindingSource.DataMember = "dependencies";
+            this.dependenciesBindingSource.DataSource = this.varManagerDataSet;
+            // 
+            // dependenciesTableAdapter
+            // 
+            this.dependenciesTableAdapter.ClearBeforeFill = true;
+            // 
+            // tableAdapterManager
+            // 
+            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
+            this.tableAdapterManager.dependenciesTableAdapter = this.dependenciesTableAdapter;
+            this.tableAdapterManager.installStatusTableAdapter = null;
+            this.tableAdapterManager.savedepensTableAdapter = null;
+            this.tableAdapterManager.scenesTableAdapter = null;
+            this.tableAdapterManager.UpdateOrder = varManager.varManagerDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
+            this.tableAdapterManager.varsTableAdapter = null;
+            // 
+            // backgroundWorkerPreview
+            // 
+            this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
+            this.backgroundWorkerPreview.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerPreview_DoWork);
             // 
             // FormUninstallVars
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(1185, 547);
+            this.ClientSize = new System.Drawing.Size(1037, 482);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Cambria", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormUninstallVars";
             this.Text = "Uninstall";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -632,15 +626,13 @@ namespace varManager
         private System.Windows.Forms.ToolStripButton toolStripButtonPreviewLast;
         private System.ComponentModel.BackgroundWorker backgroundWorkerPreview;
         private System.Windows.Forms.DataGridViewTextBoxColumn varNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn metaDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn varDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn metaDateColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sizeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn scenesDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn looksDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn clothingDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hairstyleDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pluginsDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn assetsDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
     }
 }

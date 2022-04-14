@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -461,7 +461,7 @@ namespace varManager
             this.varsViewDataGridView.RowHeadersWidth = 20;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(757, 378);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(757, 355);
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Right click on the column header to custom filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
@@ -536,9 +536,9 @@ namespace varManager
             // sizeDataGridViewTextBoxColumn
             // 
             this.sizeDataGridViewTextBoxColumn.DataPropertyName = "size";
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.sizeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.sizeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.sizeDataGridViewTextBoxColumn.HeaderText = "size(MB)";
             this.sizeDataGridViewTextBoxColumn.MinimumWidth = 6;
             this.sizeDataGridViewTextBoxColumn.Name = "sizeDataGridViewTextBoxColumn";
@@ -641,9 +641,9 @@ namespace varManager
             this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
             this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 436);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 413);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(757, 38);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(757, 61);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // buttonInstall
@@ -652,9 +652,9 @@ namespace varManager
             this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
             this.buttonInstall.Location = new System.Drawing.Point(3, 3);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(118, 32);
+            this.buttonInstall.Size = new System.Drawing.Size(92, 55);
             this.buttonInstall.TabIndex = 8;
-            this.buttonInstall.Text = "InstallSels";
+            this.buttonInstall.Text = "Install Selected";
             this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
             this.buttonInstall.UseVisualStyleBackColor = true;
             this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
@@ -663,11 +663,11 @@ namespace varManager
             // 
             this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
-            this.buttonUninstallSels.Location = new System.Drawing.Point(127, 3);
+            this.buttonUninstallSels.Location = new System.Drawing.Point(101, 3);
             this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(118, 32);
+            this.buttonUninstallSels.Size = new System.Drawing.Size(92, 55);
             this.buttonUninstallSels.TabIndex = 8;
-            this.buttonUninstallSels.Text = "UnInstSels";
+            this.buttonUninstallSels.Text = "UnInst Selected";
             this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
             this.buttonUninstallSels.UseVisualStyleBackColor = true;
             this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
@@ -677,38 +677,37 @@ namespace varManager
             this.buttonDelete.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.buttonDelete.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
-            this.buttonDelete.Location = new System.Drawing.Point(251, 3);
+            this.buttonDelete.Location = new System.Drawing.Point(199, 3);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(118, 32);
+            this.buttonDelete.Size = new System.Drawing.Size(92, 55);
             this.buttonDelete.TabIndex = 8;
-            this.buttonDelete.Text = "DeleSels";
+            this.buttonDelete.Text = "Delete Selected";
             this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
             this.buttonDelete.UseVisualStyleBackColor = false;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 
             // buttonMove
             // 
-            this.buttonMove.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.buttonMove.BackColor = System.Drawing.SystemColors.ControlLight;
             this.buttonMove.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
-            this.buttonMove.Location = new System.Drawing.Point(375, 3);
+            this.buttonMove.Location = new System.Drawing.Point(297, 3);
             this.buttonMove.Name = "buttonMove";
-            this.buttonMove.Size = new System.Drawing.Size(118, 32);
+            this.buttonMove.Size = new System.Drawing.Size(105, 55);
             this.buttonMove.TabIndex = 8;
-            this.buttonMove.Text = "MoveSels";
+            this.buttonMove.Text = "Move SeleLinks To SubDir";
             this.buttonMove.UseVisualStyleBackColor = false;
-            this.buttonMove.Visible = false;
             this.buttonMove.Click += new System.EventHandler(this.buttonMove_Click);
             // 
             // buttonExpInsted
             // 
             this.buttonExpInsted.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonExpInsted.Location = new System.Drawing.Point(499, 3);
+            this.buttonExpInsted.Location = new System.Drawing.Point(408, 3);
             this.buttonExpInsted.Name = "buttonExpInsted";
-            this.buttonExpInsted.Size = new System.Drawing.Size(118, 32);
+            this.buttonExpInsted.Size = new System.Drawing.Size(92, 55);
             this.buttonExpInsted.TabIndex = 8;
-            this.buttonExpInsted.Text = "ExpInsted";
+            this.buttonExpInsted.Text = "Export Insted";
             this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
             this.buttonExpInsted.UseVisualStyleBackColor = true;
             this.buttonExpInsted.Click += new System.EventHandler(this.buttonExpInsted_Click);
@@ -717,11 +716,11 @@ namespace varManager
             // 
             this.buttonInstFormTxt.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonInstFormTxt.Location = new System.Drawing.Point(623, 3);
+            this.buttonInstFormTxt.Location = new System.Drawing.Point(506, 3);
             this.buttonInstFormTxt.Name = "buttonInstFormTxt";
-            this.buttonInstFormTxt.Size = new System.Drawing.Size(118, 32);
+            this.buttonInstFormTxt.Size = new System.Drawing.Size(92, 55);
             this.buttonInstFormTxt.TabIndex = 8;
-            this.buttonInstFormTxt.Text = "InstByTXT";
+            this.buttonInstFormTxt.Text = "Install By TXT";
             this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
             this.buttonInstFormTxt.UseVisualStyleBackColor = true;
             this.buttonInstFormTxt.Click += new System.EventHandler(this.buttonInstFormTxt_Click);
