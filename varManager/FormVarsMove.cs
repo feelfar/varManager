@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace varManager
 {
-   
+
     public partial class FormVarsMove : Form
     {
-        private string tidiedDirName;
+        private string varlinkDirName;
         private string movetoDirName;
         private List<string> varsToMove;
         public FormVarsMove()
@@ -21,13 +15,13 @@ namespace varManager
             InitializeComponent();
         }
 
-        public string TidiedDirName { get => tidiedDirName; set => tidiedDirName = value; }
+        public string VarlinkDirName { get => varlinkDirName; set => varlinkDirName = value; }
         public string MovetoDirName { get => movetoDirName; set => movetoDirName = value; }
         public List<string> VarsToMove { get => varsToMove; set => varsToMove = value; }
 
         private void FormVarsMove_Load(object sender, EventArgs e)
         {
-            labelTided.Text ="\\"+ tidiedDirName+"\\";
+            labelTided.Text = "\\AddonPackages\\" + varlinkDirName + "\\";
             foreach (string var in varsToMove)
                 listView1.Items.Add(var);
         }

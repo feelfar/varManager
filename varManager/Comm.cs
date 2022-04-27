@@ -1,19 +1,15 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace varManager
 {
     static class Comm
     {
-        public static void  DirectoryMoveAll(string sourceDir,string destDir)
+        public static void DirectoryMoveAll(string sourceDir, string destDir)
         {
             if (Directory.Exists(destDir))
             {
@@ -28,14 +24,14 @@ namespace varManager
                     string destsubdir = sourcesubdir.Replace(sourceDir, destDir);
                     DirectoryMoveAll(sourcesubdir, destsubdir);
                 }
-                if((Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories).Length<=0)&&(Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly).Length <= 0))
+                if ((Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories).Length <= 0) && (Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly).Length <= 0))
                 {
                     Directory.Delete(sourceDir);
                 }
             }
             else
-            { 
-                Directory.Move(sourceDir, destDir); 
+            {
+                Directory.Move(sourceDir, destDir);
             }
         }
 
@@ -327,8 +323,8 @@ namespace varManager
                 {
                     throw new Win32Exception(lastError);
                 }
-              
-            } 
+
+            }
             return normalisedTarget;
         }
 
@@ -365,7 +361,7 @@ namespace varManager
                 lastError = Marshal.GetLastWin32Error();
                 if (handle.ToInt32() >= 0)
                 {
-                    var basicInfo =  new FileInformation();
+                    var basicInfo = new FileInformation();
                     //basicInfo.FILE_BASIC_INFO.CreationTime = createtime.ToFileTime();
                     //basicInfo.FILE_BASIC_INFO.LastWriteTime = lastwritetime.ToFileTime();
                     basicInfo.FILE_BASIC_INFO = new FILE_BASIC_INFO()
@@ -434,9 +430,9 @@ namespace varManager
             public FILE_DISPOSITION_INFO FILE_DISPOSITION_INFO;
         }
         [DllImport("Kernel32.dll", SetLastError = true)]
-        private static extern bool SetFileInformationByHandle(IntPtr hFile, 
-            FileInformationClass FileInformationClass, 
-            ref FileInformation FileInformation, 
+        private static extern bool SetFileInformationByHandle(IntPtr hFile,
+            FileInformationClass FileInformationClass,
+            ref FileInformation FileInformation,
             Int32 dwBufferSize);
 
 

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using varManager.Properties;
 
@@ -29,25 +25,25 @@ namespace varManager
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName));
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
-            if ( missingVars!=null)
+            if (missingVars != null)
             {
-                foreach(var missingvar in missingVars)
+                foreach (var missingvar in missingVars)
                 {
                     string missingvarname = missingvar;
                     if (missingvarname.LastIndexOf('/') > 1)
                         missingvarname = missingvarname.Substring(missingvarname.LastIndexOf('/') + 1);
                     string searchPattern = missingvarname + ".var";
-                    if (missingvarname.IndexOf(".latest")>0)
-                      searchPattern = missingvarname.Substring(0, missingvarname.LastIndexOf('.')+1) + "*.var";
+                    if (missingvarname.IndexOf(".latest") > 0)
+                        searchPattern = missingvarname.Substring(0, missingvarname.LastIndexOf('.') + 1) + "*.var";
                     var files = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), searchPattern, SearchOption.AllDirectories).OrderByDescending(q => Path.GetFileNameWithoutExtension(q)).ToArray();
                     if (files.Length == 0)
                         dataGridViewMissingVars.Rows.Add(new string[] { missingvarname, "", "UnLink", "Google" });
                     else
                     {
-                        string destfilename =Path.GetFileNameWithoutExtension( Comm.ReparsePoint(files[0]));
+                        string destfilename = Path.GetFileNameWithoutExtension(Comm.ReparsePoint(files[0]));
                         dataGridViewMissingVars.Rows.Add(new string[] { missingvarname, destfilename, "UnLink", "Google" });
                     }
-                   
+
                 }
                 bindingNavigatorCountItem.Text = "/" + dataGridViewMissingVars.Rows.Count;
             }
@@ -119,7 +115,7 @@ namespace varManager
             string linkvar = textBoxLinkVar.Text;
             foreach (DataGridViewRow row in dataGridViewMissingVars.Rows)
             {
-              if(  row.Cells[0].Value.ToString()== missingvar)
+                if (row.Cells[0].Value.ToString() == missingvar)
                 {
                     row.Cells[1].Value = linkvar;
                     break;
@@ -129,14 +125,14 @@ namespace varManager
 
         private void dataGridViewMissingVars_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-          if(  e.ColumnIndex==2)
+            if (e.ColumnIndex == 2)
             {
                 dataGridViewMissingVars.Rows[e.RowIndex].Cells[1].Value = "";
             }
             if (e.ColumnIndex == 3)
             {
                 string varname = dataGridViewMissingVars.Rows[e.RowIndex].Cells[0].Value.ToString().Replace(".latest", ".1");
-                System.Diagnostics.Process.Start("https://www.google.com/search?q="+ varname + " var");
+                System.Diagnostics.Process.Start("https://www.google.com/search?q=" + varname + " var");
             }
         }
 
@@ -190,13 +186,13 @@ namespace varManager
 
         private void dataGridViewMissingVars_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            bindingNavigatorPositionItem.Text = (e.RowIndex+1).ToString();
+            bindingNavigatorPositionItem.Text = (e.RowIndex + 1).ToString();
         }
 
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e)
         {
             int nRow = dataGridViewMissingVars.CurrentCell.RowIndex;
-            if (nRow < dataGridViewMissingVars.RowCount-1)
+            if (nRow < dataGridViewMissingVars.RowCount - 1)
             {
                 dataGridViewMissingVars.CurrentCell = dataGridViewMissingVars.Rows[++nRow].Cells[0];
             }
@@ -255,7 +251,7 @@ namespace varManager
                         varlinktoList.Add($"{missingvarname}|{destvarname}");
                     }
                 }
-               
+
                 File.WriteAllLines(saveFileDialogSaveTxt.FileName, varlinktoList.ToArray());
             }
         }
@@ -263,11 +259,11 @@ namespace varManager
         {
             if (openFileDialogLoadTXT.ShowDialog() == DialogResult.OK)
             {
-                Dictionary<string,string> varlinktoDict = new Dictionary<string, string>();
+                Dictionary<string, string> varlinktoDict = new Dictionary<string, string>();
                 foreach (string varlinkto in File.ReadAllLines(openFileDialogLoadTXT.FileName))
                 {
                     string[] varlinktos = varlinkto.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (varlinktos.Length==2)
+                    if (varlinktos.Length == 2)
                     {
                         varlinktoDict[varlinktos[0]] = varlinktos[1];
                     }
@@ -281,7 +277,7 @@ namespace varManager
                     }
                 }
             }
-           
+
         }
 
     }

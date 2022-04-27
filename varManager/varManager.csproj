@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>varManager</RootNamespace>
     <AssemblyName>varManager</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -32,7 +32,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -62,7 +62,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -131,6 +131,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleLogger.cs" />
+    <Compile Include="varManagerDataSet.cs">
+      <DependentUpon>varManagerDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="varManagerDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -209,6 +212,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="vam.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="VarManager.ico" />
     <Content Include="varManager.mdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -221,6 +227,10 @@
     <ProjectReference Include="..\..\DgvFilterPopup\DgvFilterPopup\DgvFilterPopup.csproj">
       <Project>{4b9be5fd-303e-4270-9c4d-fa3bde6c34eb}</Project>
       <Name>DgvFilterPopup</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DragNDrop\DragNDrop.csproj">
+      <Project>{c7e21f05-c166-4dcc-8429-ec8a4c1a67b6}</Project>
+      <Name>DragNDrop</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

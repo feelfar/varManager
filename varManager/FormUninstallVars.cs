@@ -5,9 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using varManager.Properties;
 
@@ -21,7 +19,7 @@ namespace varManager
         public FormUninstallVars()
         {
             InitializeComponent();
-           
+
         }
 
         private void FormUninstallVars_Load(object sender, EventArgs e)
@@ -37,7 +35,7 @@ namespace varManager
             }
             toolStripComboBoxPreviewType.SelectedIndex = 0;
         }
-        
+
 
         private void dataGridViewVars_SelectionChanged(object sender, EventArgs e)
         {
