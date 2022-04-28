@@ -46,7 +46,12 @@ namespace varManager
         private void buttonSetting_Click(object sender, EventArgs e)
         {
             FormSettings formSettings = new FormSettings();
-            formSettings.ShowDialog();
+            if (formSettings.ShowDialog() == DialogResult.OK) 
+            {
+                Application.Restart();
+                Environment.Exit(0);
+            }
+            
         }
         private static bool ComplyVarFile(string varfile)
         {
@@ -1191,7 +1196,8 @@ namespace varManager
             this.BeginInvoke(addlog, new Object[] { "Check Installed symlink"});
             //List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
             List<string> varfiles = GetInstalledVars().Values.ToList();
-            varfiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories));
+            if(Directory.Exists(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName)))
+                varfiles.AddRange(Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName), "*.var", SearchOption.AllDirectories));
 
             foreach (string linkvar in varfiles)
             {
@@ -2026,6 +2032,7 @@ namespace varManager
 
         private void buttonMove_Click(object sender, EventArgs e)
         {
+            /*
             InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> varNames = new List<string>();
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
@@ -2063,6 +2070,53 @@ namespace varManager
                     catch (Exception ex)
                     {
                         this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                    }
+                }
+            }
+            */
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            List<string> varNames = new List<string>();
+            foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
+            {
+                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+                var varsrow = varManagerDataSet.installStatus.FindByvarName(varName);
+                if (varsrow != null)
+                {
+                    if (varsrow.Installed)
+                    {
+                        varNames.Add(varName);
+                    }
+                }
+            }
+            if (varNames.Count <= 0) return;
+            FormVarsMove fvm = new FormVarsMove();
+            fvm.TidiedDirName = tidiedDirName;
+            fvm.VarsToMove = varNames;
+            if (fvm.ShowDialog() == DialogResult.OK)
+            {
+                string movetovarspath = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, fvm.MovetoDirName);
+                if (!Directory.Exists(movetovarspath))
+                    Directory.CreateDirectory(movetovarspath);
+
+                foreach (string varname in varNames)
+                {
+                    string[] operalinks = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), varname+".var", SearchOption.AllDirectories);
+                    if (operalinks.Length > 0)
+                    {
+                        string operav = operalinks[0];
+                        string movetodv = Path.Combine(movetovarspath, varname + ".var");
+                        if (!File.Exists(movetodv))
+                        {
+                            try
+                            {
+                                File.Move(operav, movetodv);
+                                //CleanVar(varname);
+                            }
+                            catch (Exception ex)
+                            {
+                                this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                            }
+                        }
                     }
                 }
             }
