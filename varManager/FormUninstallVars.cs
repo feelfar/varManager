@@ -248,6 +248,12 @@ namespace varManager
             if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex++;
         }
 
+        private void dataGridViewVars_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            ;
+             //e.Exception.Message
+        }
+
         private void toolStripButtonPreviewLast_Click(object sender, EventArgs e)
         {
             if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex = toolStripComboBoxPreviewPage.Items.Count - 1;

@@ -707,7 +707,7 @@ namespace varManager
             varsViewDataGridView.ClearSelection();
             foreach (DataGridViewRow row in varsViewDataGridView.Rows)
             {
-                string varname = row.Cells[0].Value.ToString();
+                string varname = row.Cells["varNamedataGridViewTextBoxColumn"].Value.ToString();
                 if (selectedRowList.Contains(varname))
                 {
                     row.Selected = true;
@@ -837,7 +837,7 @@ namespace varManager
                                 if (Regex.IsMatch(zfile.FullName, @"custom/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "clothing";
-                                    isPreset = zfile.Name.EndsWith(".vap");
+                                    isPreset = false;
                                     countclothing++;
                                 }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
@@ -849,7 +849,7 @@ namespace varManager
                                 if (Regex.IsMatch(zfile.FullName, @"custom/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "hairstyle";
-                                    isPreset = zfile.Name.EndsWith(".vap");
+                                    isPreset = false;
                                     counthair++;
                                 }
                                 if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
@@ -1527,9 +1527,6 @@ namespace varManager
 
         private List<Previewpic> previewpicsfilter = new List<Previewpic>();
 
-        private static int maxpicxPerpage = 100;
-        private int previewPages = 0, previewCurPage = -1;
-
         private void UpdatePreviewPics()
         {
             previewpics.Clear();
@@ -1578,6 +1575,9 @@ namespace varManager
             if (previewtype != "all")
                 previewpicsfilter = previewpicsfilter.Where(q => q.Atomtype == previewtype).ToList();
             mut.ReleaseMutex();
+            listViewPreviewPics.VirtualListSize = previewpicsfilter.Count;    
+            toolStripLabelPreviewCountItem.Text = "/" + previewpicsfilter.Count.ToString();
+            /*
             toolStripComboBoxPreviewPage.SelectedIndexChanged -= new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged); toolStripComboBoxPreviewPage.Items.Clear();
             previewPages = (previewpicsfilter.Count + maxpicxPerpage - 1) / maxpicxPerpage;
             toolStripLabelPreviewCountItem.Text = "/" + previewpicsfilter.Count.ToString();
@@ -1604,6 +1604,7 @@ namespace varManager
             toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
             if (previewPages >= 1)
                 PreviewPage();
+            */
         }
 
 
@@ -1645,7 +1646,29 @@ namespace varManager
                 item.SubItems.Add(ispreset.ToString());
             }
         }
+        private void listViewPreviewPics_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var curpriviewpic = previewpicsfilter[e.ItemIndex];
+            string key = "vam.png";
+            if (!string.IsNullOrWhiteSpace(curpriviewpic.Picpath))
+            {
+                key = Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewpic.Atomtype, curpriviewpic.Varname, curpriviewpic.Picpath);
+            }
+            if (!imageListPreviewPics.Images.ContainsKey(key))
+            {
+                imageListPreviewPics.Images.Add(key, Image.FromFile(key));
+                if (imageListPreviewPics.Images.Count > 20) imageListPreviewPics.Images.RemoveAt(0);
+            }
+            e.Item = new ListViewItem(Path.GetFileNameWithoutExtension(curpriviewpic.Picpath), imageListPreviewPics.Images.IndexOfKey(key));
+            e.Item.SubItems.Add(curpriviewpic.Varname);
+            e.Item.SubItems.Add(key);
+            e.Item.SubItems.Add(curpriviewpic.Installed.ToString());
+            e.Item.SubItems.Add(curpriviewpic.Atomtype);
+            e.Item.SubItems.Add(curpriviewpic.ScenePath);
+            e.Item.SubItems.Add(curpriviewpic.IsPreset.ToString());
 
+        }
+        /*
         private void backgroundWorkerPreview_DoWork(object sender, DoWorkEventArgs e)
         {
             InvokePreviewPics previewpics = new InvokePreviewPics(PreviewPics);
@@ -1676,17 +1699,13 @@ namespace varManager
                 mut.ReleaseMutex();
             }
         }
-        private void backgroundWorkerPreview_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //MessageBox.Show(e.Cancelled.ToString());
-        }
-
-
+        */
 
         private void toolStripComboBoxPreviewType_SelectedIndexChanged(object sender, EventArgs e)
         {
             PreviewInitType();
         }
+        /*
         private void toolStripComboBoxPreviewPage_SelectedIndexChanged(object sender, EventArgs e)
         {
             PreviewPage();
@@ -1704,25 +1723,49 @@ namespace varManager
             }
             backgroundWorkerPreview.RunWorkerAsync();
         }
-
+        */
         private void toolStripButtonPreviewFirst_Click(object sender, EventArgs e)
         {
-            if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex = 0;
+            int selectindex = 0;
+            listViewPreviewPics.Items[selectindex].Selected = true;
+            listViewPreviewPics.EnsureVisible(selectindex);
+           // if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex = 0;
         }
 
         private void toolStripButtonPreviewPrev_Click(object sender, EventArgs e)
         {
-            if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex--;
+            int selectindex = 0;
+            if (listViewPreviewPics.SelectedIndices.Count >= 1)
+            {
+                int index = listViewPreviewPics.SelectedIndices[0];
+                if (index > 0) selectindex = index - 1;
+            }
+
+            listViewPreviewPics.Items[selectindex].Selected = true;
+            listViewPreviewPics.EnsureVisible(selectindex);
+            // if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex--;
         }
 
         private void toolStripButtonPreviewNext_Click(object sender, EventArgs e)
         {
-            if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex++;
+            int selectindex = listViewPreviewPics.Items.Count-1;
+            if (listViewPreviewPics.SelectedIndices.Count >= 1)
+            {
+                int index = listViewPreviewPics.SelectedIndices[0];
+                if (index < listViewPreviewPics.Items.Count - 1) selectindex = index + 1;
+            }
+
+            listViewPreviewPics.Items[selectindex].Selected = true;
+            listViewPreviewPics.EnsureVisible(selectindex);
+            // if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex++;
         }
 
         private void toolStripButtonPreviewLast_Click(object sender, EventArgs e)
         {
-            if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex = toolStripComboBoxPreviewPage.Items.Count - 1;
+            int selectindex = listViewPreviewPics.Items.Count - 1;
+            listViewPreviewPics.Items[selectindex].Selected = true;
+            listViewPreviewPics.EnsureVisible(selectindex);
+            // if (toolStripComboBoxPreviewPage.SelectedIndex < toolStripComboBoxPreviewPage.Items.Count - 1) toolStripComboBoxPreviewPage.SelectedIndex = toolStripComboBoxPreviewPage.Items.Count - 1;
 
         }
 
@@ -1852,6 +1895,11 @@ namespace varManager
                     }
                 }
             }
+            if (varsViewDataGridView.Columns[e.ColumnIndex].Name == "ColumnLocate" && e.RowIndex >= 0)
+            {
+                string varName = varsViewDataGridView.Rows[e.RowIndex].Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
+                LocateVar(varName);
+            }
         }
 
         private void buttonInstall_Click(object sender, EventArgs e)
@@ -1906,6 +1954,7 @@ namespace varManager
         private void buttonScenesManager_Click(object sender, EventArgs e)
         {
             FormScenes formScenes = new FormScenes();
+            formScenes.form1 = this;
             formScenes.Show();
         }
 
@@ -1919,6 +1968,7 @@ namespace varManager
             if (listViewPreviewPics.SelectedIndices.Count >= 1)
             {
                 int index = listViewPreviewPics.SelectedIndices[0];
+                toolStripLabelPreviewItemIndex.Text = index.ToString();
                 var item = listViewPreviewPics.Items[index];
                 if (item != null)
                 {
@@ -2340,28 +2390,13 @@ namespace varManager
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
+            if (loadscenetxt.StartsWith("rescan_scenes")|| loadscenetxt.StartsWith("scenes")) 
+            DeleteTemp();
             if (loadscenetxt.StartsWith("rescan_"))
             {
-                string varName = labelPreviewVarName.Text;
-                List<string> varnames = new List<string>();
-                varnames.Add(varName);
-                varnames = VarsDependencies(varnames);
-                DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
-                foreach (FileInfo tempfinfo in templinkdirinfo.GetFiles())
-                {
-                    if (tempfinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                        tempfinfo.Delete();
-                }
-                foreach (string varname in varnames)
-                {
-                    var rows = varManagerDataSet.varsView.Where(q => q.varName == varName);
-                    if (rows.Count() > 0)
-                    {
-                        if (!rows.First().Installed)
-                            VarInstall(varname, true);
-                    }
-                }
-                UpdateVarsInstalled();
+                string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2, loadscenetxt.IndexOf(":/") - loadscenetxt.IndexOf("\r\n") - 2);
+                
+                InstallTemp(varName);
             }
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
@@ -2371,10 +2406,59 @@ namespace varManager
             sw.Close();
         }
 
+        public void DeleteTemp()
+        {
+
+            DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
+
+            foreach (FileInfo tempfinfo in templinkdirinfo.GetFiles())
+            {
+                if (tempfinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                    tempfinfo.Delete();
+            }
+
+        }
+        public void InstallTemp(string varName)
+        {
+            List<string> varnames = new List<string>();
+            varnames.Add(varName);
+            varnames = VarsDependencies(varnames);
+             
+            foreach (string varname in varnames)
+            {
+                var rows = varManagerDataSet.varsView.Where(q => q.varName == varName);
+                if (rows.Count() > 0)
+                {
+                    if (!rows.First().Installed)
+                        VarInstall(varname, true);
+                }
+            }
+            //UpdateVarsInstalled();
+        }
+
         private void checkBoxPreviewTypeLoadable_CheckedChanged(object sender, EventArgs e)
         {
             PreviewInitType();
         }
+
+        private void buttonLocate_Click(object sender, EventArgs e)
+        {
+            string varName = labelPreviewVarName.Text;
+            LocateVar(varName);
+
+        }
+
+        public void LocateVar(string varName)
+        {
+            varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(varName);
+            if (varsrow != null)
+            {
+                string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
+                Comm.LocateFile(destvarfile);
+            }
+        }
+
+
 
         private void buttonpreviewinstall_Click(object sender, EventArgs e)
         {

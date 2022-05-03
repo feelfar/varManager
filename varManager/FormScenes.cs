@@ -17,12 +17,13 @@ namespace varManager
         private static string previewpicsDirName = "___PreviewPics___";
         //private static string installLinkDirName = "___VarsLink___";
         private static string missingLinkDirName = "___MissingVarLink___";
-        private static int maxitemPerpage = 100;
+       // private static int maxitemPerpage = 100;
         private string strOrderBy = "_";
         public FormScenes()
         {
             InitializeComponent();
         }
+        public Form1 form1;
         /*
         public struct InstalledScene
         {
@@ -59,13 +60,16 @@ namespace varManager
         private List<varManagerDataSet.scenesViewRow> listFilterScene2 = new List<varManagerDataSet.scenesViewRow>();
         private List<varManagerDataSet.scenesViewRow> listFilterScene3 = new List<varManagerDataSet.scenesViewRow>();
         private List<varManagerDataSet.scenesViewRow> listFilterCreatorScene = new List<varManagerDataSet.scenesViewRow>();
-        private List<varManagerDataSet.scenesViewRow> listFilterPageScene = new List<varManagerDataSet.scenesViewRow>();
+        private List<varManagerDataSet.scenesViewRow> listFilterCreatorSceneHide = new List<varManagerDataSet.scenesViewRow>();
+        private List<varManagerDataSet.scenesViewRow> listFilterCreatorSceneNormal = new List<varManagerDataSet.scenesViewRow>();
+        private List<varManagerDataSet.scenesViewRow> listFilterCreatorSceneFav = new List<varManagerDataSet.scenesViewRow>();
+
+        //private List<varManagerDataSet.scenesViewRow> listFilterPageScene = new List<varManagerDataSet.scenesViewRow>();
         private void FormScenes_Load(object sender, EventArgs e)
         {
             panelImage.Dock = DockStyle.Fill;
             comboBoxCategory.SelectedIndex = 0;
-            toolStripComboBoxPerPage.SelectedIndex = 0;
-            toolStripComboBoxOrderBy.SelectedIndex = 0;
+            comboBoxOrderBy.SelectedIndex = 0;
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             //this.installedScenesTableAdapter.Fill(this.varManagerDataSet.installedScenes);
             progressBar1.Visible = true;
@@ -151,12 +155,12 @@ namespace varManager
                 if (dictHideFav.ContainsKey(varscene.varName + ":" + varscene.scenePath))
                     hidefav = dictHideFav[varscene.varName + ":" + varscene.scenePath];
                 //var hidefavrows = this.varManagerDataSet.HideFav.Where(q => q.varName == varscene.varName && q.scenePath == varscene.scenePath);
-               // if (hidefavrows.Count() > 0) 
-               //     hidefav= hidefavrows.First().hidefav;
+                // if (hidefavrows.Count() > 0) 
+                //     hidefav= hidefavrows.First().hidefav;
                 varManagerDataSet.varsRow varrow = this.varManagerDataSet.vars.FindByvarName(varscene.varName);
 
                 bool installed = false;
-              var installedrow= this.varManagerDataSet.installStatus.FindByvarName(varscene.varName);
+                var installedrow = this.varManagerDataSet.installStatus.FindByvarName(varscene.varName);
 
                 if (installedrow != null && installedrow.Installed)
                     installed = true;
@@ -196,11 +200,11 @@ namespace varManager
                         //    hidefav = hidefavrows.First().hidefav;
                         varManagerDataSet.varsRow varrow = this.varManagerDataSet.vars.FindByvarName(varscene.varName);
 
-                        this.varManagerDataSet.scenesView.AddscenesViewRow( "missingLink", varscene.varName, varscene.atomType, varscene.isPreset,
+                        this.varManagerDataSet.scenesView.AddscenesViewRow("missingLink", varscene.varName, varscene.atomType, varscene.isPreset,
                             varscene.scenePath, varscene.previewPic, true, varrow.creatorName, varrow.packageName, varrow.varPath, varrow.filesize,
                             varrow.metaDate, varrow.varDate, hidefav);
                         //listInstalledScene.Add(new InstalledScene("VarsLink", varscene.atomType, varscene.varName, varscene.varName, varscene.metaDate, varscene.scenePath, varscene.previewPic, 0));
-                       
+
                     }
                     progressBar1.Value = 60 + (i * 20 / misslinks.Count());
                     //this.BeginInvoke(progressBarSetValue, 60 + (i * 20 / misslinks.Count()));
@@ -208,36 +212,55 @@ namespace varManager
                 }
             }
             this.varManagerDataSet.scenesView.AcceptChanges();
-          
-            List<SaveScene> savescenes = new List<SaveScene>();
-            //List<string> saves = new List<string>();
-            DirectoryInfo dirinfoscenes = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "Saves\\scene"));
-            if (dirinfoscenes.Exists)
+
+            List<SaveScene> savescenes=new List<SaveScene>();
+            foreach(SaveScene ss in SaveScenes("scenes", "Saves\\scene", "*.json"))
             {
-                IOrderedEnumerable<FileInfo> scenes = dirinfoscenes.GetFiles("*.json").OrderBy(f => f.CreationTime);
-                foreach (FileInfo fileinfo in scenes)
-                {
-                    string path = "Saves\\scene"+fileinfo.FullName.Replace(dirinfoscenes.FullName, "");
-                    
-                    string strPreviewPic = fileinfo.FullName.Substring(0, fileinfo.FullName.LastIndexOf('.')) + ".jpg";
-                    if (!File.Exists(strPreviewPic)) 
-                        strPreviewPic = ""; 
-                    int hidefav = 0;
-                    if (File.Exists(fileinfo.FullName + ".hide"))
-                        hidefav = -1;
-                    if (File.Exists(fileinfo.FullName + ".fav"))
-                        hidefav = 1;
-                    var saveScene = new SaveScene();
-                    saveScene.strType = "scenes";
-                    saveScene.strPath = path;
-                    saveScene.filesize = fileinfo.Length;
-                    saveScene.fdate = fileinfo.LastWriteTime;
-                    saveScene.strPreviewPic = strPreviewPic;
-                    saveScene.hidefav = hidefav;
-                    savescenes.Add(saveScene);
-                    //saves.Add("scenes:" + path);
-                    
-                }
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("looks", "Saves\\Person\\full", "*.json"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("looks", "Saves\\Person\\appearance", "*.json"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("looks", "Custom\\Atom\\Person\\Appearance", "*.vap"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("pose", "Saves\\Person\\pose", "*.json"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("pose", "Custom\\Atom\\Person\\Pose", "*.vap"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("clothing", "Custom\\Atom\\Person\\Clothing", "*.vap"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("clothing", "Custom\\Clothing", "*.vap"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("hairstyle", "Custom\\Atom\\Person\\Hair", "*.vap"))
+            {
+                savescenes.Add(ss);
+            }
+            foreach (SaveScene ss in SaveScenes("hairstyle", "Custom\\Hair", "*.vap"))
+            {
+                savescenes.Add(ss);
+            } 
+            foreach (SaveScene ss in SaveScenes("morphs", "Custom\\Atom\\Person\\Morphs", "*.vap"))
+            {
+                savescenes.Add(ss);
+            } 
+            foreach (SaveScene ss in SaveScenes("skin", "Custom\\Atom\\Person\\Skin", "*.vap"))
+            {
+                savescenes.Add(ss);
             }
             i = 0;
             foreach (var savescene in savescenes)
@@ -246,12 +269,46 @@ namespace varManager
                            savescene.strPath, savescene.strPreviewPic, true, "_", "_", "_", savescene.filesize,
                            savescene.fdate, savescene.fdate, savescene.hidefav);
                 progressBar1.Value = 80 + (i * 20 / savescenes.Count());
-               //this.BeginInvoke(progressBarSetValue, 80 + (i * 20 / savescenes.Count()));
-               i++;
+                //this.BeginInvoke(progressBarSetValue, 80 + (i * 20 / savescenes.Count()));
+                i++;
             }
             this.varManagerDataSet.scenesView.AcceptChanges();
             progressBar1.Visible = false;
         }
+
+        private static List<SaveScene> SaveScenes(string strType,string strPath,string searchPattern)
+        {
+            List<SaveScene> savescenes = new List<SaveScene>();
+            DirectoryInfo dirinfoscenes = new DirectoryInfo(Path.Combine(Settings.Default.vampath, strPath));
+            if (dirinfoscenes.Exists)
+            {
+                IOrderedEnumerable<FileInfo> scenes = dirinfoscenes.GetFiles(searchPattern).OrderBy(f => f.CreationTime);
+                foreach (FileInfo fileinfo in scenes)
+                {
+                    string path = strPath + fileinfo.FullName.Replace(dirinfoscenes.FullName, "");
+
+                    string strPreviewPic = fileinfo.FullName.Substring(0, fileinfo.FullName.LastIndexOf('.')) + ".jpg";
+                    if (!File.Exists(strPreviewPic))
+                        strPreviewPic = "";
+                    int hidefav = 0;
+                    if (File.Exists(fileinfo.FullName + ".hide"))
+                        hidefav = -1;
+                    if (File.Exists(fileinfo.FullName + ".fav"))
+                        hidefav = 1;
+                    var saveScene = new SaveScene();
+                    saveScene.strType = strType;
+                    saveScene.strPath = path;
+                    saveScene.filesize = fileinfo.Length;
+                    saveScene.fdate = fileinfo.LastWriteTime;
+                    saveScene.strPreviewPic = strPreviewPic;
+                    saveScene.hidefav = hidefav;
+                    savescenes.Add(saveScene);
+                }
+            }
+
+            return savescenes;
+        }
+
         struct SaveScene
         {
             public string strType;
@@ -337,12 +394,6 @@ namespace varManager
             FilterVarsCreator();
         }
 
-        private void toolStripTextBoxFilter_TextChanged(object sender, EventArgs e)
-        {
-            FilterVars(8);
-        }
-
-
         private void FilterVarsCreator()
         {
             string creatorname = comboBoxCreator.Text;
@@ -356,20 +407,7 @@ namespace varManager
                 listFilterCreatorScene = listFilterScene3.ToList();
             }
             strOrderBy = "none";
-            toolStripComboBoxScenePage.SelectedIndexChanged -= new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
-            toolStripLabelSceneCount.Text = "/" + listFilterCreatorScene.Count.ToString();
-            toolStripComboBoxScenePage.Items.Clear();
-            int pages = (int)((listFilterCreatorScene.Count + maxitemPerpage - 1) / maxitemPerpage);
-
-            for (int page = 0; page < pages; page++)
-            {
-                int min = page * maxitemPerpage + 1;
-                int max = (page + 1) * maxitemPerpage;
-                if (max > listFilterCreatorScene.Count) max = listFilterCreatorScene.Count;
-                string strpage = min.ToString("000") + " - " + max.ToString("000");
-                toolStripComboBoxScenePage.Items.Add(strpage);
-            }
-
+            /*
             if (pages > 0)
                 toolStripComboBoxScenePage.SelectedIndex = 0;
             else
@@ -381,6 +419,7 @@ namespace varManager
                 listViewFav.Items.Clear();
             }
             toolStripComboBoxScenePage.SelectedIndexChanged += new System.EventHandler(toolStripComboBoxScenePage_SelectedIndexChanged);
+            */
             GenerateItems();
         }
 
@@ -429,10 +468,9 @@ namespace varManager
         }
         private void GenerateItems()
         {
-            if (toolStripComboBoxScenePage.SelectedIndex < 0) return;
-            if (toolStripComboBoxOrderBy.Text != strOrderBy)
+            if (comboBoxOrderBy.Text != strOrderBy)
             {
-                strOrderBy = toolStripComboBoxOrderBy.Text;
+                strOrderBy = comboBoxOrderBy.Text;
                 switch (strOrderBy)
                 {
                     case "New To Old":
@@ -449,6 +487,19 @@ namespace varManager
                         break;
                 }
             }
+            listFilterCreatorSceneHide = listFilterCreatorScene.Where(q => q.hidefav == -1).ToList();
+            listViewHide.VirtualListSize = listFilterCreatorSceneHide.Count;
+            listFilterCreatorSceneNormal = listFilterCreatorScene.Where(q => q.hidefav == 0).ToList();
+            listViewNormal.VirtualListSize = listFilterCreatorSceneNormal.Count;
+            listFilterCreatorSceneFav = listFilterCreatorScene.Where(q => q.hidefav == 1).ToList();
+            listViewFav.VirtualListSize = listFilterCreatorSceneFav.Count;
+            labelHide.Text = listFilterCreatorSceneHide.Count.ToString();
+            labelNormal.Text = listFilterCreatorSceneNormal.Count.ToString();
+            labelFav.Text = listFilterCreatorSceneFav.Count.ToString();
+            listViewHide.Invalidate();
+            listViewNormal.Invalidate();
+            listViewFav.Invalidate();
+            /*
             int startpic = maxitemPerpage * toolStripComboBoxScenePage.SelectedIndex;
             imageListScenes.Images.Clear();
             listSceneItem.Clear();
@@ -459,22 +510,28 @@ namespace varManager
                 string scenePath = listFilterCreatorScene[cur].scenePath;
                 string sceneName = listFilterCreatorScene[cur].varName+ " - " + Path.GetFileNameWithoutExtension(scenePath);
                 //Image previwPic = Image.FromHbitmap(Properties.Resources.icoVarManager.ToBitmap().GetHbitmap());
-                Image previwPic = Image.FromFile("vam.png");
-                string picpath = GetPreviewPicPath(listFilterCreatorScene[cur].atomType, listFilterCreatorScene[cur].varName, listFilterCreatorScene[cur].previewPic);
-                if (!string.IsNullOrEmpty(picpath))
-                    previwPic = Image.FromFile(picpath);
-                imageListScenes.Images.Add(previwPic);
+                //Image previwPic = Image.FromFile("vam.png");
+                string picpath = GetPreviewPicPath(listFilterCreatorScene[cur].atomType, listFilterCreatorScene[cur].varName, listFilterCreatorScene[cur].previewPic); 
+                if (string.IsNullOrEmpty(picpath))
+                {
+                     picpath = "vam.png";
+                    //previwPic = Image.FromFile(picpath);
+                }
+                imageListScenes.Images.Add(Image.FromFile(picpath));
                 ListViewItem item = new ListViewItem(sceneName, i);
                 item.SubItems.Add(listFilterCreatorScene[cur].varName);
                 item.SubItems.Add(listFilterCreatorScene[cur].scenePath);
                 item.SubItems.Add(picpath);
                 item.SubItems.Add(listFilterCreatorScene[cur].varDate.ToString());
                 item.SubItems.Add(listFilterCreatorScene[cur].hidefav.ToString());
+                item.SubItems.Add(listFilterCreatorScene[cur].atomType.ToString());
+                item.SubItems.Add(listFilterCreatorScene[cur].location.ToString());
                 listSceneItem.Add(item);
             }
             FillItems();
+            */
         }
-
+        /*
         private void FillItems()
         {
             int hideIndex = 0;
@@ -516,6 +573,7 @@ namespace varManager
             this.BeginInvoke(fillListView, new Object[] { index[0], index[1], index[2] });
 
         }
+       
         public delegate void InvokeFillListView(ref int hideIndex, ref int nomalIndex, ref int favIndex);
         public void FillListView(ref int hideIndex, ref int nomalIndex, ref int favIndex)
         {
@@ -523,23 +581,18 @@ namespace varManager
             listViewNormal.Items.Clear();
             listViewFav.Items.Clear();
             int countHide = 0, countNormal = 0, countFav = 0;
-            /*
-            List<string> locations = new List<string>();
-            foreach (var locationitem in chklistLocation.CheckedItems)
-            {
-                locations.Add(locationitem.ToString());
-            }
+            
+           // List<string> locations = new List<string>();
+          //  foreach (var locationitem in chklistLocation.CheckedItems)
+          //  {
+          //      locations.Add(locationitem.ToString());
+          //  }
             List<varManagerDataSet.scenesViewRow> sceneviewarray =this.varManagerDataSet.scenesView.Where(q => locations.IndexOf(q.location)>=0).ToList();
-            */
+            
             foreach (var item in listSceneItem)
             {
                 Thread.Sleep(1);
-                if (backgroundWorkerFillListView.CancellationPending)
-                {
-                    //Tell the Backgroundworker you are canceling and exit the for-loop
-                    //e.Cancel = true;
-                    return;
-                }
+                
                 switch (int.Parse(item.SubItems[5].Text))
                 {
                     case -1: listViewHide.Items.Add(item); countHide++; break;
@@ -547,9 +600,9 @@ namespace varManager
                     case 1: listViewFav.Items.Add(item); countFav++; break;
                 }
             }
-            labelHide.Text = "Hide " + countHide.ToString();
-            labelNormal.Text = "Normal " + countNormal.ToString();
-            labelFav.Text = "Fav " + countFav.ToString();
+            labelHide.Text = countHide.ToString();
+            labelNormal.Text = countNormal.ToString();
+            labelFav.Text = countFav.ToString();
             if (hideIndex >= listViewHide.Items.Count)
                 hideIndex = listViewHide.Items.Count - 1;
             if (hideIndex >= 0) listViewHide.EnsureVisible(hideIndex);
@@ -560,26 +613,7 @@ namespace varManager
                 favIndex = listViewFav.Items.Count - 1;
             if (favIndex >= 0) listViewFav.EnsureVisible(favIndex);
         }
-
-        private void toolStripButtonSceneFirst_Click(object sender, EventArgs e)
-        {
-            if (toolStripComboBoxScenePage.SelectedIndex > 0) toolStripComboBoxScenePage.SelectedIndex = 0;
-        }
-
-        private void toolStripButtonScenePrev_Click(object sender, EventArgs e)
-        {
-            if (toolStripComboBoxScenePage.SelectedIndex > 0) toolStripComboBoxScenePage.SelectedIndex--;
-        }
-
-        private void toolStripButtonSceneNext_Click(object sender, EventArgs e)
-        {
-            if (toolStripComboBoxScenePage.SelectedIndex < toolStripComboBoxScenePage.Items.Count - 1) toolStripComboBoxScenePage.SelectedIndex++;
-        }
-
-        private void toolStripButtonSceneLast_Click(object sender, EventArgs e)
-        {
-            if (toolStripComboBoxScenePage.SelectedIndex < toolStripComboBoxScenePage.Items.Count - 1) toolStripComboBoxScenePage.SelectedIndex = toolStripComboBoxScenePage.Items.Count - 1;
-        }
+             */
 
         private void pictureBoxPreview_Click(object sender, EventArgs e)
         {
@@ -589,12 +623,12 @@ namespace varManager
 
         private void buttonAddHide_Click(object sender, EventArgs e)
         {
-            if (listViewNormal.SelectedItems.Count > 0)
+            if (listViewNormal.SelectedIndices.Count > 0)
             {
-                foreach (ListViewItem item in listViewNormal.SelectedItems)
+                foreach (int itemindex in listViewNormal.SelectedIndices)
                 {
-                    string varName = item.SubItems[1].Text;
-                    string scene = item.SubItems[2].Text;
+                    string varName = listFilterCreatorSceneNormal[itemindex].varName;
+                    string scene = listFilterCreatorSceneNormal[itemindex].scenePath;
                     SetHideFav(varName, scene,-1);
                     UpdateHidefav(varName, scene);
                 }
@@ -648,12 +682,12 @@ namespace varManager
 
         private void buttonAddFav_Click(object sender, EventArgs e)
         {
-            if (listViewNormal.SelectedItems.Count > 0)
+            if (listViewNormal.SelectedIndices.Count > 0)
             {
-                foreach (ListViewItem item in listViewNormal.SelectedItems)
+                foreach (int itemindex in listViewNormal.SelectedIndices)
                 {
-                    string varName = item.SubItems[1].Text;
-                    string scene = item.SubItems[2].Text;
+                    string varName = listFilterCreatorSceneNormal[itemindex].varName;
+                    string scene = listFilterCreatorSceneNormal[itemindex].scenePath;
                     SetHideFav(varName, scene, 1);
                     UpdateHidefav(varName, scene);
                 }
@@ -664,12 +698,12 @@ namespace varManager
 
         private void buttonRemoveHide_Click(object sender, EventArgs e)
         {
-            if (listViewHide.SelectedItems.Count > 0)
+            if (listViewHide.SelectedIndices.Count > 0)
             {
-                foreach (ListViewItem item in listViewHide.SelectedItems)
+                foreach (int itemindex in listViewHide.SelectedIndices)
                 {
-                    string varName = item.SubItems[1].Text;
-                    string scene = item.SubItems[2].Text;
+                    string varName = listFilterCreatorSceneHide[itemindex].varName;
+                    string scene = listFilterCreatorSceneHide[itemindex].scenePath;
                     SetHideFav(varName, scene, 0);
                     UpdateHidefav(varName, scene);
                 }
@@ -680,12 +714,12 @@ namespace varManager
 
         private void buttonRemoveFav_Click(object sender, EventArgs e)
         {
-            if (listViewFav.SelectedItems.Count > 0)
+            if (listViewFav.SelectedIndices.Count > 0)
             {
-                foreach (ListViewItem item in listViewFav.SelectedItems)
+                foreach (int itemindex in listViewFav.SelectedIndices)
                 {
-                    string varName = item.SubItems[1].Text;
-                    string scene = item.SubItems[2].Text;
+                    string varName = listFilterCreatorSceneFav[itemindex].varName;
+                    string scene = listFilterCreatorSceneFav[itemindex].scenePath;
                     SetHideFav(varName, scene, 0);
                     UpdateHidefav(varName, scene);
                 }
@@ -693,18 +727,29 @@ namespace varManager
                 GenerateItems();
             }
         }
+        string loadscenetxt = "";
 
-        private void listViewHide_ItemActivate(object sender, EventArgs e)
+        private void listView_ItemActivate(object sender, EventArgs e)
         {
-            if (listViewHide.SelectedIndices.Count == 1)
+            ListView listView=(ListView)sender;
+            if (listView.SelectedIndices.Count == 1)
             {
-                int index = listViewHide.SelectedIndices[0];
-                var item = listViewHide.Items[index];
+                panelImage.Parent = listView;
+                int index = listView.SelectedIndices[0];
+                var item = listView.Items[index];
                 if (item != null)
                 {
+                    string varname = "";
+                    if (!string.IsNullOrEmpty(item.SubItems[1].Text))
+                    {
+                        varname = item.SubItems[1].Text+ ":/";
+                    }
+                    
+                    loadscenetxt = (item.SubItems[7].Text== "not Installed"?"rescan_":"")+ item.SubItems[6].Text+"\r\n"+ varname+ item.SubItems[2].Text.Replace('\\','/');
                     if (!string.IsNullOrEmpty(item.SubItems[3].Text))
                     {
-                        labelPreviewVarName.Text = item.SubItems[1].Text;
+                        labelPreviewVarName.Text = item.Text;
+                        buttonLoadscene.Text = "Load " + item.SubItems[6].Text;
                         pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
                         panelImage.Visible = true;
                     }
@@ -712,42 +757,7 @@ namespace varManager
             }
         }
 
-        private void listViewNormal_ItemActivate(object sender, EventArgs e)
-        {
-            if (listViewNormal.SelectedIndices.Count == 1)
-            {
-                int index = listViewNormal.SelectedIndices[0];
-                var item = listViewNormal.Items[index];
-                if (item != null)
-                {
-                    if (!string.IsNullOrEmpty(item.SubItems[3].Text))
-                    {
-                        labelPreviewVarName.Text = item.SubItems[1].Text + "/" + item.SubItems[2].Text + "  Date:" + item.SubItems[4].Text;
-                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
-                        panelImage.Visible = true;
-                    }
-                }
-            }
-        }
-
-        private void listViewFav_ItemActivate(object sender, EventArgs e)
-        {
-            if (listViewFav.SelectedIndices.Count == 1)
-            {
-                int index = listViewFav.SelectedIndices[0];
-                var item = listViewFav.Items[index];
-                if (item != null)
-                {
-                    if (!string.IsNullOrEmpty(item.SubItems[3].Text))
-                    {
-                        labelPreviewVarName.Text = item.SubItems[1].Text;
-                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
-                        panelImage.Visible = true;
-                    }
-                }
-            }
-        }
-
+        
         private void toolStripComboBoxHideFav_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterVars(9);
@@ -762,63 +772,88 @@ namespace varManager
             }
         }
 
-        private void toolStripComboBoxLocation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            FilterVars();
-        }
-
-        private void toolStripComboBoxPerPage_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            maxitemPerpage = 100;
-            int.TryParse(toolStripComboBoxPerPage.Text, out maxitemPerpage);
-            FilterVarsCreator();
-        }
-
         private void listViewNormal_ListViewDragDrop(object sender, DragEventArgs e)
         {
             DragItemData data = (DragItemData)e.Data.GetData(typeof(DragItemData).ToString());
-
-            foreach (ListViewItem item in data.DragItems)
+            List<varManagerDataSet.scenesViewRow> listfilter = listFilterCreatorSceneNormal;
+            if (data.ListView == listViewHide)
             {
-                string varName = item.SubItems[1].Text;
-                string scene = item.SubItems[2].Text;
+                listfilter = listFilterCreatorSceneHide;
+            }
+            if (data.ListView == listViewFav)
+            {
+                listfilter = listFilterCreatorSceneFav;
+            }
+            foreach (int itemindex in data.ListView.SelectedIndices)
+            {
+                string varName = listfilter[itemindex].varName;
+                string scene = listfilter[itemindex].scenePath;
                 SetHideFav(varName, scene, 0);
                 UpdateHidefav(varName, scene);
             }
-            //GenerateItems();
+            GenerateItems();
         }
 
         private void listViewHide_ListViewDragDrop(object sender, DragEventArgs e)
         {
             DragItemData data = (DragItemData)e.Data.GetData(typeof(DragItemData).ToString());
-
-            foreach (ListViewItem item in data.DragItems)
+            List<varManagerDataSet.scenesViewRow> listfilter = listFilterCreatorSceneNormal;
+            if (data.ListView == listViewHide)
             {
-                string varName = item.SubItems[1].Text;
-                string scene = item.SubItems[2].Text;
+                listfilter = listFilterCreatorSceneHide;
+            }
+            if (data.ListView == listViewFav)
+            {
+                listfilter = listFilterCreatorSceneFav;
+            }
+            foreach (int itemindex in data.ListView.SelectedIndices)
+            {
+                string varName = listfilter[itemindex].varName;
+                string scene = listfilter[itemindex].scenePath;
                 SetHideFav(varName, scene, -1);
                 UpdateHidefav(varName, scene);
             }
-            //GenerateItems();
+            GenerateItems();
         }
 
         private void listViewFav_ListViewDragDrop(object sender, DragEventArgs e)
         {
             DragItemData data = (DragItemData)e.Data.GetData(typeof(DragItemData).ToString());
-
-            foreach (ListViewItem item in data.DragItems)
+            List<varManagerDataSet.scenesViewRow> listfilter = listFilterCreatorSceneNormal;
+            if (data.ListView == listViewHide)
             {
-                string varName = item.SubItems[1].Text;
-                string scene = item.SubItems[2].Text;
+                listfilter = listFilterCreatorSceneHide;
+            }
+            if (data.ListView == listViewFav)
+            {
+                listfilter = listFilterCreatorSceneFav;
+            }
+            foreach (int itemindex in data.ListView.SelectedIndices)
+            {
+                string varName = listfilter[itemindex].varName;
+                string scene = listfilter[itemindex].scenePath;
                 SetHideFav(varName, scene, 1);
                 UpdateHidefav(varName, scene);
             }
-            //GenerateItems();
+            GenerateItems();
         }
 
         private void buttonLoadscene_Click(object sender, EventArgs e)
         {
-
+            if (loadscenetxt.StartsWith("rescan_scenes") || loadscenetxt.StartsWith("scenes"))
+                form1.DeleteTemp();
+            if (loadscenetxt.StartsWith("rescan_"))
+            {
+                string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2, loadscenetxt.IndexOf(":/") - loadscenetxt.IndexOf("\r\n") - 2);
+                form1.InstallTemp(varName);
+            }
+           
+            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+            if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
+            StreamWriter sw = new StreamWriter(loadscenefile);
+            if (checkBoxMerge.Checked) loadscenetxt = loadscenetxt + "_merge";
+            sw.Write(loadscenetxt);
+            sw.Close();
         }
 
         private void chklistLocation_SelectedIndexChanged(object sender, EventArgs e)
@@ -850,6 +885,138 @@ namespace varManager
         private void comboBoxCreator_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterVarsCreator();
+        }
+
+        private void buttonLocate_Click(object sender, EventArgs e)
+        {
+            string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2);
+            if (varName.IndexOf(":/") > 0)
+            {
+                varName = varName.Substring(0, varName.IndexOf(":/"));
+                form1.LocateVar(varName);
+            }
+            else
+            {
+                varName = Path.Combine(Settings.Default.vampath, varName.Replace('/','\\'));
+                Comm.LocateFile(varName);
+            }
+            
+        }
+        int layoutPanelWidthMode = 0;
+        private void buttonFav_Click(object sender, EventArgs e)
+        {
+            if (layoutPanelWidthMode == 3)
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 33;
+                tableLayoutPanel1.ColumnStyles[2].Width = 33;
+                tableLayoutPanel1.ColumnStyles[4].Width = 33;
+                layoutPanelWidthMode = 0;
+                buttonFav.Text = "◀Fav▶";
+            }
+            else
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 10;
+                tableLayoutPanel1.ColumnStyles[2].Width = 10;
+                tableLayoutPanel1.ColumnStyles[4].Width = 80;
+                layoutPanelWidthMode = 3;
+                buttonFav.Text = "▶Fav◀";
+            }
+        }
+
+        private void buttonNormal_Click(object sender, EventArgs e)
+        {
+            if (layoutPanelWidthMode == 2)
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 33;
+                tableLayoutPanel1.ColumnStyles[2].Width = 33;
+                tableLayoutPanel1.ColumnStyles[4].Width = 33;
+                layoutPanelWidthMode = 0;
+                buttonNormal.Text = "◀Normal▶";
+            }
+            else
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 10;
+                tableLayoutPanel1.ColumnStyles[2].Width = 80;
+                tableLayoutPanel1.ColumnStyles[4].Width = 10;
+                layoutPanelWidthMode = 2;
+                buttonNormal.Text = "▶Normal◀";
+            }
+        }
+
+        private void buttonHide_Click(object sender, EventArgs e)
+        {
+            if (layoutPanelWidthMode == 1)
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 33;
+                tableLayoutPanel1.ColumnStyles[2].Width = 33;
+                tableLayoutPanel1.ColumnStyles[4].Width = 33;
+                layoutPanelWidthMode = 0;
+                buttonHide.Text = "◀Hide▶";
+            }
+            else
+            {
+                tableLayoutPanel1.ColumnStyles[0].Width = 80;
+                tableLayoutPanel1.ColumnStyles[2].Width = 10;
+                tableLayoutPanel1.ColumnStyles[4].Width = 10;
+                layoutPanelWidthMode = 1;
+                buttonHide.Text = "▶Hide◀";
+            }
+        }
+
+        private void listViewHide_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var curpriviewscene = listFilterCreatorSceneHide[e.ItemIndex];
+            RetrieveVirtualItem(e, curpriviewscene);
+        }
+
+
+        private void listViewNormal_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+
+            var curpriviewscene = listFilterCreatorSceneNormal[e.ItemIndex]; 
+            RetrieveVirtualItem(e, curpriviewscene);
+        }
+
+        private void listViewFav_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var curpriviewscene = listFilterCreatorSceneFav[e.ItemIndex];
+            RetrieveVirtualItem(e, curpriviewscene);
+        }
+
+        private void RetrieveVirtualItem(RetrieveVirtualItemEventArgs e, varManagerDataSet.scenesViewRow curpriviewscene)
+        {
+            string key = "vam.png";
+            if (!string.IsNullOrWhiteSpace(curpriviewscene.previewPic))
+            {
+                key = Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewscene.atomType, curpriviewscene.varName, curpriviewscene.previewPic);
+            }
+            if (!imageListScenes.Images.ContainsKey(key))
+            {
+                imageListScenes.Images.Add(key, Image.FromFile(key));
+                if (imageListScenes.Images.Count > 40) imageListScenes.Images.RemoveAt(0);
+            }
+
+
+            string scenePath = curpriviewscene.scenePath;
+            string sceneName = curpriviewscene.varName + " - " + Path.GetFileNameWithoutExtension(scenePath);
+
+            e.Item = new ListViewItem(sceneName, imageListScenes.Images.IndexOfKey(key));
+            e.Item.SubItems.Add(curpriviewscene.varName);
+            e.Item.SubItems.Add(curpriviewscene.scenePath);
+            e.Item.SubItems.Add(key);
+            e.Item.SubItems.Add(curpriviewscene.varDate.ToString());
+            e.Item.SubItems.Add(curpriviewscene.hidefav.ToString());
+            e.Item.SubItems.Add(curpriviewscene.atomType.ToString());
+            e.Item.SubItems.Add(curpriviewscene.location.ToString());
+        }
+
+
+        private void comboBoxOrderBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listFilterCreatorScene != null&& listFilterCreatorScene.Count() > 0)
+            {
+                GenerateItems();
+            }
         }
     }
 }

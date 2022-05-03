@@ -9,6 +9,20 @@ namespace varManager
 {
     static class Comm
     {
+        public static void LocateFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
+            // combine the arguments together
+            // it doesn't matter if there is a space after ','
+            string argument = "/select, \"" + filePath + "\"";
+
+            System.Diagnostics.Process.Start("explorer.exe", argument);
+        }
+
         public static void DirectoryMoveAll(string sourceDir, string destDir)
         {
             if (Directory.Exists(destDir))

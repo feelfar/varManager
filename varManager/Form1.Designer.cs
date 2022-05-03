@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -54,27 +54,11 @@ namespace varManager
             this.labelProgress = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
-            this.varNamedataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColumnLocate = new System.Windows.Forms.DataGridViewButtonColumn();
             this.fsize = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.packageNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.metaDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.morphs = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pose = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.skin = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.varManagerDataSet = new varManager.varManagerDataSet();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.buttonUninstallSels = new System.Windows.Forms.Button();
@@ -98,35 +82,51 @@ namespace varManager
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.checkBoxInstalled = new System.Windows.Forms.CheckBox();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.toolStripPreview = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonPreviewFirst = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonPreviewPrev = new System.Windows.Forms.ToolStripButton();
-            this.toolStripComboBoxPreviewPage = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripLabelPreviewCountItem = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButtonPreviewNext = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonPreviewLast = new System.Windows.Forms.ToolStripButton();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBoxPreviewType = new System.Windows.Forms.ComboBox();
-            this.checkBoxPreviewTypeLoadable = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
             this.labelPreviewVarName = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.buttonLoad = new System.Windows.Forms.Button();
+            this.buttonLocate = new System.Windows.Forms.Button();
             this.buttonpreviewinstall = new System.Windows.Forms.Button();
-            this.buttonpreviewback = new System.Windows.Forms.Button();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.listViewPreviewPics = new System.Windows.Forms.ListView();
             this.imageListPreviewPics = new System.Windows.Forms.ImageList(this.components);
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.toolStripPreview = new System.Windows.Forms.ToolStrip();
+            this.toolStripButtonPreviewFirst = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonPreviewPrev = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabelPreviewItemIndex = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabelPreviewCountItem = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripButtonPreviewNext = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonPreviewLast = new System.Windows.Forms.ToolStripButton();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxPreviewType = new System.Windows.Forms.ComboBox();
+            this.checkBoxPreviewTypeLoadable = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerInstall = new System.ComponentModel.BackgroundWorker();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.backgroundWorkerPreview = new System.ComponentModel.BackgroundWorker();
             this.folderBrowserDialogMove = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialogInstByTXT = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogExportInstalled = new System.Windows.Forms.SaveFileDialog();
+            this.varNamedataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.packageNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.metaDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scenesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clothingDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hairstyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pluginsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.assetsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.disabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.varsViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.varManagerDataSet = new varManager.varManagerDataSet();
             this.varsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dependenciesTableAdapter = new varManager.varManagerDataSetTableAdapters.dependenciesTableAdapter();
@@ -148,17 +148,17 @@ namespace varManager
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsViewDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
             this.varsBindingNavigator.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
-            this.toolStripPreview.SuspendLayout();
             this.tableLayoutPanelPreview.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
+            this.flowLayoutPanel3.SuspendLayout();
+            this.toolStripPreview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).BeginInit();
@@ -168,7 +168,7 @@ namespace varManager
             // buttonSetting
             // 
             this.buttonSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSetting.Location = new System.Drawing.Point(28, 969);
+            this.buttonSetting.Location = new System.Drawing.Point(37, 766);
             this.buttonSetting.Name = "buttonSetting";
             this.buttonSetting.Size = new System.Drawing.Size(89, 48);
             this.buttonSetting.TabIndex = 0;
@@ -190,9 +190,9 @@ namespace varManager
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 227F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1924, 1055);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 245F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1540, 829);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // listBoxLog
@@ -200,9 +200,9 @@ namespace varManager
             this.listBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBoxLog.FormattingEnabled = true;
             this.listBoxLog.ItemHeight = 17;
-            this.listBoxLog.Location = new System.Drawing.Point(3, 787);
+            this.listBoxLog.Location = new System.Drawing.Point(3, 561);
             this.listBoxLog.Name = "listBoxLog";
-            this.listBoxLog.Size = new System.Drawing.Size(1759, 221);
+            this.listBoxLog.Size = new System.Drawing.Size(1375, 239);
             this.listBoxLog.TabIndex = 2;
             // 
             // panel1
@@ -216,10 +216,10 @@ namespace varManager
             this.panel1.Controls.Add(this.buttonUpdDB);
             this.panel1.Controls.Add(this.buttonSetting);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(1768, 3);
+            this.panel1.Location = new System.Drawing.Point(1384, 3);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 3);
-            this.panel1.Size = new System.Drawing.Size(153, 1049);
+            this.panel1.Size = new System.Drawing.Size(153, 823);
             this.panel1.TabIndex = 5;
             // 
             // groupBox2
@@ -241,7 +241,7 @@ namespace varManager
             this.comboBoxPacksSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxPacksSwitch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxPacksSwitch.FormattingEnabled = true;
-            this.comboBoxPacksSwitch.Location = new System.Drawing.Point(11, 34);
+            this.comboBoxPacksSwitch.Location = new System.Drawing.Point(8, 34);
             this.comboBoxPacksSwitch.Name = "comboBoxPacksSwitch";
             this.comboBoxPacksSwitch.Size = new System.Drawing.Size(118, 25);
             this.comboBoxPacksSwitch.TabIndex = 0;
@@ -251,10 +251,10 @@ namespace varManager
             // 
             this.buttonPacksDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPacksDelete.ForeColor = System.Drawing.Color.OrangeRed;
-            this.buttonPacksDelete.Location = new System.Drawing.Point(75, 65);
+            this.buttonPacksDelete.Location = new System.Drawing.Point(72, 65);
             this.buttonPacksDelete.Name = "buttonPacksDelete";
             this.buttonPacksDelete.Size = new System.Drawing.Size(54, 35);
-            this.buttonPacksDelete.TabIndex = 4;
+            this.buttonPacksDelete.TabIndex = 2;
             this.buttonPacksDelete.Text = "Del";
             this.buttonPacksDelete.UseVisualStyleBackColor = true;
             this.buttonPacksDelete.Click += new System.EventHandler(this.buttonPacksDelete_Click);
@@ -263,10 +263,10 @@ namespace varManager
             // 
             this.buttonPacksRename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPacksRename.ForeColor = System.Drawing.Color.Maroon;
-            this.buttonPacksRename.Location = new System.Drawing.Point(41, 106);
+            this.buttonPacksRename.Location = new System.Drawing.Point(38, 106);
             this.buttonPacksRename.Name = "buttonPacksRename";
             this.buttonPacksRename.Size = new System.Drawing.Size(67, 35);
-            this.buttonPacksRename.TabIndex = 4;
+            this.buttonPacksRename.TabIndex = 3;
             this.buttonPacksRename.Text = "Rename";
             this.buttonPacksRename.UseVisualStyleBackColor = true;
             this.buttonPacksRename.Click += new System.EventHandler(this.buttonPacksRename_Click);
@@ -275,10 +275,10 @@ namespace varManager
             // 
             this.buttonPacksAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPacksAdd.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.buttonPacksAdd.Location = new System.Drawing.Point(11, 65);
+            this.buttonPacksAdd.Location = new System.Drawing.Point(8, 65);
             this.buttonPacksAdd.Name = "buttonPacksAdd";
             this.buttonPacksAdd.Size = new System.Drawing.Size(54, 35);
-            this.buttonPacksAdd.TabIndex = 4;
+            this.buttonPacksAdd.TabIndex = 1;
             this.buttonPacksAdd.Text = "Add";
             this.buttonPacksAdd.UseVisualStyleBackColor = true;
             this.buttonPacksAdd.Click += new System.EventHandler(this.buttonPacksAdd_Click);
@@ -292,17 +292,17 @@ namespace varManager
             this.groupBox1.ForeColor = System.Drawing.Color.SaddleBrown;
             this.groupBox1.Location = new System.Drawing.Point(9, 224);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(129, 219);
+            this.groupBox1.Size = new System.Drawing.Size(135, 219);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Depends Analysis";
             // 
             // buttonMissingDepends
             // 
-            this.buttonMissingDepends.Location = new System.Drawing.Point(19, 33);
+            this.buttonMissingDepends.Location = new System.Drawing.Point(28, 33);
             this.buttonMissingDepends.Name = "buttonMissingDepends";
             this.buttonMissingDepends.Size = new System.Drawing.Size(89, 48);
-            this.buttonMissingDepends.TabIndex = 4;
+            this.buttonMissingDepends.TabIndex = 0;
             this.buttonMissingDepends.Text = "Installed Packages";
             this.toolTip1.SetToolTip(this.buttonMissingDepends, "Analyzing dependencies from Installed Vars");
             this.buttonMissingDepends.UseVisualStyleBackColor = true;
@@ -310,10 +310,10 @@ namespace varManager
             // 
             // buttonLogAnalysis
             // 
-            this.buttonLogAnalysis.Location = new System.Drawing.Point(19, 153);
+            this.buttonLogAnalysis.Location = new System.Drawing.Point(28, 153);
             this.buttonLogAnalysis.Name = "buttonLogAnalysis";
             this.buttonLogAnalysis.Size = new System.Drawing.Size(89, 48);
-            this.buttonLogAnalysis.TabIndex = 4;
+            this.buttonLogAnalysis.TabIndex = 2;
             this.buttonLogAnalysis.Text = "Log file";
             this.toolTip1.SetToolTip(this.buttonLogAnalysis, "Analyzing dependencies from log file");
             this.buttonLogAnalysis.UseVisualStyleBackColor = true;
@@ -321,10 +321,10 @@ namespace varManager
             // 
             // buttonFixSavesDepend
             // 
-            this.buttonFixSavesDepend.Location = new System.Drawing.Point(19, 93);
+            this.buttonFixSavesDepend.Location = new System.Drawing.Point(28, 93);
             this.buttonFixSavesDepend.Name = "buttonFixSavesDepend";
             this.buttonFixSavesDepend.Size = new System.Drawing.Size(89, 48);
-            this.buttonFixSavesDepend.TabIndex = 4;
+            this.buttonFixSavesDepend.TabIndex = 1;
             this.buttonFixSavesDepend.Text = "\"Saves\" JsonFile";
             this.toolTip1.SetToolTip(this.buttonFixSavesDepend, "Analyzing dependencies from json files in \"Saves\" folder\r\n");
             this.buttonFixSavesDepend.UseVisualStyleBackColor = true;
@@ -335,10 +335,10 @@ namespace varManager
             this.buttonScenesManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonScenesManager.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonScenesManager.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.buttonScenesManager.Location = new System.Drawing.Point(28, 597);
+            this.buttonScenesManager.Location = new System.Drawing.Point(36, 563);
             this.buttonScenesManager.Name = "buttonScenesManager";
             this.buttonScenesManager.Size = new System.Drawing.Size(89, 48);
-            this.buttonScenesManager.TabIndex = 4;
+            this.buttonScenesManager.TabIndex = 3;
             this.buttonScenesManager.Text = "Hide| |Fav";
             this.toolTip1.SetToolTip(this.buttonScenesManager, "Batch hide or favorite Scenes, looks, colthing, hairstyle");
             this.buttonScenesManager.UseVisualStyleBackColor = true;
@@ -347,10 +347,10 @@ namespace varManager
             // buttonStaleVars
             // 
             this.buttonStaleVars.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStaleVars.Location = new System.Drawing.Point(28, 503);
+            this.buttonStaleVars.Location = new System.Drawing.Point(36, 503);
             this.buttonStaleVars.Name = "buttonStaleVars";
             this.buttonStaleVars.Size = new System.Drawing.Size(89, 48);
-            this.buttonStaleVars.TabIndex = 4;
+            this.buttonStaleVars.TabIndex = 2;
             this.buttonStaleVars.Text = "Stale Vars";
             this.toolTip1.SetToolTip(this.buttonStaleVars, "Move old version packages are not dependent on other packages to ___VarTidied___ " +
         "dirtory");
@@ -360,10 +360,10 @@ namespace varManager
             // buttonFixRebuildLink
             // 
             this.buttonFixRebuildLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFixRebuildLink.Location = new System.Drawing.Point(28, 449);
+            this.buttonFixRebuildLink.Location = new System.Drawing.Point(36, 449);
             this.buttonFixRebuildLink.Name = "buttonFixRebuildLink";
             this.buttonFixRebuildLink.Size = new System.Drawing.Size(89, 48);
-            this.buttonFixRebuildLink.TabIndex = 4;
+            this.buttonFixRebuildLink.TabIndex = 1;
             this.buttonFixRebuildLink.Text = "Rebuild symlink";
             this.toolTip1.SetToolTip(this.buttonFixRebuildLink, "When your Vars source directory changes, you need to rebuild symlinks");
             this.buttonFixRebuildLink.UseVisualStyleBackColor = true;
@@ -374,10 +374,10 @@ namespace varManager
             this.buttonUpdDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUpdDB.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonUpdDB.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.buttonUpdDB.Location = new System.Drawing.Point(28, 170);
+            this.buttonUpdDB.Location = new System.Drawing.Point(36, 170);
             this.buttonUpdDB.Name = "buttonUpdDB";
             this.buttonUpdDB.Size = new System.Drawing.Size(89, 48);
-            this.buttonUpdDB.TabIndex = 3;
+            this.buttonUpdDB.TabIndex = 0;
             this.buttonUpdDB.Text = "UPD_DB";
             this.toolTip1.SetToolTip(this.buttonUpdDB, "When you run for the first time, or you get some new packages, Copy them to pleas" +
         "e click");
@@ -392,26 +392,26 @@ namespace varManager
             this.tableLayoutPanel2.Controls.Add(this.progressBar1, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.labelProgress, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 1014);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 806);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1759, 38);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1375, 20);
             this.tableLayoutPanel2.TabIndex = 7;
             // 
             // progressBar1
             // 
-            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.progressBar1.Location = new System.Drawing.Point(163, 3);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(1593, 28);
+            this.progressBar1.Size = new System.Drawing.Size(1209, 14);
             this.progressBar1.TabIndex = 4;
             // 
             // labelProgress
             // 
             this.labelProgress.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelProgress.AutoSize = true;
-            this.labelProgress.Location = new System.Drawing.Point(64, 10);
+            this.labelProgress.Location = new System.Drawing.Point(64, 1);
             this.labelProgress.Name = "labelProgress";
             this.labelProgress.Size = new System.Drawing.Size(31, 17);
             this.labelProgress.TabIndex = 5;
@@ -432,11 +432,11 @@ namespace varManager
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel3);
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanelPreview);
             this.splitContainer1.Panel2.Controls.Add(this.listViewPreviewPics);
-            this.splitContainer1.Size = new System.Drawing.Size(1759, 778);
-            this.splitContainer1.SplitterDistance = 1064;
+            this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel3);
+            this.splitContainer1.Size = new System.Drawing.Size(1375, 552);
+            this.splitContainer1.SplitterDistance = 829;
             this.splitContainer1.TabIndex = 8;
             // 
             // varsViewDataGridView
@@ -448,6 +448,7 @@ namespace varManager
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNamedataGridViewTextBoxColumn,
             this.installedDataGridViewCheckBoxColumn,
+            this.ColumnLocate,
             this.fsize,
             this.varPathDataGridViewTextBoxColumn,
             this.creatorNameDataGridViewTextBoxColumn,
@@ -473,10 +474,608 @@ namespace varManager
             this.varsViewDataGridView.RowHeadersWidth = 20;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(1064, 681);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 470);
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Right click on the column header to custom filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
+            // 
+            // ColumnLocate
+            // 
+            this.ColumnLocate.HeaderText = "Locate";
+            this.ColumnLocate.MinimumWidth = 6;
+            this.ColumnLocate.Name = "ColumnLocate";
+            this.ColumnLocate.ReadOnly = true;
+            this.ColumnLocate.Text = "Locate";
+            this.ColumnLocate.UseColumnTextForButtonValue = true;
+            this.ColumnLocate.Width = 60;
+            // 
+            // fsize
+            // 
+            this.fsize.DataPropertyName = "fsize";
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.fsize.DefaultCellStyle = dataGridViewCellStyle2;
+            this.fsize.HeaderText = "fsize(MB)";
+            this.fsize.MinimumWidth = 6;
+            this.fsize.Name = "fsize";
+            this.fsize.ReadOnly = true;
+            this.fsize.Width = 70;
+            // 
+            // morphs
+            // 
+            this.morphs.DataPropertyName = "morphs";
+            this.morphs.HeaderText = "morphs";
+            this.morphs.MinimumWidth = 6;
+            this.morphs.Name = "morphs";
+            this.morphs.ReadOnly = true;
+            this.morphs.Width = 45;
+            // 
+            // pose
+            // 
+            this.pose.DataPropertyName = "pose";
+            this.pose.HeaderText = "pose";
+            this.pose.MinimumWidth = 6;
+            this.pose.Name = "pose";
+            this.pose.ReadOnly = true;
+            this.pose.Width = 45;
+            // 
+            // skin
+            // 
+            this.skin.DataPropertyName = "skin";
+            this.skin.HeaderText = "skin";
+            this.skin.MinimumWidth = 6;
+            this.skin.Name = "skin";
+            this.skin.ReadOnly = true;
+            this.skin.Width = 45;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoScroll = true;
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel2.Controls.Add(this.buttonInstall);
+            this.flowLayoutPanel2.Controls.Add(this.buttonUninstallSels);
+            this.flowLayoutPanel2.Controls.Add(this.buttonDelete);
+            this.flowLayoutPanel2.Controls.Add(this.buttonMove);
+            this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
+            this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 501);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 51);
+            this.flowLayoutPanel2.TabIndex = 9;
+            // 
+            // buttonInstall
+            // 
+            this.buttonInstall.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.buttonInstall.Location = new System.Drawing.Point(3, 3);
+            this.buttonInstall.Name = "buttonInstall";
+            this.buttonInstall.Size = new System.Drawing.Size(92, 45);
+            this.buttonInstall.TabIndex = 0;
+            this.buttonInstall.Text = "Install Selected";
+            this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
+            this.buttonInstall.UseVisualStyleBackColor = true;
+            this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
+            // 
+            // buttonUninstallSels
+            // 
+            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
+            this.buttonUninstallSels.Location = new System.Drawing.Point(101, 3);
+            this.buttonUninstallSels.Name = "buttonUninstallSels";
+            this.buttonUninstallSels.Size = new System.Drawing.Size(92, 45);
+            this.buttonUninstallSels.TabIndex = 1;
+            this.buttonUninstallSels.Text = "UnInst Selected";
+            this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
+            this.buttonUninstallSels.UseVisualStyleBackColor = true;
+            this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.BackColor = System.Drawing.Color.Red;
+            this.buttonDelete.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
+            this.buttonDelete.Location = new System.Drawing.Point(199, 3);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(92, 45);
+            this.buttonDelete.TabIndex = 2;
+            this.buttonDelete.Text = "Delete Selected";
+            this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
+            this.buttonDelete.UseVisualStyleBackColor = false;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
+            // buttonMove
+            // 
+            this.buttonMove.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.buttonMove.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
+            this.buttonMove.Location = new System.Drawing.Point(297, 3);
+            this.buttonMove.Name = "buttonMove";
+            this.buttonMove.Size = new System.Drawing.Size(92, 45);
+            this.buttonMove.TabIndex = 3;
+            this.buttonMove.Text = "Move SeleLinks To SubDir";
+            this.buttonMove.UseVisualStyleBackColor = false;
+            this.buttonMove.Click += new System.EventHandler(this.buttonMove_Click);
+            // 
+            // buttonExpInsted
+            // 
+            this.buttonExpInsted.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
+            this.buttonExpInsted.Location = new System.Drawing.Point(395, 3);
+            this.buttonExpInsted.Name = "buttonExpInsted";
+            this.buttonExpInsted.Size = new System.Drawing.Size(92, 45);
+            this.buttonExpInsted.TabIndex = 4;
+            this.buttonExpInsted.Text = "Export Insted";
+            this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
+            this.buttonExpInsted.UseVisualStyleBackColor = true;
+            this.buttonExpInsted.Click += new System.EventHandler(this.buttonExpInsted_Click);
+            // 
+            // buttonInstFormTxt
+            // 
+            this.buttonInstFormTxt.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
+            this.buttonInstFormTxt.Location = new System.Drawing.Point(493, 3);
+            this.buttonInstFormTxt.Name = "buttonInstFormTxt";
+            this.buttonInstFormTxt.Size = new System.Drawing.Size(92, 45);
+            this.buttonInstFormTxt.TabIndex = 5;
+            this.buttonInstFormTxt.Text = "Install By TXT";
+            this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
+            this.buttonInstFormTxt.UseVisualStyleBackColor = true;
+            this.buttonInstFormTxt.Click += new System.EventHandler(this.buttonInstFormTxt_Click);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.Controls.Add(this.varsBindingNavigator);
+            this.flowLayoutPanel1.Controls.Add(this.label1);
+            this.flowLayoutPanel1.Controls.Add(this.comboBoxCreater);
+            this.flowLayoutPanel1.Controls.Add(this.label2);
+            this.flowLayoutPanel1.Controls.Add(this.textBoxFilter);
+            this.flowLayoutPanel1.Controls.Add(this.checkBoxInstalled);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(829, 31);
+            this.flowLayoutPanel1.TabIndex = 6;
+            // 
+            // varsBindingNavigator
+            // 
+            this.varsBindingNavigator.AddNewItem = null;
+            this.varsBindingNavigator.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.varsBindingNavigator.BindingSource = this.varsViewBindingSource;
+            this.varsBindingNavigator.CountItem = this.bindingNavigatorCountItem;
+            this.varsBindingNavigator.DeleteItem = null;
+            this.varsBindingNavigator.Dock = System.Windows.Forms.DockStyle.None;
+            this.varsBindingNavigator.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.varsBindingNavigator.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bindingNavigatorMoveFirstItem,
+            this.bindingNavigatorMovePreviousItem,
+            this.bindingNavigatorSeparator,
+            this.bindingNavigatorPositionItem,
+            this.bindingNavigatorCountItem,
+            this.bindingNavigatorSeparator1,
+            this.bindingNavigatorMoveNextItem,
+            this.bindingNavigatorMoveLastItem,
+            this.bindingNavigatorSeparator2});
+            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 2);
+            this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
+            this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
+            this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
+            this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
+            this.varsBindingNavigator.Name = "varsBindingNavigator";
+            this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.TabIndex = 0;
+            this.varsBindingNavigator.Text = "bindingNavigator1";
+            // 
+            // bindingNavigatorCountItem
+            // 
+            this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 24);
+            this.bindingNavigatorCountItem.Text = "/ {0}";
+            this.bindingNavigatorCountItem.ToolTipText = "总项数";
+            // 
+            // bindingNavigatorMoveFirstItem
+            // 
+            this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
+            this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
+            this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
+            // 
+            // bindingNavigatorMovePreviousItem
+            // 
+            this.bindingNavigatorMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
+            this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
+            this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMovePreviousItem.Text = "移到上一条记录";
+            // 
+            // bindingNavigatorSeparator
+            // 
+            this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 27);
+            // 
+            // bindingNavigatorPositionItem
+            // 
+            this.bindingNavigatorPositionItem.AccessibleName = "位置";
+            this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
+            this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
+            this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
+            this.bindingNavigatorPositionItem.Text = "0";
+            this.bindingNavigatorPositionItem.ToolTipText = "当前位置";
+            // 
+            // bindingNavigatorSeparator1
+            // 
+            this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // bindingNavigatorMoveNextItem
+            // 
+            this.bindingNavigatorMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
+            this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
+            this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveNextItem.Text = "移到下一条记录";
+            // 
+            // bindingNavigatorMoveLastItem
+            // 
+            this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
+            this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
+            this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
+            this.bindingNavigatorMoveLastItem.Text = "移到最后一条记录";
+            // 
+            // bindingNavigatorSeparator2
+            // 
+            this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(240, 7);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 17);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Creator:";
+            // 
+            // comboBoxCreater
+            // 
+            this.comboBoxCreater.AllowDrop = true;
+            this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCreater.FormattingEnabled = true;
+            this.comboBoxCreater.Location = new System.Drawing.Point(305, 3);
+            this.comboBoxCreater.Name = "comboBoxCreater";
+            this.comboBoxCreater.Size = new System.Drawing.Size(121, 25);
+            this.comboBoxCreater.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.comboBoxCreater, "Filter by creator");
+            this.comboBoxCreater.SelectedIndexChanged += new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(432, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(99, 17);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "packageName:";
+            // 
+            // textBoxFilter
+            // 
+            this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxFilter.Location = new System.Drawing.Point(537, 3);
+            this.textBoxFilter.Name = "textBoxFilter";
+            this.textBoxFilter.Size = new System.Drawing.Size(148, 25);
+            this.textBoxFilter.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.textBoxFilter, "Filter by packageName");
+            this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
+            // 
+            // checkBoxInstalled
+            // 
+            this.checkBoxInstalled.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxInstalled.AutoSize = true;
+            this.checkBoxInstalled.Checked = true;
+            this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+            this.checkBoxInstalled.Location = new System.Drawing.Point(691, 5);
+            this.checkBoxInstalled.Name = "checkBoxInstalled";
+            this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
+            this.checkBoxInstalled.TabIndex = 5;
+            this.checkBoxInstalled.Text = "Installed";
+            this.checkBoxInstalled.ThreeState = true;
+            this.toolTip1.SetToolTip(this.checkBoxInstalled, "Filter by installation status");
+            this.checkBoxInstalled.UseVisualStyleBackColor = true;
+            this.checkBoxInstalled.CheckStateChanged += new System.EventHandler(this.checkBoxInstalled_CheckStateChanged);
+            // 
+            // tableLayoutPanelPreview
+            // 
+            this.tableLayoutPanelPreview.ColumnCount = 1;
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
+            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
+            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(11, 62);
+            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
+            this.tableLayoutPanelPreview.RowCount = 2;
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 73F));
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(496, 113);
+            this.tableLayoutPanelPreview.TabIndex = 1;
+            this.tableLayoutPanelPreview.Visible = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.checkBoxMerge);
+            this.panel3.Controls.Add(this.labelPreviewVarName);
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.buttonLoad);
+            this.panel3.Controls.Add(this.buttonLocate);
+            this.panel3.Controls.Add(this.buttonpreviewinstall);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 43);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(490, 67);
+            this.panel3.TabIndex = 0;
+            // 
+            // checkBoxMerge
+            // 
+            this.checkBoxMerge.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.checkBoxMerge.AutoSize = true;
+            this.checkBoxMerge.Location = new System.Drawing.Point(203, 38);
+            this.checkBoxMerge.Name = "checkBoxMerge";
+            this.checkBoxMerge.Size = new System.Drawing.Size(69, 21);
+            this.checkBoxMerge.TabIndex = 3;
+            this.checkBoxMerge.Text = "Merge";
+            this.checkBoxMerge.UseVisualStyleBackColor = true;
+            // 
+            // labelPreviewVarName
+            // 
+            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 11);
+            this.labelPreviewVarName.Name = "labelPreviewVarName";
+            this.labelPreviewVarName.Size = new System.Drawing.Size(237, 17);
+            this.labelPreviewVarName.TabIndex = 2;
+            this.labelPreviewVarName.Text = "a.a.1";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 11);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 17);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "VarName:";
+            // 
+            // buttonLoad
+            // 
+            this.buttonLoad.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonLoad.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.buttonLoad.Location = new System.Drawing.Point(275, 35);
+            this.buttonLoad.Name = "buttonLoad";
+            this.buttonLoad.Size = new System.Drawing.Size(98, 26);
+            this.buttonLoad.TabIndex = 0;
+            this.buttonLoad.Text = "Load";
+            this.buttonLoad.UseVisualStyleBackColor = true;
+            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+            // 
+            // buttonLocate
+            // 
+            this.buttonLocate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonLocate.Location = new System.Drawing.Point(3, 35);
+            this.buttonLocate.Name = "buttonLocate";
+            this.buttonLocate.Size = new System.Drawing.Size(98, 26);
+            this.buttonLocate.TabIndex = 0;
+            this.buttonLocate.Text = "Locate";
+            this.buttonLocate.UseVisualStyleBackColor = true;
+            this.buttonLocate.Click += new System.EventHandler(this.buttonLocate_Click);
+            // 
+            // buttonpreviewinstall
+            // 
+            this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonpreviewinstall.Location = new System.Drawing.Point(381, 35);
+            this.buttonpreviewinstall.Name = "buttonpreviewinstall";
+            this.buttonpreviewinstall.Size = new System.Drawing.Size(98, 26);
+            this.buttonpreviewinstall.TabIndex = 0;
+            this.buttonpreviewinstall.Text = "Install";
+            this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
+            this.buttonpreviewinstall.UseVisualStyleBackColor = true;
+            this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
+            // 
+            // pictureBoxPreview
+            // 
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(490, 34);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
+            // 
+            // listViewPreviewPics
+            // 
+            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPreviewPics.HideSelection = false;
+            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
+            this.listViewPreviewPics.MultiSelect = false;
+            this.listViewPreviewPics.Name = "listViewPreviewPics";
+            this.listViewPreviewPics.Size = new System.Drawing.Size(542, 521);
+            this.listViewPreviewPics.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
+            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
+            this.listViewPreviewPics.VirtualMode = true;
+            this.listViewPreviewPics.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewPreviewPics_RetrieveVirtualItem);
+            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
+            // 
+            // imageListPreviewPics
+            // 
+            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
+            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.AutoScroll = true;
+            this.flowLayoutPanel3.AutoSize = true;
+            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel3.Controls.Add(this.toolStripPreview);
+            this.flowLayoutPanel3.Controls.Add(this.label4);
+            this.flowLayoutPanel3.Controls.Add(this.comboBoxPreviewType);
+            this.flowLayoutPanel3.Controls.Add(this.checkBoxPreviewTypeLoadable);
+            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(542, 31);
+            this.flowLayoutPanel3.TabIndex = 10;
+            // 
+            // toolStripPreview
+            // 
+            this.toolStripPreview.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonPreviewFirst,
+            this.toolStripButtonPreviewPrev,
+            this.toolStripLabelPreviewItemIndex,
+            this.toolStripLabelPreviewCountItem,
+            this.toolStripButtonPreviewNext,
+            this.toolStripButtonPreviewLast});
+            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
+            this.toolStripPreview.Name = "toolStripPreview";
+            this.toolStripPreview.Size = new System.Drawing.Size(191, 27);
+            this.toolStripPreview.TabIndex = 0;
+            this.toolStripPreview.Text = "toolStrip1";
+            // 
+            // toolStripButtonPreviewFirst
+            // 
+            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPreviewFirst.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewFirst.Image")));
+            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
+            this.toolStripButtonPreviewFirst.RightToLeftAutoMirrorImage = true;
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonPreviewFirst.Text = "移到第一条记录";
+            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
+            // 
+            // toolStripButtonPreviewPrev
+            // 
+            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPreviewPrev.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewPrev.Image")));
+            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
+            this.toolStripButtonPreviewPrev.RightToLeftAutoMirrorImage = true;
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonPreviewPrev.Text = "移到上一条记录";
+            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
+            // 
+            // toolStripLabelPreviewItemIndex
+            // 
+            this.toolStripLabelPreviewItemIndex.Name = "toolStripLabelPreviewItemIndex";
+            this.toolStripLabelPreviewItemIndex.Size = new System.Drawing.Size(28, 24);
+            this.toolStripLabelPreviewItemIndex.Text = "{0}";
+            // 
+            // toolStripLabelPreviewCountItem
+            // 
+            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 24);
+            this.toolStripLabelPreviewCountItem.Text = "/{0}";
+            // 
+            // toolStripButtonPreviewNext
+            // 
+            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPreviewNext.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewNext.Image")));
+            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
+            this.toolStripButtonPreviewNext.RightToLeftAutoMirrorImage = true;
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonPreviewNext.Text = "移到下一条记录";
+            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
+            // 
+            // toolStripButtonPreviewLast
+            // 
+            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPreviewLast.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewLast.Image")));
+            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
+            this.toolStripButtonPreviewLast.RightToLeftAutoMirrorImage = true;
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonPreviewLast.Text = "移到最后一条记录";
+            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(194, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 17);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "PreviewType:";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comboBoxPreviewType
+            // 
+            this.comboBoxPreviewType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPreviewType.FormattingEnabled = true;
+            this.comboBoxPreviewType.Items.AddRange(new object[] {
+            "_All",
+            "scenes",
+            "looks",
+            "clothing",
+            "hairstyle",
+            "assets",
+            "morphs",
+            "pose",
+            "skin"});
+            this.comboBoxPreviewType.Location = new System.Drawing.Point(297, 3);
+            this.comboBoxPreviewType.Name = "comboBoxPreviewType";
+            this.comboBoxPreviewType.Size = new System.Drawing.Size(116, 25);
+            this.comboBoxPreviewType.TabIndex = 2;
+            this.comboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
+            // 
+            // checkBoxPreviewTypeLoadable
+            // 
+            this.checkBoxPreviewTypeLoadable.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxPreviewTypeLoadable.AutoSize = true;
+            this.checkBoxPreviewTypeLoadable.Checked = true;
+            this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(419, 5);
+            this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
+            this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
+            this.checkBoxPreviewTypeLoadable.TabIndex = 3;
+            this.checkBoxPreviewTypeLoadable.Text = "Loadable";
+            this.checkBoxPreviewTypeLoadable.UseVisualStyleBackColor = true;
+            this.checkBoxPreviewTypeLoadable.CheckedChanged += new System.EventHandler(this.checkBoxPreviewTypeLoadable_CheckedChanged);
+            // 
+            // backgroundWorkerInstall
+            // 
+            this.backgroundWorkerInstall.WorkerReportsProgress = true;
+            this.backgroundWorkerInstall.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerInstall_DoWork);
+            this.backgroundWorkerInstall.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerInstall_RunWorkerCompleted);
+            // 
+            // backgroundWorkerPreview
+            // 
+            this.backgroundWorkerPreview.WorkerReportsProgress = true;
+            this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
+            // 
+            // openFileDialogInstByTXT
+            // 
+            this.openFileDialogInstByTXT.DefaultExt = "txt";
+            this.openFileDialogInstByTXT.FileName = "installedvars";
+            this.openFileDialogInstByTXT.Filter = "text file|*.txt";
+            // 
+            // saveFileDialogExportInstalled
+            // 
+            this.saveFileDialogExportInstalled.DefaultExt = "txt";
+            this.saveFileDialogExportInstalled.FileName = "installedvars";
+            this.saveFileDialogExportInstalled.Filter = "text file|*.txt";
             // 
             // varNamedataGridViewTextBoxColumn
             // 
@@ -495,18 +1094,6 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn.Name = "installedDataGridViewCheckBoxColumn";
             this.installedDataGridViewCheckBoxColumn.ReadOnly = true;
             this.installedDataGridViewCheckBoxColumn.Width = 68;
-            // 
-            // fsize
-            // 
-            this.fsize.DataPropertyName = "fsize";
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            this.fsize.DefaultCellStyle = dataGridViewCellStyle7;
-            this.fsize.HeaderText = "fsize(MB)";
-            this.fsize.MinimumWidth = 6;
-            this.fsize.Name = "fsize";
-            this.fsize.ReadOnly = true;
-            this.fsize.Width = 70;
             // 
             // varPathDataGridViewTextBoxColumn
             // 
@@ -620,33 +1207,6 @@ namespace varManager
             this.assetsDataGridViewTextBoxColumn.ReadOnly = true;
             this.assetsDataGridViewTextBoxColumn.Width = 45;
             // 
-            // morphs
-            // 
-            this.morphs.DataPropertyName = "morphs";
-            this.morphs.HeaderText = "morphs";
-            this.morphs.MinimumWidth = 6;
-            this.morphs.Name = "morphs";
-            this.morphs.ReadOnly = true;
-            this.morphs.Width = 45;
-            // 
-            // pose
-            // 
-            this.pose.DataPropertyName = "pose";
-            this.pose.HeaderText = "pose";
-            this.pose.MinimumWidth = 6;
-            this.pose.Name = "pose";
-            this.pose.ReadOnly = true;
-            this.pose.Width = 45;
-            // 
-            // skin
-            // 
-            this.skin.DataPropertyName = "skin";
-            this.skin.HeaderText = "skin";
-            this.skin.MinimumWidth = 6;
-            this.skin.Name = "skin";
-            this.skin.ReadOnly = true;
-            this.skin.Width = 45;
-            // 
             // disabledDataGridViewCheckBoxColumn
             // 
             this.disabledDataGridViewCheckBoxColumn.DataPropertyName = "Disabled";
@@ -667,563 +1227,6 @@ namespace varManager
             // 
             this.varManagerDataSet.DataSetName = "varManagerDataSet";
             this.varManagerDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoScroll = true;
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.buttonInstall);
-            this.flowLayoutPanel2.Controls.Add(this.buttonUninstallSels);
-            this.flowLayoutPanel2.Controls.Add(this.buttonDelete);
-            this.flowLayoutPanel2.Controls.Add(this.buttonMove);
-            this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
-            this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 712);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(1064, 66);
-            this.flowLayoutPanel2.TabIndex = 9;
-            // 
-            // buttonInstall
-            // 
-            this.buttonInstall.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.buttonInstall.Location = new System.Drawing.Point(3, 3);
-            this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(110, 60);
-            this.buttonInstall.TabIndex = 8;
-            this.buttonInstall.Text = "Install Selected";
-            this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
-            this.buttonInstall.UseVisualStyleBackColor = true;
-            this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
-            // 
-            // buttonUninstallSels
-            // 
-            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
-            this.buttonUninstallSels.Location = new System.Drawing.Point(119, 3);
-            this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(110, 60);
-            this.buttonUninstallSels.TabIndex = 8;
-            this.buttonUninstallSels.Text = "UnInst Selected";
-            this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
-            this.buttonUninstallSels.UseVisualStyleBackColor = true;
-            this.buttonUninstallSels.Click += new System.EventHandler(this.buttonUninstallSels_Click);
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.BackColor = System.Drawing.Color.Red;
-            this.buttonDelete.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
-            this.buttonDelete.Location = new System.Drawing.Point(235, 3);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(110, 60);
-            this.buttonDelete.TabIndex = 8;
-            this.buttonDelete.Text = "Delete Selected";
-            this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
-            this.buttonDelete.UseVisualStyleBackColor = false;
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
-            // 
-            // buttonMove
-            // 
-            this.buttonMove.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.buttonMove.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
-            this.buttonMove.Location = new System.Drawing.Point(351, 3);
-            this.buttonMove.Name = "buttonMove";
-            this.buttonMove.Size = new System.Drawing.Size(110, 60);
-            this.buttonMove.TabIndex = 8;
-            this.buttonMove.Text = "Move SeleLinks To SubDir";
-            this.buttonMove.UseVisualStyleBackColor = false;
-            this.buttonMove.Click += new System.EventHandler(this.buttonMove_Click);
-            // 
-            // buttonExpInsted
-            // 
-            this.buttonExpInsted.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonExpInsted.Location = new System.Drawing.Point(467, 3);
-            this.buttonExpInsted.Name = "buttonExpInsted";
-            this.buttonExpInsted.Size = new System.Drawing.Size(110, 60);
-            this.buttonExpInsted.TabIndex = 8;
-            this.buttonExpInsted.Text = "Export Insted";
-            this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
-            this.buttonExpInsted.UseVisualStyleBackColor = true;
-            this.buttonExpInsted.Click += new System.EventHandler(this.buttonExpInsted_Click);
-            // 
-            // buttonInstFormTxt
-            // 
-            this.buttonInstFormTxt.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonInstFormTxt.Location = new System.Drawing.Point(583, 3);
-            this.buttonInstFormTxt.Name = "buttonInstFormTxt";
-            this.buttonInstFormTxt.Size = new System.Drawing.Size(110, 60);
-            this.buttonInstFormTxt.TabIndex = 8;
-            this.buttonInstFormTxt.Text = "Install By TXT";
-            this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
-            this.buttonInstFormTxt.UseVisualStyleBackColor = true;
-            this.buttonInstFormTxt.Click += new System.EventHandler(this.buttonInstFormTxt_Click);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoScroll = true;
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.varsBindingNavigator);
-            this.flowLayoutPanel1.Controls.Add(this.label1);
-            this.flowLayoutPanel1.Controls.Add(this.comboBoxCreater);
-            this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.textBoxFilter);
-            this.flowLayoutPanel1.Controls.Add(this.checkBoxInstalled);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1064, 31);
-            this.flowLayoutPanel1.TabIndex = 6;
-            // 
-            // varsBindingNavigator
-            // 
-            this.varsBindingNavigator.AddNewItem = null;
-            this.varsBindingNavigator.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.varsBindingNavigator.BindingSource = this.varsViewBindingSource;
-            this.varsBindingNavigator.CountItem = this.bindingNavigatorCountItem;
-            this.varsBindingNavigator.DeleteItem = null;
-            this.varsBindingNavigator.Dock = System.Windows.Forms.DockStyle.None;
-            this.varsBindingNavigator.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.varsBindingNavigator.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bindingNavigatorMoveFirstItem,
-            this.bindingNavigatorMovePreviousItem,
-            this.bindingNavigatorSeparator,
-            this.bindingNavigatorPositionItem,
-            this.bindingNavigatorCountItem,
-            this.bindingNavigatorSeparator1,
-            this.bindingNavigatorMoveNextItem,
-            this.bindingNavigatorMoveLastItem,
-            this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 2);
-            this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
-            this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
-            this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
-            this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
-            this.varsBindingNavigator.Name = "varsBindingNavigator";
-            this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
-            this.varsBindingNavigator.TabIndex = 3;
-            this.varsBindingNavigator.Text = "bindingNavigator1";
-            // 
-            // bindingNavigatorCountItem
-            // 
-            this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 28);
-            this.bindingNavigatorCountItem.Text = "/ {0}";
-            this.bindingNavigatorCountItem.ToolTipText = "总项数";
-            // 
-            // bindingNavigatorMoveFirstItem
-            // 
-            this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
-            this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
-            this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
-            this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
-            // 
-            // bindingNavigatorMovePreviousItem
-            // 
-            this.bindingNavigatorMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
-            this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
-            this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
-            this.bindingNavigatorMovePreviousItem.Text = "移到上一条记录";
-            // 
-            // bindingNavigatorSeparator
-            // 
-            this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 31);
-            // 
-            // bindingNavigatorPositionItem
-            // 
-            this.bindingNavigatorPositionItem.AccessibleName = "位置";
-            this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
-            this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
-            this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
-            this.bindingNavigatorPositionItem.Text = "0";
-            this.bindingNavigatorPositionItem.ToolTipText = "当前位置";
-            // 
-            // bindingNavigatorSeparator1
-            // 
-            this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 31);
-            // 
-            // bindingNavigatorMoveNextItem
-            // 
-            this.bindingNavigatorMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
-            this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
-            this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
-            this.bindingNavigatorMoveNextItem.Text = "移到下一条记录";
-            // 
-            // bindingNavigatorMoveLastItem
-            // 
-            this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
-            this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
-            this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
-            this.bindingNavigatorMoveLastItem.Text = "移到最后一条记录";
-            // 
-            // bindingNavigatorSeparator2
-            // 
-            this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 31);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(240, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 17);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Creator:";
-            // 
-            // comboBoxCreater
-            // 
-            this.comboBoxCreater.AllowDrop = true;
-            this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(305, 3);
-            this.comboBoxCreater.Name = "comboBoxCreater";
-            this.comboBoxCreater.Size = new System.Drawing.Size(121, 25);
-            this.comboBoxCreater.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.comboBoxCreater, "Filter by creator");
-            this.comboBoxCreater.SelectedIndexChanged += new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(432, 7);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(43, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "filter:";
-            // 
-            // textBoxFilter
-            // 
-            this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(481, 3);
-            this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(134, 25);
-            this.textBoxFilter.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.textBoxFilter, "Filter by varname");
-            this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
-            // 
-            // checkBoxInstalled
-            // 
-            this.checkBoxInstalled.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxInstalled.AutoSize = true;
-            this.checkBoxInstalled.Checked = true;
-            this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(621, 5);
-            this.checkBoxInstalled.Name = "checkBoxInstalled";
-            this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
-            this.checkBoxInstalled.TabIndex = 7;
-            this.checkBoxInstalled.Text = "Installed";
-            this.checkBoxInstalled.ThreeState = true;
-            this.toolTip1.SetToolTip(this.checkBoxInstalled, "Filter by installation status");
-            this.checkBoxInstalled.UseVisualStyleBackColor = true;
-            this.checkBoxInstalled.CheckStateChanged += new System.EventHandler(this.checkBoxInstalled_CheckStateChanged);
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.AutoSize = true;
-            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel3.Controls.Add(this.toolStripPreview);
-            this.flowLayoutPanel3.Controls.Add(this.label4);
-            this.flowLayoutPanel3.Controls.Add(this.comboBoxPreviewType);
-            this.flowLayoutPanel3.Controls.Add(this.checkBoxPreviewTypeLoadable);
-            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(691, 31);
-            this.flowLayoutPanel3.TabIndex = 10;
-            // 
-            // toolStripPreview
-            // 
-            this.toolStripPreview.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator1,
-            this.toolStripButtonPreviewFirst,
-            this.toolStripButtonPreviewPrev,
-            this.toolStripComboBoxPreviewPage,
-            this.toolStripLabelPreviewCountItem,
-            this.toolStripButtonPreviewNext,
-            this.toolStripButtonPreviewLast});
-            this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
-            this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(292, 28);
-            this.toolStripPreview.TabIndex = 2;
-            this.toolStripPreview.Text = "toolStrip1";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripButtonPreviewFirst
-            // 
-            this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonPreviewFirst.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewFirst.Image")));
-            this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.RightToLeftAutoMirrorImage = true;
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewFirst.Text = "移到第一条记录";
-            this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
-            // 
-            // toolStripButtonPreviewPrev
-            // 
-            this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonPreviewPrev.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewPrev.Image")));
-            this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.RightToLeftAutoMirrorImage = true;
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewPrev.Text = "移到上一条记录";
-            this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
-            // 
-            // toolStripComboBoxPreviewPage
-            // 
-            this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(121, 28);
-            this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
-            // 
-            // toolStripLabelPreviewCountItem
-            // 
-            this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
-            this.toolStripLabelPreviewCountItem.Text = "/{0}";
-            // 
-            // toolStripButtonPreviewNext
-            // 
-            this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonPreviewNext.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewNext.Image")));
-            this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.RightToLeftAutoMirrorImage = true;
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewNext.Text = "移到下一条记录";
-            this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
-            // 
-            // toolStripButtonPreviewLast
-            // 
-            this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonPreviewLast.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreviewLast.Image")));
-            this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.RightToLeftAutoMirrorImage = true;
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
-            this.toolStripButtonPreviewLast.Text = "移到最后一条记录";
-            this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(295, 7);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 17);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "PreviewType:";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comboBoxPreviewType
-            // 
-            this.comboBoxPreviewType.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboBoxPreviewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPreviewType.FormattingEnabled = true;
-            this.comboBoxPreviewType.Items.AddRange(new object[] {
-            "_All",
-            "scenes",
-            "looks",
-            "clothing",
-            "hairstyle",
-            "assets",
-            "morphs",
-            "pose",
-            "skin"});
-            this.comboBoxPreviewType.Location = new System.Drawing.Point(398, 3);
-            this.comboBoxPreviewType.Name = "comboBoxPreviewType";
-            this.comboBoxPreviewType.Size = new System.Drawing.Size(88, 25);
-            this.comboBoxPreviewType.TabIndex = 10;
-            this.comboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
-            // 
-            // checkBoxPreviewTypeLoadable
-            // 
-            this.checkBoxPreviewTypeLoadable.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxPreviewTypeLoadable.AutoSize = true;
-            this.checkBoxPreviewTypeLoadable.Checked = true;
-            this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(492, 5);
-            this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
-            this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
-            this.checkBoxPreviewTypeLoadable.TabIndex = 11;
-            this.checkBoxPreviewTypeLoadable.Text = "Loadable";
-            this.checkBoxPreviewTypeLoadable.UseVisualStyleBackColor = true;
-            this.checkBoxPreviewTypeLoadable.CheckedChanged += new System.EventHandler(this.checkBoxPreviewTypeLoadable_CheckedChanged);
-            // 
-            // tableLayoutPanelPreview
-            // 
-            this.tableLayoutPanelPreview.ColumnCount = 1;
-            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
-            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(48, 62);
-            this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
-            this.tableLayoutPanelPreview.RowCount = 2;
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 73F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(496, 113);
-            this.tableLayoutPanelPreview.TabIndex = 1;
-            this.tableLayoutPanelPreview.Visible = false;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.checkBoxMerge);
-            this.panel3.Controls.Add(this.labelPreviewVarName);
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.buttonLoad);
-            this.panel3.Controls.Add(this.buttonpreviewinstall);
-            this.panel3.Controls.Add(this.buttonpreviewback);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 43);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(490, 67);
-            this.panel3.TabIndex = 0;
-            // 
-            // checkBoxMerge
-            // 
-            this.checkBoxMerge.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.checkBoxMerge.AutoSize = true;
-            this.checkBoxMerge.Location = new System.Drawing.Point(107, 36);
-            this.checkBoxMerge.Name = "checkBoxMerge";
-            this.checkBoxMerge.Size = new System.Drawing.Size(69, 21);
-            this.checkBoxMerge.TabIndex = 3;
-            this.checkBoxMerge.Text = "Merge";
-            this.checkBoxMerge.UseVisualStyleBackColor = true;
-            // 
-            // labelPreviewVarName
-            // 
-            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 11);
-            this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(36, 17);
-            this.labelPreviewVarName.TabIndex = 2;
-            this.labelPreviewVarName.Text = "a.a.1";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 11);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 17);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "VarName:";
-            // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonLoad.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.buttonLoad.Location = new System.Drawing.Point(179, 33);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(98, 26);
-            this.buttonLoad.TabIndex = 0;
-            this.buttonLoad.Text = "Load";
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
-            // 
-            // buttonpreviewinstall
-            // 
-            this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewinstall.Location = new System.Drawing.Point(283, 33);
-            this.buttonpreviewinstall.Name = "buttonpreviewinstall";
-            this.buttonpreviewinstall.Size = new System.Drawing.Size(98, 26);
-            this.buttonpreviewinstall.TabIndex = 0;
-            this.buttonpreviewinstall.Text = "Install";
-            this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
-            this.buttonpreviewinstall.UseVisualStyleBackColor = true;
-            this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
-            // 
-            // buttonpreviewback
-            // 
-            this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewback.Location = new System.Drawing.Point(401, 33);
-            this.buttonpreviewback.Name = "buttonpreviewback";
-            this.buttonpreviewback.Size = new System.Drawing.Size(75, 26);
-            this.buttonpreviewback.TabIndex = 0;
-            this.buttonpreviewback.Text = "return";
-            this.buttonpreviewback.UseVisualStyleBackColor = true;
-            this.buttonpreviewback.Click += new System.EventHandler(this.buttonpreviewback_Click);
-            // 
-            // pictureBoxPreview
-            // 
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(490, 34);
-            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
-            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
-            // 
-            // listViewPreviewPics
-            // 
-            this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPreviewPics.HideSelection = false;
-            this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 0);
-            this.listViewPreviewPics.MultiSelect = false;
-            this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(691, 778);
-            this.listViewPreviewPics.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
-            this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
-            this.listViewPreviewPics.Click += new System.EventHandler(this.listViewPreviewPics_Click);
-            // 
-            // imageListPreviewPics
-            // 
-            this.imageListPreviewPics.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imageListPreviewPics.ImageSize = new System.Drawing.Size(128, 128);
-            this.imageListPreviewPics.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // backgroundWorkerInstall
-            // 
-            this.backgroundWorkerInstall.WorkerReportsProgress = true;
-            this.backgroundWorkerInstall.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerInstall_DoWork);
-            this.backgroundWorkerInstall.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerInstall_RunWorkerCompleted);
-            // 
-            // backgroundWorkerPreview
-            // 
-            this.backgroundWorkerPreview.WorkerReportsProgress = true;
-            this.backgroundWorkerPreview.WorkerSupportsCancellation = true;
-            this.backgroundWorkerPreview.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerPreview_DoWork);
-            this.backgroundWorkerPreview.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerPreview_RunWorkerCompleted);
-            // 
-            // openFileDialogInstByTXT
-            // 
-            this.openFileDialogInstByTXT.DefaultExt = "txt";
-            this.openFileDialogInstByTXT.FileName = "installedvars";
-            this.openFileDialogInstByTXT.Filter = "text file|*.txt";
-            // 
-            // saveFileDialogExportInstalled
-            // 
-            this.saveFileDialogExportInstalled.DefaultExt = "txt";
-            this.saveFileDialogExportInstalled.FileName = "installedvars";
-            this.saveFileDialogExportInstalled.Filter = "text file|*.txt";
             // 
             // varsBindingSource
             // 
@@ -1283,7 +1286,7 @@ namespace varManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1924, 1055);
+            this.ClientSize = new System.Drawing.Size(1540, 829);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1304,22 +1307,22 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.varsViewDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).EndInit();
             this.varsBindingNavigator.ResumeLayout(false);
             this.varsBindingNavigator.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
-            this.toolStripPreview.ResumeLayout(false);
-            this.toolStripPreview.PerformLayout();
             this.tableLayoutPanelPreview.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
+            this.toolStripPreview.ResumeLayout(false);
+            this.toolStripPreview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.varsViewBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dependenciesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.installStatusBindingSource)).EndInit();
@@ -1333,11 +1336,8 @@ namespace varManager
         private System.Windows.Forms.Button buttonSetting;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ListBox listBoxLog;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button buttonUpdDB;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Label labelProgress;
         private System.Windows.Forms.Button buttonFixRebuildLink;
         private System.ComponentModel.BackgroundWorker backgroundWorkerInstall;
         private System.Windows.Forms.ComboBox comboBoxCreater;
@@ -1375,11 +1375,8 @@ namespace varManager
         private System.Windows.Forms.Label labelPreviewVarName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonpreviewinstall;
-        private System.Windows.Forms.Button buttonpreviewback;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.ToolStrip toolStripPreview;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxPreviewPage;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Button buttonScenesManager;
         private System.Windows.Forms.BindingSource scenesBindingSource;
         private varManagerDataSetTableAdapters.scenesTableAdapter scenesTableAdapter;
@@ -1418,8 +1415,13 @@ namespace varManager
         private System.Windows.Forms.ToolStripButton toolStripButtonPreviewNext;
         private System.Windows.Forms.ToolStripButton toolStripButtonPreviewLast;
         private System.Windows.Forms.CheckBox checkBoxPreviewTypeLoadable;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label labelProgress;
+        private System.Windows.Forms.Button buttonLocate;
         private System.Windows.Forms.DataGridViewTextBoxColumn varNamedataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn installedDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.DataGridViewButtonColumn ColumnLocate;
         private System.Windows.Forms.DataGridViewTextBoxColumn fsize;
         private System.Windows.Forms.DataGridViewTextBoxColumn varPathDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn creatorNameDataGridViewTextBoxColumn;
@@ -1437,6 +1439,7 @@ namespace varManager
         private System.Windows.Forms.DataGridViewTextBoxColumn pose;
         private System.Windows.Forms.DataGridViewTextBoxColumn skin;
         private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelPreviewItemIndex;
     }
 }
 

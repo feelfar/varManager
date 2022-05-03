@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -66,12 +67,14 @@ namespace DragNDrop
                 base.OnDragDrop(drgevent);
                 return;
             }
-
+            /*
             // get the currently hovered row that the items will be dragged to
             Point clientPoint = base.PointToClient(new Point(drgevent.X, drgevent.Y));
             ListViewItem hoverItem = base.GetItemAt(clientPoint.X, clientPoint.Y);
 
-            if (!drgevent.Data.GetDataPresent(typeof(DragItemData).ToString()) || ((DragItemData)drgevent.Data.GetData(typeof(DragItemData).ToString())).ListView == null || ((DragItemData)drgevent.Data.GetData(typeof(DragItemData).ToString())).DragItems.Count == 0)
+            if (!drgevent.Data.GetDataPresent(typeof(DragItemData).ToString()) || 
+                ((DragItemData)drgevent.Data.GetData(typeof(DragItemData).ToString())).ListView == null ||
+                ((DragItemData)drgevent.Data.GetData(typeof(DragItemData).ToString())).DragItemIndexs.Count == 0)
                 return;
 
             // retrieve the drag item data
@@ -80,9 +83,9 @@ namespace DragNDrop
             if (hoverItem == null || !m_allowSelfDrop)
             {
                 // the user does not wish to re-order the items, just append to the end
-                for (int i = 0; i < data.DragItems.Count; i++)
+                for (int i = 0; i < data.DragItemIndexs.Count; i++)
                 {
-                    ListViewItem newItem = (ListViewItem)data.DragItems[i];
+                    ListViewItem newItem = data.ListView.Items[(int)(data.DragItemIndexs[i])];
                     base.Items.Add(newItem);
                 }
             }
@@ -105,9 +108,9 @@ namespace DragNDrop
 
                 // insert the new items into the list view
                 // by inserting the items reversely from the array list
-                for (int i = data.DragItems.Count - 1; i >= 0; i--)
+                for (int i = data.DragItemIndexs.Count - 1; i >= 0; i--)
                 {
-                    ListViewItem newItem = (ListViewItem)data.DragItems[i];
+                    ListViewItem newItem = data.ListView.Items[(int)(data.DragItemIndexs[i])];
                     base.Items.Insert(hoverIndex, newItem);
                 }
             }
@@ -116,11 +119,20 @@ namespace DragNDrop
             // if the list view was found
             if (data.ListView != null)
             {
-                foreach (ListViewItem itemToRemove in data.ListView.SelectedItems)
+                List<int> listitemindex = new List<int>();
+                foreach (int itemindexToRemove in data.ListView.SelectedIndices)
                 {
-                    data.ListView.Items.Remove(itemToRemove);
+                    listitemindex.Add(itemindexToRemove);
                 }
+                listitemindex.Sort();
+                listitemindex.Reverse();
+                foreach (int itemindexToRemove in listitemindex)
+                {
+                    data.ListView.Items.RemoveAt(itemindexToRemove);
+                }
+               
             }
+            */
 
             // set the back color of the previous item, then nullify it
             if (m_previousItem != null)
@@ -128,7 +140,7 @@ namespace DragNDrop
                 m_previousItem = null;
             }
 
-
+            
             EventListViewDragDrop(this, drgevent);
             this.Invalidate();
 
@@ -160,7 +172,7 @@ namespace DragNDrop
                     return;
                 }
             }
-
+            /*
             if (base.Items.Count > 0)
             {
                 // get the currently hovered row that the items will be dragged to
@@ -232,9 +244,9 @@ namespace DragNDrop
                 // go through each of the selected items, and if any of the
                 // selected items have the same index as the item being
                 // hovered, disable dropping.
-                foreach (ListViewItem itemToMove in base.SelectedItems)
+                foreach (int itemToMove in base.SelectedIndices)
                 {
-                    if (itemToMove.Index == hoverItem.Index)
+                    if (itemToMove == hoverItem.Index)
                     {
                         drgevent.Effect = DragDropEffects.None;
                         hoverItem.EnsureVisible();
@@ -245,7 +257,7 @@ namespace DragNDrop
                 // ensure that the hover item is visible
                 hoverItem.EnsureVisible();
             }
-
+            */
             // everything is fine, allow the user to move the items
             drgevent.Effect = DragDropEffects.Move;
 
@@ -324,11 +336,16 @@ namespace DragNDrop
             // go through each of the selected items and 
             // add them to the drag items collection
             // by creating a clone of the list item
+            /*
             foreach (ListViewItem item in this.SelectedItems)
             {
                 data.DragItems.Add(item.Clone());
             }
-
+            */
+            foreach (var itemindex in this.SelectedIndices)
+            {
+                data.DragItemIndexs.Add(itemindex);
+            }
             return data;
         }
 
@@ -353,7 +370,7 @@ namespace DragNDrop
             #region Private Members
 
             private DragAndDropListView m_listView;
-            private ArrayList m_dragItems;
+            private ArrayList m_dragItemindexs;
 
             #endregion
 
@@ -364,9 +381,9 @@ namespace DragNDrop
                 get { return m_listView; }
             }
 
-            public ArrayList DragItems
+            public ArrayList DragItemIndexs
             {
-                get { return m_dragItems; }
+                get { return m_dragItemindexs; }
             }
 
             #endregion
@@ -376,7 +393,7 @@ namespace DragNDrop
             public DragItemData(DragAndDropListView listView)
             {
                 m_listView = listView;
-                m_dragItems = new ArrayList();
+                m_dragItemindexs = new ArrayList();
             }
 
             #endregion

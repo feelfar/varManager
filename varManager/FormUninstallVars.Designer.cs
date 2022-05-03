@@ -188,6 +188,7 @@ namespace varManager
             this.dataGridViewVars.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewVars.Size = new System.Drawing.Size(514, 212);
             this.dataGridViewVars.TabIndex = 1;
+            this.dataGridViewVars.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridViewVars_DataError);
             this.dataGridViewVars.SelectionChanged += new System.EventHandler(this.dataGridViewVars_SelectionChanged);
             // 
             // varNameDataGridViewTextBoxColumn
@@ -339,7 +340,7 @@ namespace varManager
             this.labelPreviewVarName.Location = new System.Drawing.Point(71, 10);
             this.labelPreviewVarName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(36, 16);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(32, 15);
             this.labelPreviewVarName.TabIndex = 2;
             this.labelPreviewVarName.Text = "a.a.1";
             // 
@@ -350,7 +351,7 @@ namespace varManager
             this.label3.Location = new System.Drawing.Point(3, 10);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 16);
+            this.label3.Size = new System.Drawing.Size(60, 15);
             this.label3.TabIndex = 1;
             this.label3.Text = "VarName:";
             // 
