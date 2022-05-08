@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -607,6 +608,7 @@ namespace varManager
             //varsViewBindingSource.ResetBindings(true);
             InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
             this.BeginInvoke(invokeUpdateVarsViewDataGridView);
+            RescanPackages();
             //varsViewDataGridView.Update();
         }
 
@@ -2468,6 +2470,19 @@ namespace varManager
             }
         }
 
+        private static void RescanPackages()
+        {
+            var vamproc = Process.GetProcessesByName("vam");
+            if (vamproc.Length > 0)
+            {
+                string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+                if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
+                StreamWriter swLoad = new StreamWriter(loadscenefile);
+                swLoad.Write("rescan");
+                swLoad.Close();
+            }
+        }
+
         private void buttonPacksAdd_Click(object sender, EventArgs e)
         {
             FormSwitchAdd formSwitchAdd = new FormSwitchAdd();
@@ -2533,7 +2548,7 @@ namespace varManager
         public void GenLoadscenetxt(string loadScenetxt,bool merge)
         {
             List<string> deletetempfiles = new List<string>();
-            if (loadScenetxt.StartsWith("rescan_scenes") || loadScenetxt.StartsWith("scenes"))
+            if (!merge && (loadScenetxt.StartsWith("rescan_scenes") || loadScenetxt.StartsWith("scenes")))
                 deletetempfiles = AddDeleteTemp();
             if (loadScenetxt.StartsWith("rescan_"))
             {
