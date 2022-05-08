@@ -50,7 +50,13 @@ namespace varManager
             this.labelHide = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxCategory = new System.Windows.Forms.ComboBox();
+            this.radioButtonCategory4 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory6 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory2 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory7 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory3 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory5 = new System.Windows.Forms.RadioButton();
+            this.radioButtonCategory1 = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chklistLocation = new System.Windows.Forms.CheckedListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -105,11 +111,11 @@ namespace varManager
             // 
             this.tableLayoutPanel1.ColumnCount = 6;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 195F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 187F));
             this.tableLayoutPanel1.Controls.Add(this.panel5, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel6, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.listViewHide, 0, 1);
@@ -125,7 +131,6 @@ namespace varManager
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1324, 643);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -135,15 +140,15 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(326, 43);
+            this.panel5.Location = new System.Drawing.Point(345, 43);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(74, 597);
+            this.panel5.Size = new System.Drawing.Size(49, 597);
             this.panel5.TabIndex = 4;
             // 
             // buttonRemoveHide
             // 
             this.buttonRemoveHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveHide.Location = new System.Drawing.Point(10, 391);
+            this.buttonRemoveHide.Location = new System.Drawing.Point(-1, 391);
             this.buttonRemoveHide.Name = "buttonRemoveHide";
             this.buttonRemoveHide.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveHide.TabIndex = 1;
@@ -155,7 +160,7 @@ namespace varManager
             // buttonAddHide
             // 
             this.buttonAddHide.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddHide.Location = new System.Drawing.Point(10, 150);
+            this.buttonAddHide.Location = new System.Drawing.Point(-1, 150);
             this.buttonAddHide.Name = "buttonAddHide";
             this.buttonAddHide.Size = new System.Drawing.Size(50, 36);
             this.buttonAddHide.TabIndex = 0;
@@ -169,15 +174,15 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(728, 43);
+            this.panel6.Location = new System.Drawing.Point(742, 43);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(74, 597);
+            this.panel6.Size = new System.Drawing.Size(49, 597);
             this.panel6.TabIndex = 5;
             // 
             // buttonAddFav
             // 
             this.buttonAddFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonAddFav.Location = new System.Drawing.Point(12, 150);
+            this.buttonAddFav.Location = new System.Drawing.Point(-1, 150);
             this.buttonAddFav.Name = "buttonAddFav";
             this.buttonAddFav.Size = new System.Drawing.Size(50, 36);
             this.buttonAddFav.TabIndex = 0;
@@ -189,7 +194,7 @@ namespace varManager
             // buttonRemoveFav
             // 
             this.buttonRemoveFav.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonRemoveFav.Location = new System.Drawing.Point(12, 391);
+            this.buttonRemoveFav.Location = new System.Drawing.Point(-1, 391);
             this.buttonRemoveFav.Name = "buttonRemoveFav";
             this.buttonRemoveFav.Size = new System.Drawing.Size(50, 36);
             this.buttonRemoveFav.TabIndex = 1;
@@ -209,15 +214,15 @@ namespace varManager
             this.panel3.Controls.Add(this.buttonNormal);
             this.panel3.Controls.Add(this.labelNormal);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(406, 3);
+            this.panel3.Location = new System.Drawing.Point(400, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(316, 34);
+            this.panel3.Size = new System.Drawing.Size(336, 34);
             this.panel3.TabIndex = 10;
             // 
             // buttonNormal
             // 
             this.buttonNormal.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonNormal.Location = new System.Drawing.Point(92, 5);
+            this.buttonNormal.Location = new System.Drawing.Point(102, 5);
             this.buttonNormal.Name = "buttonNormal";
             this.buttonNormal.Size = new System.Drawing.Size(91, 26);
             this.buttonNormal.TabIndex = 0;
@@ -229,7 +234,7 @@ namespace varManager
             // 
             this.labelNormal.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelNormal.AutoSize = true;
-            this.labelNormal.Location = new System.Drawing.Point(189, 10);
+            this.labelNormal.Location = new System.Drawing.Point(199, 10);
             this.labelNormal.Name = "labelNormal";
             this.labelNormal.Size = new System.Drawing.Size(16, 17);
             this.labelNormal.TabIndex = 6;
@@ -240,15 +245,15 @@ namespace varManager
             this.panel4.Controls.Add(this.buttonFav);
             this.panel4.Controls.Add(this.labelFav);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(808, 3);
+            this.panel4.Location = new System.Drawing.Point(797, 3);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(316, 34);
+            this.panel4.Size = new System.Drawing.Size(336, 34);
             this.panel4.TabIndex = 10;
             // 
             // buttonFav
             // 
             this.buttonFav.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonFav.Location = new System.Drawing.Point(222, 5);
+            this.buttonFav.Location = new System.Drawing.Point(242, 5);
             this.buttonFav.Name = "buttonFav";
             this.buttonFav.Size = new System.Drawing.Size(91, 26);
             this.buttonFav.TabIndex = 0;
@@ -260,7 +265,7 @@ namespace varManager
             // 
             this.labelFav.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.labelFav.AutoSize = true;
-            this.labelFav.Location = new System.Drawing.Point(175, 10);
+            this.labelFav.Location = new System.Drawing.Point(195, 10);
             this.labelFav.Name = "labelFav";
             this.labelFav.Size = new System.Drawing.Size(16, 17);
             this.labelFav.TabIndex = 6;
@@ -273,7 +278,7 @@ namespace varManager
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(3, 3);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(317, 34);
+            this.panel7.Size = new System.Drawing.Size(336, 34);
             this.panel7.TabIndex = 10;
             // 
             // buttonHide
@@ -306,44 +311,111 @@ namespace varManager
             this.flowLayoutPanel1.Controls.Add(this.groupBox5);
             this.flowLayoutPanel1.Controls.Add(this.groupBox6);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(1130, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(1139, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.tableLayoutPanel1.SetRowSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(191, 637);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(182, 637);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.comboBoxCategory);
+            this.groupBox3.Controls.Add(this.radioButtonCategory4);
+            this.groupBox3.Controls.Add(this.radioButtonCategory6);
+            this.groupBox3.Controls.Add(this.radioButtonCategory2);
+            this.groupBox3.Controls.Add(this.radioButtonCategory7);
+            this.groupBox3.Controls.Add(this.radioButtonCategory3);
+            this.groupBox3.Controls.Add(this.radioButtonCategory5);
+            this.groupBox3.Controls.Add(this.radioButtonCategory1);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(170, 59);
+            this.groupBox3.Size = new System.Drawing.Size(170, 128);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Category";
             // 
-            // comboBoxCategory
+            // radioButtonCategory4
             // 
-            this.comboBoxCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxCategory.FormattingEnabled = true;
-            this.comboBoxCategory.Items.AddRange(new object[] {
-            "scenes",
-            "looks",
-            "clothing",
-            "hairstyle",
-            "morphs",
-            "skin",
-            "pose"});
-            this.comboBoxCategory.Location = new System.Drawing.Point(11, 19);
-            this.comboBoxCategory.Name = "comboBoxCategory";
-            this.comboBoxCategory.Size = new System.Drawing.Size(150, 25);
-            this.comboBoxCategory.TabIndex = 0;
-            this.comboBoxCategory.SelectedIndexChanged += new System.EventHandler(this.comboBoxCategory_SelectedIndexChanged);
+            this.radioButtonCategory4.AutoSize = true;
+            this.radioButtonCategory4.Location = new System.Drawing.Point(7, 102);
+            this.radioButtonCategory4.Name = "radioButtonCategory4";
+            this.radioButtonCategory4.Size = new System.Drawing.Size(84, 21);
+            this.radioButtonCategory4.TabIndex = 2;
+            this.radioButtonCategory4.Text = "hairstyle";
+            this.radioButtonCategory4.UseVisualStyleBackColor = true;
+            this.radioButtonCategory4.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory6
+            // 
+            this.radioButtonCategory6.AutoSize = true;
+            this.radioButtonCategory6.Location = new System.Drawing.Point(93, 50);
+            this.radioButtonCategory6.Name = "radioButtonCategory6";
+            this.radioButtonCategory6.Size = new System.Drawing.Size(55, 21);
+            this.radioButtonCategory6.TabIndex = 2;
+            this.radioButtonCategory6.Text = "skin";
+            this.radioButtonCategory6.UseVisualStyleBackColor = true;
+            this.radioButtonCategory6.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory2
+            // 
+            this.radioButtonCategory2.AutoSize = true;
+            this.radioButtonCategory2.Location = new System.Drawing.Point(7, 50);
+            this.radioButtonCategory2.Name = "radioButtonCategory2";
+            this.radioButtonCategory2.Size = new System.Drawing.Size(63, 21);
+            this.radioButtonCategory2.TabIndex = 2;
+            this.radioButtonCategory2.Text = "looks";
+            this.radioButtonCategory2.UseVisualStyleBackColor = true;
+            this.radioButtonCategory2.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory7
+            // 
+            this.radioButtonCategory7.AutoSize = true;
+            this.radioButtonCategory7.Location = new System.Drawing.Point(93, 76);
+            this.radioButtonCategory7.Name = "radioButtonCategory7";
+            this.radioButtonCategory7.Size = new System.Drawing.Size(58, 21);
+            this.radioButtonCategory7.TabIndex = 1;
+            this.radioButtonCategory7.Text = "pose";
+            this.radioButtonCategory7.UseVisualStyleBackColor = true;
+            this.radioButtonCategory7.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory3
+            // 
+            this.radioButtonCategory3.AutoSize = true;
+            this.radioButtonCategory3.Location = new System.Drawing.Point(7, 76);
+            this.radioButtonCategory3.Name = "radioButtonCategory3";
+            this.radioButtonCategory3.Size = new System.Drawing.Size(80, 21);
+            this.radioButtonCategory3.TabIndex = 1;
+            this.radioButtonCategory3.Text = "clothing";
+            this.radioButtonCategory3.UseVisualStyleBackColor = true;
+            this.radioButtonCategory3.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory5
+            // 
+            this.radioButtonCategory5.AutoSize = true;
+            this.radioButtonCategory5.Location = new System.Drawing.Point(93, 24);
+            this.radioButtonCategory5.Name = "radioButtonCategory5";
+            this.radioButtonCategory5.Size = new System.Drawing.Size(77, 21);
+            this.radioButtonCategory5.TabIndex = 1;
+            this.radioButtonCategory5.Text = "morphs";
+            this.radioButtonCategory5.UseVisualStyleBackColor = true;
+            this.radioButtonCategory5.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
+            // 
+            // radioButtonCategory1
+            // 
+            this.radioButtonCategory1.AutoSize = true;
+            this.radioButtonCategory1.Checked = true;
+            this.radioButtonCategory1.Location = new System.Drawing.Point(7, 24);
+            this.radioButtonCategory1.Name = "radioButtonCategory1";
+            this.radioButtonCategory1.Size = new System.Drawing.Size(70, 21);
+            this.radioButtonCategory1.TabIndex = 1;
+            this.radioButtonCategory1.TabStop = true;
+            this.radioButtonCategory1.Text = "scenes";
+            this.radioButtonCategory1.UseVisualStyleBackColor = true;
+            this.radioButtonCategory1.CheckedChanged += new System.EventHandler(this.radioButtonCategory_CheckedChanged);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.chklistLocation);
-            this.groupBox1.Location = new System.Drawing.Point(3, 68);
+            this.groupBox1.Location = new System.Drawing.Point(3, 137);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(170, 117);
             this.groupBox1.TabIndex = 0;
@@ -368,7 +440,7 @@ namespace varManager
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.checkedListBoxHideFav);
-            this.groupBox2.Location = new System.Drawing.Point(3, 191);
+            this.groupBox2.Location = new System.Drawing.Point(3, 260);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(170, 91);
             this.groupBox2.TabIndex = 0;
@@ -392,7 +464,7 @@ namespace varManager
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.textBoxFilter);
-            this.groupBox4.Location = new System.Drawing.Point(3, 288);
+            this.groupBox4.Location = new System.Drawing.Point(3, 357);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(170, 57);
             this.groupBox4.TabIndex = 0;
@@ -411,7 +483,7 @@ namespace varManager
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.comboBoxCreator);
-            this.groupBox5.Location = new System.Drawing.Point(3, 351);
+            this.groupBox5.Location = new System.Drawing.Point(3, 420);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(170, 59);
             this.groupBox5.TabIndex = 0;
@@ -431,7 +503,7 @@ namespace varManager
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.comboBoxOrderBy);
-            this.groupBox6.Location = new System.Drawing.Point(3, 416);
+            this.groupBox6.Location = new System.Drawing.Point(3, 485);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(170, 59);
             this.groupBox6.TabIndex = 0;
@@ -600,7 +672,7 @@ namespace varManager
             this.listViewHide.LineColor = System.Drawing.Color.Red;
             this.listViewHide.Location = new System.Drawing.Point(3, 43);
             this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(317, 597);
+            this.listViewHide.Size = new System.Drawing.Size(336, 597);
             this.listViewHide.TabIndex = 7;
             this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
             this.listViewHide.UseCompatibleStateImageBehavior = false;
@@ -618,9 +690,9 @@ namespace varManager
             this.listViewNormal.HideSelection = false;
             this.listViewNormal.LargeImageList = this.imageListScenes;
             this.listViewNormal.LineColor = System.Drawing.Color.Red;
-            this.listViewNormal.Location = new System.Drawing.Point(406, 43);
+            this.listViewNormal.Location = new System.Drawing.Point(400, 43);
             this.listViewNormal.Name = "listViewNormal";
-            this.listViewNormal.Size = new System.Drawing.Size(316, 597);
+            this.listViewNormal.Size = new System.Drawing.Size(336, 597);
             this.listViewNormal.TabIndex = 7;
             this.listViewNormal.UseCompatibleStateImageBehavior = false;
             this.listViewNormal.VirtualMode = true;
@@ -637,9 +709,9 @@ namespace varManager
             this.listViewFav.HideSelection = false;
             this.listViewFav.LargeImageList = this.imageListScenes;
             this.listViewFav.LineColor = System.Drawing.Color.Red;
-            this.listViewFav.Location = new System.Drawing.Point(808, 43);
+            this.listViewFav.Location = new System.Drawing.Point(797, 43);
             this.listViewFav.Name = "listViewFav";
-            this.listViewFav.Size = new System.Drawing.Size(316, 597);
+            this.listViewFav.Size = new System.Drawing.Size(336, 597);
             this.listViewFav.TabIndex = 7;
             this.listViewFav.UseCompatibleStateImageBehavior = false;
             this.listViewFav.VirtualMode = true;
@@ -672,6 +744,7 @@ namespace varManager
             this.panel7.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
@@ -729,7 +802,6 @@ namespace varManager
         private System.Windows.Forms.Label labelHide;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox comboBoxCategory;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckedListBox chklistLocation;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -740,5 +812,12 @@ namespace varManager
         private System.Windows.Forms.ComboBox comboBoxCreator;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.ComboBox comboBoxOrderBy;
+        private System.Windows.Forms.RadioButton radioButtonCategory4;
+        private System.Windows.Forms.RadioButton radioButtonCategory6;
+        private System.Windows.Forms.RadioButton radioButtonCategory2;
+        private System.Windows.Forms.RadioButton radioButtonCategory7;
+        private System.Windows.Forms.RadioButton radioButtonCategory3;
+        private System.Windows.Forms.RadioButton radioButtonCategory5;
+        private System.Windows.Forms.RadioButton radioButtonCategory1;
     }
 }

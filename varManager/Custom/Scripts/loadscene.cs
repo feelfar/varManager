@@ -80,7 +80,7 @@ namespace MVRPlugin
                             {
                                 SuperController.singleton.RescanPackages();
 
-                                Thread.Sleep(1000);
+                                //Thread.Sleep(5000);
                             }
                             bool merge = false;
                             string scenefile = strLoadscene[1];
@@ -169,6 +169,7 @@ namespace MVRPlugin
                     SuperController.LogMessage("Find Person " + (IsMale(atom) ? "Male :" : "Female :") + atom.name);
                     if (IsMale(atom) == formale)
                     {
+                        atom.SetOn(false);
                         JSONStorable js = atom.GetStorableByID(presetType);
 
                         JSONStorableBool loadOnSelectJSON = js.GetBoolJSONParam("loadPresetOnSelect");
@@ -184,7 +185,7 @@ namespace MVRPlugin
 
                         presetPathJSON.val = pathPreState;
                         loadOnSelectJSON.val = preState;
-
+                        atom.SetOn(true);
                         findatom = true;
                         SuperController.LogMessage("loaded Preset: " + presetFile);
                         break;
@@ -242,6 +243,7 @@ namespace MVRPlugin
                     SuperController.LogMessage("Find Person " + (IsMale(atom) ? "Male :" : "Female :") + atom.name);
                     if (IsMale(atom) == formale)
                     {
+                        atom.SetOn(false);
                         if (presetType == "pose")
                             atom.LoadPhysicalPreset(presetFile);
                         if (presetType == "full")
@@ -249,6 +251,7 @@ namespace MVRPlugin
                         if (presetType == "appearance")
                             atom.LoadAppearancePreset(presetFile);
                         findatom = true;
+                        atom.SetOn(true);
                         SuperController.LogMessage("loaded Preset: " + presetFile);
                         break;
                     }

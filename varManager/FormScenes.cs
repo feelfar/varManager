@@ -17,7 +17,8 @@ namespace varManager
         private static string previewpicsDirName = "___PreviewPics___";
         //private static string installLinkDirName = "___VarsLink___";
         private static string missingLinkDirName = "___MissingVarLink___";
-       // private static int maxitemPerpage = 100;
+        // private static int maxitemPerpage = 100;
+        private string strCategory = "scenes";
         private string strOrderBy = "_";
         public FormScenes()
         {
@@ -68,7 +69,6 @@ namespace varManager
         private void FormScenes_Load(object sender, EventArgs e)
         {
             panelImage.Dock = DockStyle.Fill;
-            comboBoxCategory.SelectedIndex = 0;
             comboBoxOrderBy.SelectedIndex = 0;
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             //this.installedScenesTableAdapter.Fill(this.varManagerDataSet.installedScenes);
@@ -340,8 +340,8 @@ namespace varManager
         {
             if (filterAt >= 10)
             {
-                if (!string.IsNullOrWhiteSpace(comboBoxCategory.Text))
-                    listFilterScene1 = this.varManagerDataSet.scenesView.Where(q => q.atomType == comboBoxCategory.Text).ToList();
+                if (!string.IsNullOrEmpty(strCategory))
+                    listFilterScene1 = this.varManagerDataSet.scenesView.Where(q => q.atomType == strCategory).ToList();
                 
                 List<string> locations = new List<string>();
                 foreach (var locationitem in chklistLocation.CheckedItems)
@@ -349,7 +349,6 @@ namespace varManager
                     locations.Add(locationitem.ToString());
                 }
                 listFilterScene1 = listFilterScene1.Where(q => locations.IndexOf(q.location) >= 0).ToList();
-
             }
             if (filterAt >= 9)
             {
@@ -840,20 +839,9 @@ namespace varManager
 
         private void buttonLoadscene_Click(object sender, EventArgs e)
         {
-            if (loadscenetxt.StartsWith("rescan_scenes") || loadscenetxt.StartsWith("scenes"))
-                form1.DeleteTemp();
-            if (loadscenetxt.StartsWith("rescan_"))
-            {
-                string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2, loadscenetxt.IndexOf(":/") - loadscenetxt.IndexOf("\r\n") - 2);
-                form1.InstallTemp(varName);
-            }
-           
-            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
-            if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
-            StreamWriter sw = new StreamWriter(loadscenefile);
-            if (checkBoxMerge.Checked) loadscenetxt = loadscenetxt + "_merge";
-            sw.Write(loadscenetxt);
-            sw.Close();
+            bool merge = false;
+            if (checkBoxMerge.Checked) merge = true;
+            form1.GenLoadscenetxt(loadscenetxt, merge);
         }
 
         private void chklistLocation_SelectedIndexChanged(object sender, EventArgs e)
@@ -988,7 +976,8 @@ namespace varManager
             string key = "vam.png";
             if (!string.IsNullOrWhiteSpace(curpriviewscene.previewPic))
             {
-                key = Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewscene.atomType, curpriviewscene.varName, curpriviewscene.previewPic);
+                string picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewscene.atomType, curpriviewscene.varName, curpriviewscene.previewPic);
+                if (File.Exists(picpath)) key = picpath;
             }
             if (!imageListScenes.Images.ContainsKey(key))
             {
@@ -1016,6 +1005,22 @@ namespace varManager
             if (listFilterCreatorScene != null&& listFilterCreatorScene.Count() > 0)
             {
                 GenerateItems();
+            }
+        }
+
+        private void radioButtonCategory_CheckedChanged(object sender, EventArgs e)
+        {
+           
+            RadioButton rb = sender as RadioButton;
+            if (rb == null)
+            {
+                //MessageBox.Show("Sender is not a RadioButton");
+                return;
+            }
+            if (strCategory != rb.Text)
+            {
+                strCategory = rb.Text;
+                FilterVars();
             }
         }
     }

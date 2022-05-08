@@ -25,11 +25,27 @@ namespace varManager
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName));
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
+            toolStripComboBoxIgnoreVersion.SelectedIndex = 0;
+            FillMissVarGridView();
+        }
+
+        private void FillMissVarGridView()
+        {
             if (missingVars != null)
             {
-                foreach (var missingvar in missingVars)
+                dataGridViewMissingVars.Rows.Clear();
+                foreach (string missingvar in missingVars)
                 {
                     string missingvarname = missingvar;
+                    if(missingvarname.EndsWith("$"))
+                    {
+                        if (toolStripComboBoxIgnoreVersion.SelectedIndex == 1)
+                        {
+                            missingvarname = missingvarname.Substring(0, missingvarname.Length - 1);
+                        }
+                        else
+                            continue;
+                    }
                     if (missingvarname.LastIndexOf('/') > 1)
                         missingvarname = missingvarname.Substring(missingvarname.LastIndexOf('/') + 1);
                     string searchPattern = missingvarname + ".var";
@@ -48,7 +64,6 @@ namespace varManager
                 bindingNavigatorCountItem.Text = "/" + dataGridViewMissingVars.Rows.Count;
             }
         }
-
 
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
@@ -280,5 +295,9 @@ namespace varManager
 
         }
 
+        private void toolStripComboBoxIgnoreVersion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillMissVarGridView();
+        }
     }
 }

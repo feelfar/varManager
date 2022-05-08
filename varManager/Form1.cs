@@ -28,6 +28,7 @@ namespace varManager
         private static string notComplyRuleDirName = "___VarnotComplyRule___";
         private static string previewpicsDirName = "___PreviewPics___";
         private static string staleVarsDirName = "___StaleVars___";
+        private static string oldVersionVarsDirName = "___OldVersionVars___";
         private static string deleVarsDirName = "___DeletedVars___";
 
         private static string addonPacksSwitch = "___AddonPacksSwitch ___";
@@ -91,6 +92,7 @@ namespace varManager
                            && q.IndexOf(redundantpath) == -1
                            && q.IndexOf(notComplRulepath) == -1
                            && q.IndexOf(staleVarsDirName) == -1
+                           && q.IndexOf(oldVersionVarsDirName) == -1
                            && q.IndexOf(deleVarsDirName) == -1);
 
             string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
@@ -370,23 +372,37 @@ namespace varManager
             }
             return latest;
         }
+        private int VarCountVersion(string varname)
+        {
+            int countversion = 0;
+            string[] varnamepart = varname.Split('.');
+            if (varnamepart.Length == 3)
+            {
+                countversion = varManagerDataSet.vars.Where(q => q.creatorName == varnamepart[0] && q.packageName == varnamepart[1]).Count();
+
+            }
+            return countversion;
+        }
 
         private List<string> ImplicatedVar(string varname)
         {
             List<string> varnames = new List<string>();
-            if (Varislatest(varname))
+            if (VarCountVersion(varname) <= 1)
             {
-                string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
-                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname || q.dependency == latest))
+                if (Varislatest(varname))
                 {
-                    varnames.Add(row.varName);
+                    string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
+                    foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname || q.dependency == latest))
+                    {
+                        varnames.Add(row.varName);
+                    }
                 }
-            }
-            else
-            {
-                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname))
+                else
                 {
-                    varnames.Add(row.varName);
+                    foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname))
+                    {
+                        varnames.Add(row.varName);
+                    }
                 }
             }
             return varnames;
@@ -428,7 +444,7 @@ namespace varManager
 
         private void DelePreviewPics(string varname)
         {
-            string[] typenames = { "scenes", "looks", "hairstyle", "clothing", "assets" };
+            string[] typenames = { "scenes", "looks", "hairstyle", "clothing", "assets","morphs","skin","pose"};
             foreach (string typename in typenames)
             {
                 string typepath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, varname);
@@ -1069,6 +1085,7 @@ namespace varManager
 
                 varManagerDataSet.vars.FindByvarName(deletevar).Delete();
                 varsTableAdapter.Update(varManagerDataSet.vars);
+                varManagerDataSet.vars.AcceptChanges();
 
                 DelePreviewPics(deletevar);
 
@@ -1088,7 +1105,6 @@ namespace varManager
                 varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(varName);
                 if (varsrow != null)
                 {
-
                     //string[] varexist = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), varName + ".var");
                     string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, varName + ".var");
                     if (bTemp) linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName, varName + ".var");
@@ -1164,6 +1180,11 @@ namespace varManager
             {
                 StaleVars();
             }
+            if ((string)e.Argument == "OldVersionVars")
+            {
+                StaleVars();
+                OldVersionVars();
+            }
         }
 
         private void backgroundWorkerInstall_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1200,6 +1221,12 @@ namespace varManager
             foreach (string varname in dependencies)
             {
                 string varexistname = VarExistName(varname);
+                if (varexistname.EndsWith("$"))
+                {
+                    varexistname = varexistname.Substring(0, varexistname.Length - 1);
+                    missingvars.Add(varname+"$");
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing version" });
+                }
                 if (varexistname != "missing")
                 {
                     VarInstall(varexistname);
@@ -1333,6 +1360,11 @@ namespace varManager
             foreach (string varname in dependencies)
             {
                 string varexistname = VarExistName(varname);
+                if (varexistname.EndsWith("$"))
+                {
+                    varexistname = varexistname.Substring(0, varexistname.Length - 1);
+                    missingvars.Add(varname + "$");
+                }
                 if (varexistname != "missing")
                 {
                     VarInstall(varexistname);
@@ -1441,12 +1473,36 @@ namespace varManager
                     var varsrow = varManagerDataSet.vars.FindByvarName(varname);
                     if (varsrow != null)
                         varrealver = varname;
+                    else
+                    {
+                        string closestver = GetClosestMatchingPackageVersion(varnamepart[0], varnamepart[1], int.Parse(varnamepart[2]));
+                        if (closestver != "missing")
+                            varrealver = closestver + "$";
+                    }
                 }
-
             }
             return varrealver;
         }
+        public string GetClosestMatchingPackageVersion(string creatorName,string packageName,int requestVersion)
+        {
+            //int num = -1;
+            var packs = varManagerDataSet.vars.Where(q => q.creatorName == creatorName && q.packageName == packageName).OrderBy(q => q.version);
+            if (packs.Count() > 0)
+            {
+                foreach (var pack in packs)
+                {
+                    if (pack.version >= requestVersion)
+                    {
+                        //num = pack.version;
+                        return pack.varName;
+                    }
+                }
+               return packs.Last().varName;
 
+            }
+            return "missing";
+           
+        }
         private List<string> VarsDependencies(string varname)
         {
             List<string> depens = new List<string>();
@@ -1468,6 +1524,10 @@ namespace varManager
                 else
                 {
                     string varexistname = VarExistName(varname);
+                    if (varexistname.EndsWith("$"))
+                    {
+                        varexistname = varexistname.Substring(0, varexistname.Length - 1);
+                    }
                     if (varexistname != "missing")
                         varnameexist.Add(varexistname);
                 }
@@ -1575,7 +1635,8 @@ namespace varManager
             if (previewtype != "all")
                 previewpicsfilter = previewpicsfilter.Where(q => q.Atomtype == previewtype).ToList();
             mut.ReleaseMutex();
-            listViewPreviewPics.VirtualListSize = previewpicsfilter.Count;    
+            listViewPreviewPics.VirtualListSize = previewpicsfilter.Count;
+            listViewPreviewPics.Invalidate();
             toolStripLabelPreviewCountItem.Text = "/" + previewpicsfilter.Count.ToString();
             /*
             toolStripComboBoxPreviewPage.SelectedIndexChanged -= new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged); toolStripComboBoxPreviewPage.Items.Clear();
@@ -1771,6 +1832,7 @@ namespace varManager
 
         private void buttonStaleVars_Click(object sender, EventArgs e)
         {
+            /*
             string message = $"Stale var means:\r\n1,The version is not the latest.\r\n2,Not depended by other var.\r\nThey will be moved to the {staleVarsDirName} directory";
 
             const string caption = "StaleVars";
@@ -1778,8 +1840,15 @@ namespace varManager
                                          MessageBoxButtons.YesNo,
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
-            if (result == DialogResult.Yes)
-                backgroundWorkerInstall.RunWorkerAsync("StaleVars");
+            */
+            FormStaleVars formStaleVars = new FormStaleVars();
+            if (formStaleVars.ShowDialog() == DialogResult.OK)
+            {
+                if (formStaleVars.removeOldVersion)
+                    backgroundWorkerInstall.RunWorkerAsync("OldVersionVars");
+                else
+                    backgroundWorkerInstall.RunWorkerAsync("StaleVars");
+            }
         }
 
         void StaleVars()
@@ -1824,6 +1893,7 @@ namespace varManager
                     string stalev = Path.Combine(stalepath, oldvar + ".var");
                     try
                     {
+                        this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {stalepath}." });
                         File.Move(oldv, stalev);
                         CleanVar(oldvar);
                     }
@@ -1836,6 +1906,65 @@ namespace varManager
             System.Diagnostics.Process.Start(stalepath);
             //MessageBox.Show("Please run upd-db once");
         }
+
+        void OldVersionVars()
+        {
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            var versionLastest = varManagerDataSet.vars.Where(q=>q.plugins<=0||q.scenes>0||q.looks>0)
+                                     .GroupBy(g => g.creatorName + "." + g.packageName,
+                                     q => q.version,
+                                     (baseName, versions) => new
+                                     {
+                                         Key = baseName,
+                                         Count = versions.Count(),
+                                         Max = versions.Max()
+                                     });
+            List<string> listOldvar = new List<string>();
+            foreach (var result in versionLastest)
+            {
+                if (result.Count > 1)
+                {
+                    string[] vv = result.Key.Split('.');
+                    foreach (var oldvar in varManagerDataSet.vars.Where(q => q.creatorName == vv[0] && q.packageName == vv[1] && q.version != result.Max))
+                    {
+                        listOldvar.Add(oldvar.varName);
+                    }
+                }
+            }
+            string oldversionpath = Path.Combine(Settings.Default.varspath, oldVersionVarsDirName);
+            if (!Directory.Exists(oldversionpath))
+                Directory.CreateDirectory(oldversionpath);
+            var installedvars = GetInstalledVars();
+            foreach (var oldvar in listOldvar)
+            {
+                if (installedvars.ContainsKey(oldvar))
+                {
+                    string basename = oldvar.Substring(0, oldvar.LastIndexOf(".") );
+                    string varlastest = basename + "." + versionLastest.Where(q => q.Key == basename).First().Max.ToString();
+                    File.Delete(installedvars[oldvar]);
+                    VarInstall(varlastest);
+                }
+                //string linkvar = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName, oldvar + ".var");
+                //if (File.Exists(linkvar))
+                //    File.Delete(linkvar);
+                string oldv = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(oldvar).varPath, oldvar + ".var");
+                string oldversionv = Path.Combine(oldversionpath, oldvar + ".var");
+                try
+                {
+                    this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {oldversionpath}." });
+                    File.Move(oldv, oldversionv);
+                    CleanVar(oldvar);
+                }
+                catch (Exception ex)
+                {
+                    this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}" });
+                }
+
+            }
+            System.Diagnostics.Process.Start(oldversionpath);
+            //MessageBox.Show("Please run upd-db once");
+        }
+
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
             FilterVars();
@@ -2080,6 +2209,11 @@ namespace varManager
                 foreach (string varname in dependencies)
                 {
                     string varexistname = VarExistName(varname);
+                    if (varexistname.EndsWith("$"))
+                    {
+                        varexistname = varexistname.Substring(0, varexistname.Length - 1);
+                        missingvars.Add(varname + "$");
+                    }
                     if (varexistname != "missing")
                     {
                         VarInstall(varexistname);
@@ -2123,7 +2257,7 @@ namespace varManager
             int max = 500;
             if (varNames.Count > max)
             {
-                MessageBox.Show($"Please do not install more than {max} files at once");
+                MessageBox.Show($"Please do not uninstall more than {max} files at once");
                 return;
             }
             string message = $"There are {varNames.Count} vars and their dependencies will be Uninstall, are you sure?";
@@ -2390,40 +2524,86 @@ namespace varManager
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-            if (loadscenetxt.StartsWith("rescan_scenes")|| loadscenetxt.StartsWith("scenes")) 
-            DeleteTemp();
-            if (loadscenetxt.StartsWith("rescan_"))
+            bool merge = false;
+            if (checkBoxMerge.Checked) merge = true;
+
+            GenLoadscenetxt(loadscenetxt,merge);
+        }
+
+        public void GenLoadscenetxt(string loadScenetxt,bool merge)
+        {
+            List<string> deletetempfiles = new List<string>();
+            if (loadScenetxt.StartsWith("rescan_scenes") || loadScenetxt.StartsWith("scenes"))
+                deletetempfiles = AddDeleteTemp();
+            if (loadScenetxt.StartsWith("rescan_"))
             {
-                string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2, loadscenetxt.IndexOf(":/") - loadscenetxt.IndexOf("\r\n") - 2);
-                
-                InstallTemp(varName);
+                string varName = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2, loadScenetxt.IndexOf(":/") - loadScenetxt.IndexOf("\r\n") - 2);
+
+                var installtemplist = InstallTemp(varName);
+                foreach (var installtemp in installtemplist)
+                    deletetempfiles.Remove(installtemp.ToLower()+".var");
             }
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
             StreamWriter sw = new StreamWriter(loadscenefile);
-            if (checkBoxMerge.Checked) loadscenetxt = loadscenetxt + "_merge";
-            sw.Write(loadscenetxt);
+            if (merge) loadScenetxt = loadScenetxt + "_merge";
+            sw.Write(loadScenetxt);
             sw.Close();
+            if (deletetempfiles.Count > 0)
+            {
+                Thread.Sleep(2000);
+                Thread thread = new Thread(DeleteTempThread);
+                thread.Start(deletetempfiles);
+            }
         }
 
-        public void DeleteTemp()
+        public List<string> AddDeleteTemp()
         {
 
             DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
 
+            List<string> tempfiles = new List<string>();
             foreach (FileInfo tempfinfo in templinkdirinfo.GetFiles())
             {
                 if (tempfinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                    tempfinfo.Delete();
+                    tempfiles.Add(tempfinfo.Name.ToLower());
+                    //tempfinfo.Delete();
             }
-
+            return tempfiles;
         }
-        public void InstallTemp(string varName)
+
+        public void DeleteTempThread(object data)
+        {
+            List<string> tempfiles = data as List<string>;
+            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+
+            while (true)
+            {
+                Thread.Sleep(2000);
+                if (File.Exists(loadscenefile))
+                {
+                    continue;
+                }
+                else
+                {
+                    Thread.Sleep(20000);
+                    foreach (string tempf in tempfiles)
+                    {
+                        FileInfo fi = new FileInfo(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName, tempf));
+                        if (fi.Exists)
+                            fi.Delete();
+                    }
+                    break;
+                }
+            }
+        }
+
+        public List<string> InstallTemp(string varName)
         {
             List<string> varnames = new List<string>();
             varnames.Add(varName);
             varnames = VarsDependencies(varnames);
-             
+            varnames = varnames.Except(GetInstalledVars().Keys).ToList();
             foreach (string varname in varnames)
             {
                 var rows = varManagerDataSet.varsView.Where(q => q.varName == varName);
@@ -2433,6 +2613,7 @@ namespace varManager
                         VarInstall(varname, true);
                 }
             }
+            return varnames;
             //UpdateVarsInstalled();
         }
 
