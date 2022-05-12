@@ -608,7 +608,7 @@ namespace varManager
             //varsViewBindingSource.ResetBindings(true);
             InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
             this.BeginInvoke(invokeUpdateVarsViewDataGridView);
-            RescanPackages();
+            
             //varsViewDataGridView.Update();
         }
 
@@ -1154,6 +1154,7 @@ namespace varManager
                     }
                 }
                 UpdateVarsInstalled();
+                RescanPackages();
                 //Application.Restart();
                 //Environment.Exit(0);
 
@@ -1167,16 +1168,20 @@ namespace varManager
             {
                 FixSavseDependencies();
                 UpdateVarsInstalled();
+                RescanPackages();
             }
             if ((string)e.Argument == "LogAnalysis")
             {
                 LogAnalysis();
                 UpdateVarsInstalled();
+                RescanPackages();
             }
             if ((string)e.Argument == "MissingDepends")
             {
                 MissingDepends();
                 UpdateVarsInstalled();
+                RescanPackages();
+
             }
             if ((string)e.Argument == "StaleVars")
             {
@@ -2002,6 +2007,7 @@ namespace varManager
                         varnames.Add(varName);
                         UnintallVars(varnames);
                         UpdateVarsInstalled();
+                        RescanPackages();
                     }
 
                 }
@@ -2023,6 +2029,7 @@ namespace varManager
                             VarInstall(varname);
                         }
                         UpdateVarsInstalled();
+                        RescanPackages();
                     }
                 }
             }
@@ -2301,6 +2308,7 @@ namespace varManager
             {
                 DeleteVars(varNames);
                 UpdateVarsInstalled();
+                RescanPackages();
             }
         }
 
@@ -2420,6 +2428,7 @@ namespace varManager
                     VarInstall(varname);
                 }
                 UpdateVarsInstalled();
+                RescanPackages();
             }
         }
 
@@ -2455,7 +2464,10 @@ namespace varManager
                                 "(Error Code: " + Marshal.GetLastWin32Error() + ")");
                     }
                     else
+                    {
                         UpdateVarsInstalled();
+                        RescanPackages();
+                    }
                 }
             }
             else
@@ -2466,7 +2478,10 @@ namespace varManager
                             "(Error Code: " + Marshal.GetLastWin32Error() + ")");
                 }
                 else
+                {
                     UpdateVarsInstalled();
+                    RescanPackages();
+                }
             }
         }
 
@@ -2477,6 +2492,7 @@ namespace varManager
             {
                 string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
                 if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
+                Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
                 StreamWriter swLoad = new StreamWriter(loadscenefile);
                 swLoad.Write("rescan");
                 swLoad.Close();
@@ -2560,6 +2576,7 @@ namespace varManager
             }
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
+            Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
             StreamWriter sw = new StreamWriter(loadscenefile);
             if (merge) loadScenetxt = loadScenetxt + "_merge";
             sw.Write(loadScenetxt);
@@ -2695,6 +2712,7 @@ namespace varManager
                 }
             }
             UpdateVarsInstalled();
+            RescanPackages();
         }
     }
 }

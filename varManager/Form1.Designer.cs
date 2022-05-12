@@ -43,7 +43,6 @@ namespace varManager
             this.buttonPacksAdd = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonMissingDepends = new System.Windows.Forms.Button();
-            this.buttonLogAnalysis = new System.Windows.Forms.Button();
             this.buttonFixSavesDepend = new System.Windows.Forms.Button();
             this.buttonScenesManager = new System.Windows.Forms.Button();
             this.buttonStaleVars = new System.Windows.Forms.Button();
@@ -204,6 +203,7 @@ namespace varManager
             this.listBoxLog.Name = "listBoxLog";
             this.listBoxLog.Size = new System.Drawing.Size(1375, 239);
             this.listBoxLog.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.listBoxLog, "Log");
             // 
             // panel1
             // 
@@ -245,6 +245,7 @@ namespace varManager
             this.comboBoxPacksSwitch.Name = "comboBoxPacksSwitch";
             this.comboBoxPacksSwitch.Size = new System.Drawing.Size(118, 25);
             this.comboBoxPacksSwitch.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.comboBoxPacksSwitch, "Switching AddonPackagess");
             this.comboBoxPacksSwitch.SelectedIndexChanged += new System.EventHandler(this.comboBoxPacksSwitch_SelectedIndexChanged);
             // 
             // buttonPacksDelete
@@ -256,6 +257,7 @@ namespace varManager
             this.buttonPacksDelete.Size = new System.Drawing.Size(54, 35);
             this.buttonPacksDelete.TabIndex = 2;
             this.buttonPacksDelete.Text = "Del";
+            this.toolTip1.SetToolTip(this.buttonPacksDelete, "Delete current AddonPackages");
             this.buttonPacksDelete.UseVisualStyleBackColor = true;
             this.buttonPacksDelete.Click += new System.EventHandler(this.buttonPacksDelete_Click);
             // 
@@ -268,6 +270,7 @@ namespace varManager
             this.buttonPacksRename.Size = new System.Drawing.Size(67, 35);
             this.buttonPacksRename.TabIndex = 3;
             this.buttonPacksRename.Text = "Rename";
+            this.toolTip1.SetToolTip(this.buttonPacksRename, "Rename current AddonPackages");
             this.buttonPacksRename.UseVisualStyleBackColor = true;
             this.buttonPacksRename.Click += new System.EventHandler(this.buttonPacksRename_Click);
             // 
@@ -280,6 +283,7 @@ namespace varManager
             this.buttonPacksAdd.Size = new System.Drawing.Size(54, 35);
             this.buttonPacksAdd.TabIndex = 1;
             this.buttonPacksAdd.Text = "Add";
+            this.toolTip1.SetToolTip(this.buttonPacksAdd, "Add AddonPackages");
             this.buttonPacksAdd.UseVisualStyleBackColor = true;
             this.buttonPacksAdd.Click += new System.EventHandler(this.buttonPacksAdd_Click);
             // 
@@ -287,12 +291,11 @@ namespace varManager
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.buttonMissingDepends);
-            this.groupBox1.Controls.Add(this.buttonLogAnalysis);
             this.groupBox1.Controls.Add(this.buttonFixSavesDepend);
             this.groupBox1.ForeColor = System.Drawing.Color.SaddleBrown;
             this.groupBox1.Location = new System.Drawing.Point(9, 224);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(135, 219);
+            this.groupBox1.Size = new System.Drawing.Size(135, 155);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Depends Analysis";
@@ -307,17 +310,6 @@ namespace varManager
             this.toolTip1.SetToolTip(this.buttonMissingDepends, "Analyzing dependencies from Installed Vars");
             this.buttonMissingDepends.UseVisualStyleBackColor = true;
             this.buttonMissingDepends.Click += new System.EventHandler(this.buttonMissingDepends_Click);
-            // 
-            // buttonLogAnalysis
-            // 
-            this.buttonLogAnalysis.Location = new System.Drawing.Point(28, 153);
-            this.buttonLogAnalysis.Name = "buttonLogAnalysis";
-            this.buttonLogAnalysis.Size = new System.Drawing.Size(89, 48);
-            this.buttonLogAnalysis.TabIndex = 2;
-            this.buttonLogAnalysis.Text = "Log file";
-            this.toolTip1.SetToolTip(this.buttonLogAnalysis, "Analyzing dependencies from log file");
-            this.buttonLogAnalysis.UseVisualStyleBackColor = true;
-            this.buttonLogAnalysis.Click += new System.EventHandler(this.buttonLogAnalysis_Click);
             // 
             // buttonFixSavesDepend
             // 
@@ -335,19 +327,19 @@ namespace varManager
             this.buttonScenesManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonScenesManager.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonScenesManager.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.buttonScenesManager.Location = new System.Drawing.Point(36, 563);
+            this.buttonScenesManager.Location = new System.Drawing.Point(37, 499);
             this.buttonScenesManager.Name = "buttonScenesManager";
             this.buttonScenesManager.Size = new System.Drawing.Size(89, 48);
             this.buttonScenesManager.TabIndex = 3;
             this.buttonScenesManager.Text = "Hide| |Fav";
-            this.toolTip1.SetToolTip(this.buttonScenesManager, "Batch hide or favorite Scenes, looks, colthing, hairstyle");
+            this.toolTip1.SetToolTip(this.buttonScenesManager, "Batch hide or favorite Scenes and Presets,");
             this.buttonScenesManager.UseVisualStyleBackColor = true;
             this.buttonScenesManager.Click += new System.EventHandler(this.buttonScenesManager_Click);
             // 
             // buttonStaleVars
             // 
             this.buttonStaleVars.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStaleVars.Location = new System.Drawing.Point(36, 503);
+            this.buttonStaleVars.Location = new System.Drawing.Point(37, 439);
             this.buttonStaleVars.Name = "buttonStaleVars";
             this.buttonStaleVars.Size = new System.Drawing.Size(89, 48);
             this.buttonStaleVars.TabIndex = 2;
@@ -360,7 +352,7 @@ namespace varManager
             // buttonFixRebuildLink
             // 
             this.buttonFixRebuildLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFixRebuildLink.Location = new System.Drawing.Point(36, 449);
+            this.buttonFixRebuildLink.Location = new System.Drawing.Point(37, 385);
             this.buttonFixRebuildLink.Name = "buttonFixRebuildLink";
             this.buttonFixRebuildLink.Size = new System.Drawing.Size(89, 48);
             this.buttonFixRebuildLink.TabIndex = 1;
@@ -379,8 +371,7 @@ namespace varManager
             this.buttonUpdDB.Size = new System.Drawing.Size(89, 48);
             this.buttonUpdDB.TabIndex = 0;
             this.buttonUpdDB.Text = "UPD_DB";
-            this.toolTip1.SetToolTip(this.buttonUpdDB, "When you run for the first time, or you get some new packages, Copy them to pleas" +
-        "e click");
+            this.toolTip1.SetToolTip(this.buttonUpdDB, "Organize vars, extract preview images,update DB.");
             this.buttonUpdDB.UseVisualStyleBackColor = true;
             this.buttonUpdDB.Click += new System.EventHandler(this.buttonUpdDB_Click);
             // 
@@ -474,9 +465,10 @@ namespace varManager
             this.varsViewDataGridView.RowHeadersWidth = 20;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.varsViewDataGridView.ShowCellToolTips = false;
             this.varsViewDataGridView.Size = new System.Drawing.Size(829, 470);
             this.varsViewDataGridView.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.varsViewDataGridView, "Right click on the column header to custom filter");
+            this.toolTip1.SetToolTip(this.varsViewDataGridView, "Multiple selectable,Right click column header for advanced filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
             // 
             // varNamedataGridViewTextBoxColumn
@@ -1202,6 +1194,7 @@ namespace varManager
             this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
             this.checkBoxPreviewTypeLoadable.TabIndex = 3;
             this.checkBoxPreviewTypeLoadable.Text = "Loadable";
+            this.toolTip1.SetToolTip(this.checkBoxPreviewTypeLoadable, "Filter Loadabled Scene,Looks etc");
             this.checkBoxPreviewTypeLoadable.UseVisualStyleBackColor = true;
             this.checkBoxPreviewTypeLoadable.CheckedChanged += new System.EventHandler(this.checkBoxPreviewTypeLoadable_CheckedChanged);
             // 
@@ -1384,7 +1377,6 @@ namespace varManager
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button buttonFixSavesDepend;
-        private System.Windows.Forms.Button buttonLogAnalysis;
         private System.Windows.Forms.Button buttonUninstallSels;
         private System.ComponentModel.BackgroundWorker backgroundWorkerPreview;
         private System.Windows.Forms.Button buttonDelete;
