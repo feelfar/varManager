@@ -70,22 +70,22 @@ namespace MVRPlugin
                     {
                         SuperController.LogMessage("find loadscene.txt");
                         string atomforload = FileManagerSecure.ReadAllText(loadscenetxt);
-                        Thread.Sleep(1000);
+						Thread.Sleep(1000);
                         FileManagerSecure.DeleteFile(loadscenetxt);
-                        if (atomforload == "rescan")
+                        if(atomforload == "rescan")
                         {
-                            SuperController.LogMessage("RescanPackages");
+							SuperController.LogMessage("RescanPackages");
                             SuperController.singleton.RescanPackages();
                             return;
                         }
-
+                        
                         string[] strLoadscene = atomforload.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                         if (strLoadscene.Length >= 2)
                         {
                             string scenetype = strLoadscene[0];
                             if (scenetype.StartsWith("rescan_"))
                             {
-                                SuperController.LogMessage("RescanPackages");
+								SuperController.LogMessage("RescanPackages");
                                 SuperController.singleton.RescanPackages();
                             }
                             bool merge = false;
