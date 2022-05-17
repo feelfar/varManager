@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -325,7 +325,7 @@ namespace varManager
             // buttonScenesManager
             // 
             this.buttonScenesManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonScenesManager.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonScenesManager.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonScenesManager.ForeColor = System.Drawing.Color.RoyalBlue;
             this.buttonScenesManager.Location = new System.Drawing.Point(37, 499);
             this.buttonScenesManager.Name = "buttonScenesManager";
@@ -364,7 +364,7 @@ namespace varManager
             // buttonUpdDB
             // 
             this.buttonUpdDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpdDB.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUpdDB.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonUpdDB.ForeColor = System.Drawing.Color.RoyalBlue;
             this.buttonUpdDB.Location = new System.Drawing.Point(36, 170);
             this.buttonUpdDB.Name = "buttonUpdDB";
@@ -466,7 +466,7 @@ namespace varManager
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.ShowCellToolTips = false;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 470);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 479);
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Multiple selectable,Right click column header for advanced filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
@@ -502,9 +502,9 @@ namespace varManager
             // fsize
             // 
             this.fsize.DataPropertyName = "fsize";
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.fsize.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.fsize.DefaultCellStyle = dataGridViewCellStyle2;
             this.fsize.HeaderText = "fsize(MB)";
             this.fsize.MinimumWidth = 6;
             this.fsize.Name = "fsize";
@@ -683,18 +683,18 @@ namespace varManager
             this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
             this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 501);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 510);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 51);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 42);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // buttonInstall
             // 
-            this.buttonInstall.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonInstall.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
             this.buttonInstall.Location = new System.Drawing.Point(3, 3);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(92, 45);
+            this.buttonInstall.Size = new System.Drawing.Size(74, 36);
             this.buttonInstall.TabIndex = 0;
             this.buttonInstall.Text = "Install Selected";
             this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
@@ -703,11 +703,11 @@ namespace varManager
             // 
             // buttonUninstallSels
             // 
-            this.buttonUninstallSels.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonUninstallSels.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
-            this.buttonUninstallSels.Location = new System.Drawing.Point(101, 3);
+            this.buttonUninstallSels.Location = new System.Drawing.Point(83, 3);
             this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(92, 45);
+            this.buttonUninstallSels.Size = new System.Drawing.Size(74, 36);
             this.buttonUninstallSels.TabIndex = 1;
             this.buttonUninstallSels.Text = "UnInst Selected";
             this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
@@ -717,11 +717,11 @@ namespace varManager
             // buttonDelete
             // 
             this.buttonDelete.BackColor = System.Drawing.Color.Red;
-            this.buttonDelete.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonDelete.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
-            this.buttonDelete.Location = new System.Drawing.Point(199, 3);
+            this.buttonDelete.Location = new System.Drawing.Point(163, 3);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(92, 45);
+            this.buttonDelete.Size = new System.Drawing.Size(74, 36);
             this.buttonDelete.TabIndex = 2;
             this.buttonDelete.Text = "Delete Selected";
             this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
@@ -731,11 +731,11 @@ namespace varManager
             // buttonMove
             // 
             this.buttonMove.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.buttonMove.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonMove.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
-            this.buttonMove.Location = new System.Drawing.Point(297, 3);
+            this.buttonMove.Location = new System.Drawing.Point(243, 3);
             this.buttonMove.Name = "buttonMove";
-            this.buttonMove.Size = new System.Drawing.Size(92, 45);
+            this.buttonMove.Size = new System.Drawing.Size(91, 36);
             this.buttonMove.TabIndex = 3;
             this.buttonMove.Text = "Move SeleLinks To SubDir";
             this.buttonMove.UseVisualStyleBackColor = false;
@@ -743,11 +743,11 @@ namespace varManager
             // 
             // buttonExpInsted
             // 
-            this.buttonExpInsted.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonExpInsted.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonExpInsted.Location = new System.Drawing.Point(395, 3);
+            this.buttonExpInsted.Location = new System.Drawing.Point(340, 3);
             this.buttonExpInsted.Name = "buttonExpInsted";
-            this.buttonExpInsted.Size = new System.Drawing.Size(92, 45);
+            this.buttonExpInsted.Size = new System.Drawing.Size(74, 36);
             this.buttonExpInsted.TabIndex = 4;
             this.buttonExpInsted.Text = "Export Insted";
             this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
@@ -756,11 +756,11 @@ namespace varManager
             // 
             // buttonInstFormTxt
             // 
-            this.buttonInstFormTxt.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonInstFormTxt.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonInstFormTxt.Location = new System.Drawing.Point(493, 3);
+            this.buttonInstFormTxt.Location = new System.Drawing.Point(420, 3);
             this.buttonInstFormTxt.Name = "buttonInstFormTxt";
-            this.buttonInstFormTxt.Size = new System.Drawing.Size(92, 45);
+            this.buttonInstFormTxt.Size = new System.Drawing.Size(74, 36);
             this.buttonInstFormTxt.TabIndex = 5;
             this.buttonInstFormTxt.Text = "Install By TXT";
             this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
@@ -802,14 +802,14 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 2);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 31);
             this.varsBindingNavigator.TabIndex = 0;
             this.varsBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -818,7 +818,7 @@ namespace varManager
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
             this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 24);
             this.bindingNavigatorCountItem.Text = "/ {0}";
-            this.bindingNavigatorCountItem.ToolTipText = "总项数";
+            this.bindingNavigatorCountItem.ToolTipText = "Total number";
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -826,8 +826,8 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
-            this.bindingNavigatorMoveFirstItem.Text = "移到第一条记录";
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveFirstItem.Text = "First";
             // 
             // bindingNavigatorMovePreviousItem
             // 
@@ -836,7 +836,7 @@ namespace varManager
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 24);
-            this.bindingNavigatorMovePreviousItem.Text = "移到上一条记录";
+            this.bindingNavigatorMovePreviousItem.Text = "Previous";
             // 
             // bindingNavigatorSeparator
             // 
@@ -851,7 +851,7 @@ namespace varManager
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
-            this.bindingNavigatorPositionItem.ToolTipText = "当前位置";
+            this.bindingNavigatorPositionItem.ToolTipText = "Current";
             // 
             // bindingNavigatorSeparator1
             // 
@@ -865,7 +865,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 24);
-            this.bindingNavigatorMoveNextItem.Text = "移到下一条记录";
+            this.bindingNavigatorMoveNextItem.Text = "Next";
             // 
             // bindingNavigatorMoveLastItem
             // 
@@ -874,7 +874,7 @@ namespace varManager
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 24);
-            this.bindingNavigatorMoveLastItem.Text = "移到最后一条记录";
+            this.bindingNavigatorMoveLastItem.Text = "Last";
             // 
             // bindingNavigatorSeparator2
             // 
@@ -897,7 +897,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
+            this.comboBoxCreater.Location = new System.Drawing.Point(305, 5);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(121, 25);
             this.comboBoxCreater.TabIndex = 2;
@@ -917,9 +917,9 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(537, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(537, 5);
             this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(148, 25);
+            this.textBoxFilter.Size = new System.Drawing.Size(118, 25);
             this.textBoxFilter.TabIndex = 4;
             this.toolTip1.SetToolTip(this.textBoxFilter, "Filter by packageName");
             this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
@@ -930,7 +930,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(691, 5);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(661, 5);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
             this.checkBoxInstalled.TabIndex = 5;
@@ -1095,7 +1095,7 @@ namespace varManager
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(191, 27);
+            this.toolStripPreview.Size = new System.Drawing.Size(191, 31);
             this.toolStripPreview.TabIndex = 0;
             this.toolStripPreview.Text = "toolStrip1";
             // 
@@ -1106,7 +1106,7 @@ namespace varManager
             this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
             this.toolStripButtonPreviewFirst.RightToLeftAutoMirrorImage = true;
             this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButtonPreviewFirst.Text = "移到第一条记录";
+            this.toolStripButtonPreviewFirst.Text = "First";
             this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
             // 
             // toolStripButtonPreviewPrev
@@ -1116,7 +1116,7 @@ namespace varManager
             this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
             this.toolStripButtonPreviewPrev.RightToLeftAutoMirrorImage = true;
             this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButtonPreviewPrev.Text = "移到上一条记录";
+            this.toolStripButtonPreviewPrev.Text = "Move to previous";
             this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
             // 
             // toolStripLabelPreviewItemIndex
@@ -1138,7 +1138,7 @@ namespace varManager
             this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
             this.toolStripButtonPreviewNext.RightToLeftAutoMirrorImage = true;
             this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButtonPreviewNext.Text = "移到下一条记录";
+            this.toolStripButtonPreviewNext.Text = "Next";
             this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
             // 
             // toolStripButtonPreviewLast
@@ -1148,7 +1148,7 @@ namespace varManager
             this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
             this.toolStripButtonPreviewLast.RightToLeftAutoMirrorImage = true;
             this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButtonPreviewLast.Text = "移到最后一条记录";
+            this.toolStripButtonPreviewLast.Text = "Last";
             this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
             // 
             // label4
@@ -1177,9 +1177,9 @@ namespace varManager
             "morphs",
             "pose",
             "skin"});
-            this.comboBoxPreviewType.Location = new System.Drawing.Point(297, 3);
+            this.comboBoxPreviewType.Location = new System.Drawing.Point(297, 5);
             this.comboBoxPreviewType.Name = "comboBoxPreviewType";
-            this.comboBoxPreviewType.Size = new System.Drawing.Size(116, 25);
+            this.comboBoxPreviewType.Size = new System.Drawing.Size(93, 25);
             this.comboBoxPreviewType.TabIndex = 2;
             this.comboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
             // 
@@ -1189,7 +1189,7 @@ namespace varManager
             this.checkBoxPreviewTypeLoadable.AutoSize = true;
             this.checkBoxPreviewTypeLoadable.Checked = true;
             this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(419, 5);
+            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(396, 5);
             this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
             this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
             this.checkBoxPreviewTypeLoadable.TabIndex = 3;

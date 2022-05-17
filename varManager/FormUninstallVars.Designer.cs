@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonCancel = new System.Windows.Forms.Button();
@@ -103,9 +103,9 @@ namespace varManager
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1037, 482);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1185, 546);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // panel1
@@ -116,20 +116,20 @@ namespace varManager
             this.panel1.Controls.Add(this.labelWarning);
             this.panel1.Controls.Add(this.buttonOK);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(2, 434);
+            this.panel1.Location = new System.Drawing.Point(2, 490);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1033, 46);
+            this.panel1.Size = new System.Drawing.Size(1181, 54);
             this.panel1.TabIndex = 0;
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(945, 9);
+            this.buttonCancel.Location = new System.Drawing.Point(1080, 10);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(65, 22);
+            this.buttonCancel.Size = new System.Drawing.Size(74, 25);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -137,9 +137,9 @@ namespace varManager
             // labelWarning
             // 
             this.labelWarning.AutoSize = true;
-            this.labelWarning.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelWarning.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.labelWarning.ForeColor = System.Drawing.Color.Crimson;
-            this.labelWarning.Location = new System.Drawing.Point(21, 12);
+            this.labelWarning.Location = new System.Drawing.Point(24, 14);
             this.labelWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarning.Name = "labelWarning";
             this.labelWarning.Size = new System.Drawing.Size(439, 15);
@@ -150,12 +150,12 @@ namespace varManager
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttonOK.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonOK.ForeColor = System.Drawing.Color.Crimson;
-            this.buttonOK.Location = new System.Drawing.Point(849, 9);
+            this.buttonOK.Location = new System.Drawing.Point(970, 10);
             this.buttonOK.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(65, 22);
+            this.buttonOK.Size = new System.Drawing.Size(74, 25);
             this.buttonOK.TabIndex = 0;
             this.buttonOK.Text = "Sure!";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -186,7 +186,7 @@ namespace varManager
             this.dataGridViewVars.RowHeadersWidth = 40;
             this.dataGridViewVars.RowTemplate.Height = 27;
             this.dataGridViewVars.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewVars.Size = new System.Drawing.Size(514, 212);
+            this.dataGridViewVars.Size = new System.Drawing.Size(588, 240);
             this.dataGridViewVars.TabIndex = 1;
             this.dataGridViewVars.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridViewVars_DataError);
             this.dataGridViewVars.SelectionChanged += new System.EventHandler(this.dataGridViewVars_SelectionChanged);
@@ -212,9 +212,9 @@ namespace varManager
             // sizeColumn
             // 
             this.sizeColumn.DataPropertyName = "size";
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.sizeColumn.HeaderText = "fsize(MB)";
             this.sizeColumn.MinimumWidth = 6;
             this.sizeColumn.Name = "sizeColumn";
@@ -286,11 +286,11 @@ namespace varManager
             this.panel2.Controls.Add(this.listViewPreviewPics);
             this.panel2.Controls.Add(this.toolStripPreview);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(520, 2);
+            this.panel2.Location = new System.Drawing.Point(594, 2);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
-            this.panel2.Size = new System.Drawing.Size(515, 428);
+            this.panel2.Size = new System.Drawing.Size(589, 484);
             this.panel2.TabIndex = 2;
             // 
             // tableLayoutPanelPreview
@@ -299,13 +299,13 @@ namespace varManager
             this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
             this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(26, 162);
+            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(30, 184);
             this.tableLayoutPanelPreview.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
             this.tableLayoutPanelPreview.RowCount = 2;
             this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(294, 122);
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(336, 138);
             this.tableLayoutPanelPreview.TabIndex = 5;
             this.tableLayoutPanelPreview.Visible = false;
             // 
@@ -315,7 +315,7 @@ namespace varManager
             this.pictureBoxPreview.Location = new System.Drawing.Point(2, 2);
             this.pictureBoxPreview.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(290, 78);
+            this.pictureBoxPreview.Size = new System.Drawing.Size(332, 89);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxPreview.TabIndex = 1;
             this.pictureBoxPreview.TabStop = false;
@@ -327,20 +327,20 @@ namespace varManager
             this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.buttonpreviewback);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(2, 84);
+            this.panel3.Location = new System.Drawing.Point(2, 95);
             this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(290, 36);
+            this.panel3.Size = new System.Drawing.Size(332, 41);
             this.panel3.TabIndex = 0;
             // 
             // labelPreviewVarName
             // 
             this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.labelPreviewVarName.AutoSize = true;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(71, 10);
+            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 11);
             this.labelPreviewVarName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(32, 15);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(36, 17);
             this.labelPreviewVarName.TabIndex = 2;
             this.labelPreviewVarName.Text = "a.a.1";
             // 
@@ -348,20 +348,20 @@ namespace varManager
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 10);
+            this.label3.Location = new System.Drawing.Point(3, 11);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 15);
+            this.label3.Size = new System.Drawing.Size(69, 17);
             this.label3.TabIndex = 1;
             this.label3.Text = "VarName:";
             // 
             // buttonpreviewback
             // 
             this.buttonpreviewback.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewback.Location = new System.Drawing.Point(212, 10);
+            this.buttonpreviewback.Location = new System.Drawing.Point(243, 11);
             this.buttonpreviewback.Margin = new System.Windows.Forms.Padding(2);
             this.buttonpreviewback.Name = "buttonpreviewback";
-            this.buttonpreviewback.Size = new System.Drawing.Size(65, 22);
+            this.buttonpreviewback.Size = new System.Drawing.Size(74, 25);
             this.buttonpreviewback.TabIndex = 0;
             this.buttonpreviewback.Text = "return";
             this.buttonpreviewback.UseVisualStyleBackColor = true;
@@ -376,7 +376,7 @@ namespace varManager
             this.listViewPreviewPics.Margin = new System.Windows.Forms.Padding(2);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(515, 397);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(589, 453);
             this.listViewPreviewPics.SmallImageList = this.imageListPreviewPics;
             this.listViewPreviewPics.TabIndex = 4;
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
@@ -403,14 +403,14 @@ namespace varManager
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(515, 31);
+            this.toolStripPreview.Size = new System.Drawing.Size(589, 31);
             this.toolStripPreview.TabIndex = 3;
             this.toolStripPreview.Text = "toolStrip1";
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(106, 28);
+            this.toolStripLabel1.Size = new System.Drawing.Size(106, 25);
             this.toolStripLabel1.Text = "PreviewType:";
             // 
             // toolStripComboBoxPreviewType
@@ -424,20 +424,20 @@ namespace varManager
             "hairstyle",
             "assets"});
             this.toolStripComboBoxPreviewType.Name = "toolStripComboBoxPreviewType";
-            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(107, 31);
+            this.toolStripComboBoxPreviewType.Size = new System.Drawing.Size(122, 28);
             this.toolStripComboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
             // toolStripButtonPreviewFirst
             // 
             this.toolStripButtonPreviewFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewFirst.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewFirst.Name = "toolStripButtonPreviewFirst";
-            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewFirst.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonPreviewFirst.Text = "|<";
             this.toolStripButtonPreviewFirst.Click += new System.EventHandler(this.toolStripButtonPreviewFirst_Click);
             // 
@@ -446,7 +446,7 @@ namespace varManager
             this.toolStripButtonPreviewPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewPrev.Name = "toolStripButtonPreviewPrev";
-            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewPrev.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonPreviewPrev.Text = "<";
             this.toolStripButtonPreviewPrev.Click += new System.EventHandler(this.toolStripButtonPreviewPrev_Click);
             // 
@@ -454,13 +454,13 @@ namespace varManager
             // 
             this.toolStripComboBoxPreviewPage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxPreviewPage.Name = "toolStripComboBoxPreviewPage";
-            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(107, 31);
+            this.toolStripComboBoxPreviewPage.Size = new System.Drawing.Size(122, 28);
             this.toolStripComboBoxPreviewPage.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewPage_SelectedIndexChanged);
             // 
             // toolStripLabelPreviewCountItem
             // 
             this.toolStripLabelPreviewCountItem.Name = "toolStripLabelPreviewCountItem";
-            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 28);
+            this.toolStripLabelPreviewCountItem.Size = new System.Drawing.Size(34, 25);
             this.toolStripLabelPreviewCountItem.Text = "/{0}";
             // 
             // toolStripButtonPreviewNext
@@ -468,7 +468,7 @@ namespace varManager
             this.toolStripButtonPreviewNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewNext.Name = "toolStripButtonPreviewNext";
-            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewNext.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonPreviewNext.Text = ">";
             this.toolStripButtonPreviewNext.Click += new System.EventHandler(this.toolStripButtonPreviewNext_Click);
             // 
@@ -477,7 +477,7 @@ namespace varManager
             this.toolStripButtonPreviewLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonPreviewLast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPreviewLast.Name = "toolStripButtonPreviewLast";
-            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 28);
+            this.toolStripButtonPreviewLast.Size = new System.Drawing.Size(29, 25);
             this.toolStripButtonPreviewLast.Text = ">|";
             this.toolStripButtonPreviewLast.Click += new System.EventHandler(this.toolStripButtonPreviewLast_Click);
             // 
@@ -493,7 +493,7 @@ namespace varManager
             this.dependencyDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.dependenciesBindingSource;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(2, 218);
+            this.dataGridView1.Location = new System.Drawing.Point(2, 246);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
@@ -501,7 +501,7 @@ namespace varManager
             this.dataGridView1.RowHeadersWidth = 40;
             this.dataGridView1.RowTemplate.Height = 27;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(514, 212);
+            this.dataGridView1.Size = new System.Drawing.Size(588, 240);
             this.dataGridView1.TabIndex = 1;
             // 
             // iDDataGridViewTextBoxColumn
@@ -559,13 +559,13 @@ namespace varManager
             // FormUninstallVars
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(1037, 482);
+            this.ClientSize = new System.Drawing.Size(1185, 546);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Font = new System.Drawing.Font("Cambria", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormUninstallVars";
             this.Text = "Uninstall";

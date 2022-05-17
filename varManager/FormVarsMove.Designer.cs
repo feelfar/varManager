@@ -46,10 +46,10 @@ namespace varManager
             // 
             this.label1.AutoSize = true;
             this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::varManager.Properties.Settings.Default, "vampath", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label1.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(135, 29);
+            this.label1.Size = new System.Drawing.Size(100, 18);
             this.label1.TabIndex = 3;
             this.label1.Text = global::varManager.Properties.Settings.Default.vampath;
             // 
@@ -61,37 +61,37 @@ namespace varManager
             this.flowLayoutPanel1.Controls.Add(this.textBoxMoveto);
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 393);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 397);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(824, 36);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(824, 32);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
             // labelTided
             // 
             this.labelTided.AutoSize = true;
-            this.labelTided.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTided.Location = new System.Drawing.Point(144, 0);
+            this.labelTided.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTided.Location = new System.Drawing.Point(109, 0);
             this.labelTided.Name = "labelTided";
-            this.labelTided.Size = new System.Drawing.Size(304, 29);
+            this.labelTided.Size = new System.Drawing.Size(209, 18);
             this.labelTided.TabIndex = 2;
             this.labelTided.Text = "\\AddonPackages\\___VarsLink__\\";
             // 
             // textBoxMoveto
             // 
             this.textBoxMoveto.BackColor = System.Drawing.Color.Yellow;
-            this.textBoxMoveto.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBoxMoveto.Location = new System.Drawing.Point(454, 3);
+            this.textBoxMoveto.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxMoveto.Location = new System.Drawing.Point(324, 3);
             this.textBoxMoveto.Name = "textBoxMoveto";
-            this.textBoxMoveto.Size = new System.Drawing.Size(240, 30);
+            this.textBoxMoveto.Size = new System.Drawing.Size(240, 26);
             this.textBoxMoveto.TabIndex = 0;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(700, 0);
+            this.label3.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(570, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(18, 29);
+            this.label3.Size = new System.Drawing.Size(14, 18);
             this.label3.TabIndex = 1;
             this.label3.Text = "\\";
             // 
@@ -135,7 +135,7 @@ namespace varManager
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(824, 393);
+            this.listView1.Size = new System.Drawing.Size(824, 397);
             this.listView1.TabIndex = 3;
             this.listView1.TabStop = false;
             this.listView1.UseCompatibleStateImageBehavior = false;
