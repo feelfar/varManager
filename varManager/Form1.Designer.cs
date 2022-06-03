@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -103,6 +103,7 @@ namespace varManager
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
             this.labelPreviewVarName = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.buttonAnalysis = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.buttonLocate = new System.Windows.Forms.Button();
             this.buttonpreviewinstall = new System.Windows.Forms.Button();
@@ -466,7 +467,7 @@ namespace varManager
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.ShowCellToolTips = false;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 479);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 475);
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Multiple selectable,Right click column header for advanced filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
@@ -502,9 +503,9 @@ namespace varManager
             // fsize
             // 
             this.fsize.DataPropertyName = "fsize";
-            dataGridViewCellStyle2.Format = "N2";
-            dataGridViewCellStyle2.NullValue = null;
-            this.fsize.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.fsize.DefaultCellStyle = dataGridViewCellStyle1;
             this.fsize.HeaderText = "fsize(MB)";
             this.fsize.MinimumWidth = 6;
             this.fsize.Name = "fsize";
@@ -683,9 +684,9 @@ namespace varManager
             this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
             this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 510);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 506);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 42);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 46);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // buttonInstall
@@ -694,7 +695,7 @@ namespace varManager
             this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
             this.buttonInstall.Location = new System.Drawing.Point(3, 3);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(74, 36);
+            this.buttonInstall.Size = new System.Drawing.Size(61, 40);
             this.buttonInstall.TabIndex = 0;
             this.buttonInstall.Text = "Install Selected";
             this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
@@ -705,9 +706,9 @@ namespace varManager
             // 
             this.buttonUninstallSels.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
-            this.buttonUninstallSels.Location = new System.Drawing.Point(83, 3);
+            this.buttonUninstallSels.Location = new System.Drawing.Point(70, 3);
             this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(74, 36);
+            this.buttonUninstallSels.Size = new System.Drawing.Size(61, 40);
             this.buttonUninstallSels.TabIndex = 1;
             this.buttonUninstallSels.Text = "UnInst Selected";
             this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
@@ -719,9 +720,9 @@ namespace varManager
             this.buttonDelete.BackColor = System.Drawing.Color.Red;
             this.buttonDelete.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
-            this.buttonDelete.Location = new System.Drawing.Point(163, 3);
+            this.buttonDelete.Location = new System.Drawing.Point(137, 3);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(74, 36);
+            this.buttonDelete.Size = new System.Drawing.Size(61, 40);
             this.buttonDelete.TabIndex = 2;
             this.buttonDelete.Text = "Delete Selected";
             this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
@@ -733,9 +734,9 @@ namespace varManager
             this.buttonMove.BackColor = System.Drawing.SystemColors.ControlLight;
             this.buttonMove.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
-            this.buttonMove.Location = new System.Drawing.Point(243, 3);
+            this.buttonMove.Location = new System.Drawing.Point(204, 3);
             this.buttonMove.Name = "buttonMove";
-            this.buttonMove.Size = new System.Drawing.Size(91, 36);
+            this.buttonMove.Size = new System.Drawing.Size(97, 40);
             this.buttonMove.TabIndex = 3;
             this.buttonMove.Text = "Move SeleLinks To SubDir";
             this.buttonMove.UseVisualStyleBackColor = false;
@@ -745,9 +746,9 @@ namespace varManager
             // 
             this.buttonExpInsted.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonExpInsted.Location = new System.Drawing.Point(340, 3);
+            this.buttonExpInsted.Location = new System.Drawing.Point(307, 3);
             this.buttonExpInsted.Name = "buttonExpInsted";
-            this.buttonExpInsted.Size = new System.Drawing.Size(74, 36);
+            this.buttonExpInsted.Size = new System.Drawing.Size(61, 40);
             this.buttonExpInsted.TabIndex = 4;
             this.buttonExpInsted.Text = "Export Insted";
             this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
@@ -758,9 +759,9 @@ namespace varManager
             // 
             this.buttonInstFormTxt.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonInstFormTxt.Location = new System.Drawing.Point(420, 3);
+            this.buttonInstFormTxt.Location = new System.Drawing.Point(374, 3);
             this.buttonInstFormTxt.Name = "buttonInstFormTxt";
-            this.buttonInstFormTxt.Size = new System.Drawing.Size(74, 36);
+            this.buttonInstFormTxt.Size = new System.Drawing.Size(61, 40);
             this.buttonInstFormTxt.TabIndex = 5;
             this.buttonInstFormTxt.Text = "Install By TXT";
             this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
@@ -802,14 +803,14 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2});
-            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 0);
+            this.varsBindingNavigator.Location = new System.Drawing.Point(0, 2);
             this.varsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.varsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.varsBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 31);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
             this.varsBindingNavigator.TabIndex = 0;
             this.varsBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -826,7 +827,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorMoveFirstItem.Text = "First";
             // 
             // bindingNavigatorMovePreviousItem
@@ -897,9 +898,9 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(305, 5);
+            this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
-            this.comboBoxCreater.Size = new System.Drawing.Size(121, 25);
+            this.comboBoxCreater.Size = new System.Drawing.Size(151, 25);
             this.comboBoxCreater.TabIndex = 2;
             this.toolTip1.SetToolTip(this.comboBoxCreater, "Filter by creator");
             this.comboBoxCreater.SelectedIndexChanged += new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
@@ -908,7 +909,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(432, 7);
+            this.label2.Location = new System.Drawing.Point(462, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 17);
             this.label2.TabIndex = 3;
@@ -917,9 +918,9 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(537, 5);
+            this.textBoxFilter.Location = new System.Drawing.Point(567, 3);
             this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(118, 25);
+            this.textBoxFilter.Size = new System.Drawing.Size(75, 25);
             this.textBoxFilter.TabIndex = 4;
             this.toolTip1.SetToolTip(this.textBoxFilter, "Filter by packageName");
             this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
@@ -930,7 +931,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(661, 5);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(648, 5);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
             this.checkBoxInstalled.TabIndex = 5;
@@ -946,12 +947,12 @@ namespace varManager
             this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
             this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
-            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(11, 62);
+            this.tableLayoutPanelPreview.Location = new System.Drawing.Point(6, 62);
             this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
             this.tableLayoutPanelPreview.RowCount = 2;
             this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 73F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(496, 113);
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(540, 113);
             this.tableLayoutPanelPreview.TabIndex = 1;
             this.tableLayoutPanelPreview.Visible = false;
             // 
@@ -960,32 +961,37 @@ namespace varManager
             this.panel3.Controls.Add(this.checkBoxMerge);
             this.panel3.Controls.Add(this.labelPreviewVarName);
             this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.buttonAnalysis);
             this.panel3.Controls.Add(this.buttonLoad);
             this.panel3.Controls.Add(this.buttonLocate);
             this.panel3.Controls.Add(this.buttonpreviewinstall);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.ForeColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel3.Location = new System.Drawing.Point(3, 43);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(490, 67);
+            this.panel3.Size = new System.Drawing.Size(534, 67);
             this.panel3.TabIndex = 0;
             // 
             // checkBoxMerge
             // 
             this.checkBoxMerge.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBoxMerge.AutoSize = true;
-            this.checkBoxMerge.Location = new System.Drawing.Point(203, 38);
+            this.checkBoxMerge.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.checkBoxMerge.Location = new System.Drawing.Point(255, 38);
             this.checkBoxMerge.Name = "checkBoxMerge";
             this.checkBoxMerge.Size = new System.Drawing.Size(69, 21);
             this.checkBoxMerge.TabIndex = 3;
             this.checkBoxMerge.Text = "Merge";
+            this.toolTip1.SetToolTip(this.checkBoxMerge, "Merge Load");
             this.checkBoxMerge.UseVisualStyleBackColor = true;
             // 
             // labelPreviewVarName
             // 
             this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelPreviewVarName.ForeColor = System.Drawing.SystemColors.ControlText;
             this.labelPreviewVarName.Location = new System.Drawing.Point(81, 11);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(237, 17);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(418, 17);
             this.labelPreviewVarName.TabIndex = 2;
             this.labelPreviewVarName.Text = "a.a.1";
             // 
@@ -993,39 +999,57 @@ namespace varManager
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label3.Location = new System.Drawing.Point(4, 11);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 17);
             this.label3.TabIndex = 1;
             this.label3.Text = "VarName:";
             // 
+            // buttonAnalysis
+            // 
+            this.buttonAnalysis.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.buttonAnalysis.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.buttonAnalysis.Location = new System.Drawing.Point(107, 35);
+            this.buttonAnalysis.Name = "buttonAnalysis";
+            this.buttonAnalysis.Size = new System.Drawing.Size(98, 26);
+            this.buttonAnalysis.TabIndex = 0;
+            this.buttonAnalysis.Text = "LoadPerson";
+            this.toolTip1.SetToolTip(this.buttonAnalysis, "Extract Preson from scene and load to VAM");
+            this.buttonAnalysis.UseVisualStyleBackColor = true;
+            this.buttonAnalysis.Click += new System.EventHandler(this.buttonAnalysis_Click);
+            // 
             // buttonLoad
             // 
             this.buttonLoad.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonLoad.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.buttonLoad.Location = new System.Drawing.Point(275, 35);
+            this.buttonLoad.Location = new System.Drawing.Point(324, 35);
             this.buttonLoad.Name = "buttonLoad";
             this.buttonLoad.Size = new System.Drawing.Size(98, 26);
             this.buttonLoad.TabIndex = 0;
             this.buttonLoad.Text = "Load";
+            this.toolTip1.SetToolTip(this.buttonLoad, "Load to VAM");
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
             // 
             // buttonLocate
             // 
-            this.buttonLocate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonLocate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.buttonLocate.ForeColor = System.Drawing.SystemColors.ControlText;
             this.buttonLocate.Location = new System.Drawing.Point(3, 35);
             this.buttonLocate.Name = "buttonLocate";
             this.buttonLocate.Size = new System.Drawing.Size(98, 26);
             this.buttonLocate.TabIndex = 0;
             this.buttonLocate.Text = "Locate";
+            this.toolTip1.SetToolTip(this.buttonLocate, "Locate the current var file in Explorer");
             this.buttonLocate.UseVisualStyleBackColor = true;
             this.buttonLocate.Click += new System.EventHandler(this.buttonLocate_Click);
             // 
             // buttonpreviewinstall
             // 
             this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonpreviewinstall.Location = new System.Drawing.Point(381, 35);
+            this.buttonpreviewinstall.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonpreviewinstall.Location = new System.Drawing.Point(430, 35);
             this.buttonpreviewinstall.Name = "buttonpreviewinstall";
             this.buttonpreviewinstall.Size = new System.Drawing.Size(98, 26);
             this.buttonpreviewinstall.TabIndex = 0;
@@ -1039,7 +1063,7 @@ namespace varManager
             this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(490, 34);
+            this.pictureBoxPreview.Size = new System.Drawing.Size(534, 34);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxPreview.TabIndex = 1;
             this.pictureBoxPreview.TabStop = false;
@@ -1095,7 +1119,7 @@ namespace varManager
             this.toolStripButtonPreviewLast});
             this.toolStripPreview.Location = new System.Drawing.Point(0, 0);
             this.toolStripPreview.Name = "toolStripPreview";
-            this.toolStripPreview.Size = new System.Drawing.Size(191, 31);
+            this.toolStripPreview.Size = new System.Drawing.Size(191, 27);
             this.toolStripPreview.TabIndex = 0;
             this.toolStripPreview.Text = "toolStrip1";
             // 
@@ -1177,9 +1201,9 @@ namespace varManager
             "morphs",
             "pose",
             "skin"});
-            this.comboBoxPreviewType.Location = new System.Drawing.Point(297, 5);
+            this.comboBoxPreviewType.Location = new System.Drawing.Point(297, 3);
             this.comboBoxPreviewType.Name = "comboBoxPreviewType";
-            this.comboBoxPreviewType.Size = new System.Drawing.Size(93, 25);
+            this.comboBoxPreviewType.Size = new System.Drawing.Size(59, 25);
             this.comboBoxPreviewType.TabIndex = 2;
             this.comboBoxPreviewType.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxPreviewType_SelectedIndexChanged);
             // 
@@ -1189,7 +1213,7 @@ namespace varManager
             this.checkBoxPreviewTypeLoadable.AutoSize = true;
             this.checkBoxPreviewTypeLoadable.Checked = true;
             this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(396, 5);
+            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(362, 5);
             this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
             this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
             this.checkBoxPreviewTypeLoadable.TabIndex = 3;
@@ -1432,6 +1456,7 @@ namespace varManager
         private System.Windows.Forms.DataGridViewTextBoxColumn skin;
         private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
         private System.Windows.Forms.ToolStripLabel toolStripLabelPreviewItemIndex;
+        private System.Windows.Forms.Button buttonAnalysis;
     }
 }
 

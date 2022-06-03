@@ -2138,6 +2138,14 @@ namespace varManager
                         if (item.SubItems[3].Text.ToLower() == "false")
                             rescan = "rescan_";
                         loadscenetxt = rescan + item.SubItems[4].Text.ToLower() + "\r\n" + item.SubItems[1].Text + ":/" + item.SubItems[5].Text;
+                        if(item.SubItems[4].Text.ToLower() == "scenes"|| item.SubItems[4].Text.ToLower() == "looks")
+                        {
+                            buttonAnalysis.Visible = true;
+                        }
+                        else
+                        {
+                            buttonAnalysis.Visible = false;
+                        }
                     }
                     else
                     {
@@ -2561,15 +2569,15 @@ namespace varManager
             GenLoadscenetxt(loadscenetxt,merge);
         }
 
-        public void GenLoadscenetxt(string loadScenetxt,bool merge)
+        public void GenLoadscenetxt(string loadScenetxt,bool merge,string varName="")
         {
             List<string> deletetempfiles = new List<string>();
             if (!merge && (loadScenetxt.StartsWith("rescan_scenes") || loadScenetxt.StartsWith("scenes")))
                 deletetempfiles = AddDeleteTemp();
             if (loadScenetxt.StartsWith("rescan_"))
             {
-                string varName = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2, loadScenetxt.IndexOf(":/") - loadScenetxt.IndexOf("\r\n") - 2);
-
+                if(varName=="")
+                    varName = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2, loadScenetxt.IndexOf(":/") - loadScenetxt.IndexOf("\r\n") - 2);
                 var installtemplist = InstallTemp(varName);
                 foreach (var installtemp in installtemplist)
                     deletetempfiles.Remove(installtemp.ToLower()+".var");
@@ -2589,7 +2597,7 @@ namespace varManager
             }
         }
 
-        public List<string> AddDeleteTemp()
+        public static List<string> AddDeleteTemp()
         {
 
             DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
@@ -2604,7 +2612,7 @@ namespace varManager
             return tempfiles;
         }
 
-        public void DeleteTempThread(object data)
+        public static void DeleteTempThread(object data)
         {
             List<string> tempfiles = data as List<string>;
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
@@ -2713,6 +2721,61 @@ namespace varManager
             }
             UpdateVarsInstalled();
             RescanPackages();
+        }
+
+        private void buttonAnalysis_Click(object sender, EventArgs e)
+        {
+            Analysisscene(loadscenetxt);
+        }
+
+        public void Analysisscene(string loadScenetxt)
+        {
+            string filepath = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2);
+            string varName = "";
+            
+            string jsonscene = "";
+            if (filepath.IndexOf(":/") > 1)
+            {
+                varName = filepath.Substring(0, filepath.IndexOf(":/"));
+                string entryname = filepath.Substring(filepath.IndexOf(":/") + 2).Trim();
+                var varsrow = varManagerDataSet.vars.FindByvarName(varName);
+                string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
+                using (ZipArchive varzipfile = ZipFile.OpenRead(destvarfile))
+                {
+                    var entryStream = varzipfile.GetEntry(entryname).Open();
+                    StreamReader sr = new StreamReader(entryStream);
+                    jsonscene= sr.ReadToEnd();
+                }
+            }
+            else
+            {
+             string jsonfile=  Path.Combine( Settings.Default.vampath,filepath);
+                if (File.Exists(jsonfile))
+                {
+                    using(StreamReader sr = new StreamReader(jsonfile))
+                    {
+                        jsonscene = sr.ReadToEnd();
+                    }
+                }
+            }
+            if (jsonscene != "")
+            {
+                FormAnalysis formAnalysis = new FormAnalysis();
+                formAnalysis.VarName = varName;
+                formAnalysis.SceneName = filepath;
+                formAnalysis.Jsonscene = jsonscene;
+                if (formAnalysis.ShowDialog() == DialogResult.OK)
+                {
+                    string loadlook = "looks\r\n" + "Custom\\Atom\\Person\\Appearance\\Preset_temp.vap";
+                    //string loadlook = "looks\r\n" + "Custom\\Atom\\Person\\Appearance\\Preset_yui.vap";
+                    if (this.loadscenetxt.StartsWith("rescan_"))
+                    {
+                        loadlook = "rescan_" + loadlook;
+                    }
+                    this.GenLoadscenetxt(loadlook, false, varName);
+                }
+            }
+
         }
     }
 }

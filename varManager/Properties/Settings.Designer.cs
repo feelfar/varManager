@@ -56,5 +56,77 @@ namespace varManager.Properties {
                 return ((string)(this["varManagerConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool presetMorphs {
+            get {
+                return ((bool)(this["presetMorphs"]));
+            }
+            set {
+                this["presetMorphs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool presetHair {
+            get {
+                return ((bool)(this["presetHair"]));
+            }
+            set {
+                this["presetHair"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool presetClothing {
+            get {
+                return ((bool)(this["presetClothing"]));
+            }
+            set {
+                this["presetClothing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool presetSkin {
+            get {
+                return ((bool)(this["presetSkin"]));
+            }
+            set {
+                this["presetSkin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool presetBreast {
+            get {
+                return ((bool)(this["presetBreast"]));
+            }
+            set {
+                this["presetBreast"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool presetGlute {
+            get {
+                return ((bool)(this["presetGlute"]));
+            }
+            set {
+                this["presetGlute"] = value;
+            }
+        }
     }
 }

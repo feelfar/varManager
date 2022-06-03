@@ -271,11 +271,13 @@ namespace MVRPlugin
         public bool IsMale(Atom atom)
         {
             bool isMale = false;
+            string atomCharacter = atom.GetComponentInChildren<DAZCharacter>().name.ToLower();
             // If the peson atom is not "On", then we cant determine their gender it seems as GetComponentInChildren<DAZCharacter> just returns null
-            if (atom.on) isMale = atom.GetComponentInChildren<DAZCharacter>().name.StartsWith("male") ||
-                    atom.GetComponentInChildren<DAZCharacter>().name.StartsWith("jarlee") ||
-                    atom.GetComponentInChildren<DAZCharacter>().name.StartsWith("jarjulian") ||
-                    atom.GetComponentInChildren<DAZCharacter>().name.StartsWith("Futa");
+            isMale = atomCharacter.StartsWith("male") ||
+                     atomCharacter.StartsWith("jarlee") ||
+                     atomCharacter.StartsWith("lee") ||
+                     atomCharacter.StartsWith("jarjulian") ||
+                     atomCharacter.StartsWith("futa");
             return (isMale);
         }
 

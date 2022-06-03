@@ -748,9 +748,19 @@ namespace varManager
                     if (!string.IsNullOrEmpty(item.SubItems[3].Text))
                     {
                         labelPreviewVarName.Text = item.Text;
+                        checkBoxMerge.Checked = false;
                         buttonLoadscene.Text = "Load " + item.SubItems[6].Text;
                         pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
+                       
                         panelImage.Visible = true;
+                        if (item.SubItems[6].Text.ToLower() == "scenes" || item.SubItems[6].Text.ToLower() == "looks")
+                        {
+                            buttonAnalysis.Visible = true;
+                        }
+                        else
+                        {
+                            buttonAnalysis.Visible = false;
+                        }
                     }
                 }
             }
@@ -1022,6 +1032,11 @@ namespace varManager
                 strCategory = rb.Text;
                 FilterVars();
             }
+        }
+
+        private void buttonAnalysis_Click(object sender, EventArgs e)
+        {
+            form1.Analysisscene(loadscenetxt);
         }
     }
 }
