@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using varManager.Properties;
 
@@ -78,7 +79,7 @@ namespace varManager
                     strFilter += " AND creatorName = '" + comboBoxCreater.SelectedItem.ToString() + "'";
             if (textBoxFilter.Text.Trim() != "")
             {
-                strFilter += " AND varName Like '%" + textBoxFilter.Text.Trim() + "*'";
+                strFilter += " AND varName Like '%" + Regex.Replace(Regex.Replace(textBoxFilter.Text.Trim(), @"[\x5B\x5D]", "[$0]", RegexOptions.Multiline), @"[\x27]", @"\x27\x27", RegexOptions.Multiline) + "*'";
             }
 
             this.comboBoxCreater.SelectedIndexChanged -= new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
@@ -187,8 +188,9 @@ namespace varManager
                         string missingvar = Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName, missingvarname + ".var");
                         string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                         Comm.CreateSymbolicLink(missingvar, destvarfile, Comm.SYMBOLIC_LINK_FLAG.File);
-                        File.SetCreationTime(missingvar, File.GetCreationTime(destvarfile));
-                        File.SetLastWriteTime(missingvar, File.GetLastWriteTime(destvarfile));
+                        Comm.SetSymboLinkFileTime(missingvar, File.GetCreationTime(destvarfile), File.GetLastWriteTime(destvarfile));
+                        //File.SetCreationTime(missingvar, File.GetCreationTime(destvarfile));
+                        //File.SetLastWriteTime(missingvar, File.GetLastWriteTime(destvarfile));
                     }
                 }
             }
