@@ -47,14 +47,19 @@ namespace varManager
 
         private void buttonSetting_Click(object sender, EventArgs e)
         {
+            OpenSetting();
+        }
+
+        private static void OpenSetting()
+        {
             FormSettings formSettings = new FormSettings();
             if (formSettings.ShowDialog() == DialogResult.OK)
             {
                 Application.Restart();
                 Environment.Exit(0);
             }
-
         }
+
         private static bool ComplyVarFile(string varfile)
         {
             bool complyRule = false;
@@ -75,31 +80,8 @@ namespace varManager
         private List<string> varsForInstall = new List<string>();
         private void TidyVars()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            InvokeProgress mi = new InvokeProgress(UpdateProgress);
-            this.BeginInvoke(addlog, new Object[] { "Tidy Vars..." });
-            string tidypath = Path.Combine(Settings.Default.varspath, tidiedDirName);
-            if (!Directory.Exists(tidypath))
-                Directory.CreateDirectory(tidypath);
-            string redundantpath = Path.Combine(Settings.Default.varspath, redundantDirName);
-            if (!Directory.Exists(redundantpath))
-                Directory.CreateDirectory(redundantpath);
-            string notComplRulepath = Path.Combine(Settings.Default.varspath, notComplyRuleDirName);
-            if (!Directory.Exists(notComplRulepath))
-                Directory.CreateDirectory(notComplRulepath);
-
-            var vars = Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
-                           .Where(q => q.IndexOf(tidypath) == -1
-                           && q.IndexOf(redundantpath) == -1
-                           && q.IndexOf(notComplRulepath) == -1
-                           && q.IndexOf(staleVarsDirName) == -1
-                           && q.IndexOf(oldVersionVarsDirName) == -1
-                           && q.IndexOf(deleVarsDirName) == -1);
-
-            string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
-
-            var varsUsed = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.AllDirectories)
-                          .Where(q => q.IndexOf(installlinkdir) == -1 && q.IndexOf(missingVarLinkDirName) == -1 && q.IndexOf(tempVarLinkDirName) == -1);
+            List<string> vars = GetVarspathVars();
+            List<string> varsUsed = GetAddonpackagesVars();
             varsForInstall.Clear();
             if (File.Exists("varsForInstall.txt"))
                 varsForInstall.AddRange(File.ReadAllLines("varsForInstall.txt"));
@@ -111,20 +93,41 @@ namespace varManager
             File.Delete("varsForInstall.txt");
             varsForInstall = varsForInstall.Distinct().ToList();
             File.WriteAllLines("varsForInstall.txt", varsForInstall);
+
+            vars.AddRange(varsUsed);
+
+            TidyVars(vars);
+            // System.Diagnostics.Process.Start(tidypath);
+        }
+
+        private void TidyVars(List<string> vars)
+        {
+            string tidypath = Path.Combine(Settings.Default.varspath, tidiedDirName);
+            if (!Directory.Exists(tidypath))
+                Directory.CreateDirectory(tidypath);
+            string redundantpath = Path.Combine(Settings.Default.varspath, redundantDirName);
+            if (!Directory.Exists(redundantpath))
+                Directory.CreateDirectory(redundantpath);
+            string notComplRulepath = Path.Combine(Settings.Default.varspath, notComplyRuleDirName);
+            if (!Directory.Exists(notComplRulepath))
+                Directory.CreateDirectory(notComplRulepath);
+            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            InvokeProgress mi = new InvokeProgress(UpdateProgress);
+            this.BeginInvoke(addlog, new Object[] { "Tidy Vars..." });
             int curVarfile = 0;
-            foreach (string varfile in vars.Concat(varsUsed))
+            foreach (string varfile in vars)
             {
                 if (ComplyVarFile(varfile))
                 {
                     FileInfo pathInfo = new FileInfo(varfile);
                     string varfilename = Path.GetFileNameWithoutExtension(varfile);
-                    if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                    {
-                        //string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
-                        //this.BeginInvoke(addlog, new Object[] { errlog });
-                        varsForInstall.Remove(varfilename);
-                        continue;
-                    }
+                    //if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                    //{
+                    //string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
+                    //this.BeginInvoke(addlog, new Object[] { errlog });
+                    //varsForInstall.Remove(varfilename);
+                    //continue;
+                    //}
 
                     string[] varnamepart = varfilename.Split('.');
                     string createrpath = Path.Combine(tidypath, varnamepart[0]);
@@ -200,7 +203,61 @@ namespace varManager
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
                 curVarfile++;
             }
-            // System.Diagnostics.Process.Start(tidypath);
+        }
+
+        private static List<string> GetVarspathVars()
+        {
+            List<string> varspathVars = new List<string>();
+            foreach (var varins in Directory.GetFiles(Settings.Default.varspath, "*.var", SearchOption.AllDirectories)
+                           .Where(q => q.IndexOf(tidiedDirName) == -1
+                           && q.IndexOf(redundantDirName) == -1
+                           && q.IndexOf(notComplyRuleDirName) == -1
+                           && q.IndexOf(staleVarsDirName) == -1
+                           && q.IndexOf(oldVersionVarsDirName) == -1
+                           && q.IndexOf(deleVarsDirName) == -1))
+            {
+                FileInfo pathInfo = new FileInfo(varins);
+                if (!pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    varspathVars.Add(varins);
+                }
+            }
+            return varspathVars;
+        }
+
+        private static bool ExistAddonpackagesVar()
+        {
+            string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
+
+            bool exist = false;
+            foreach (var varins in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.AllDirectories)
+                          .Where(q => q.IndexOf(installlinkdir) == -1 && q.IndexOf(missingVarLinkDirName) == -1 && q.IndexOf(tempVarLinkDirName) == -1))
+            {
+                FileInfo pathInfo = new FileInfo(varins);
+                if (!pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    exist = true;
+                    break;
+                }
+            }
+            return exist;
+        }
+
+        private static List<string> GetAddonpackagesVars()
+        {
+            string installlinkdir = Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName);
+
+            List<string> varsUsed = new List<string>();
+            foreach (var varins in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages"), "*.var", SearchOption.AllDirectories)
+                          .Where(q => q.IndexOf(installlinkdir) == -1 && q.IndexOf(missingVarLinkDirName) == -1 && q.IndexOf(tempVarLinkDirName) == -1))
+            {
+                FileInfo pathInfo = new FileInfo(varins);
+                if (!pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                {
+                    varsUsed.Add(varins);
+                }
+            }
+            return varsUsed;
         }
 
         List<string> Getdependencies(string jsonstring)
@@ -537,7 +594,7 @@ namespace varManager
             }
 
         }
-
+        private DgvFilterManager dgvFilterManager;
         private Dictionary<string, string> GetInstalledVars()
         {
             Dictionary<string, string> installedVars = new Dictionary<string, string>();
@@ -616,6 +673,15 @@ namespace varManager
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Text = "VarManager  v" + Assembly.GetEntryAssembly().GetName().Version.ToString();
+            if(!File.Exists(Path.Combine(Settings.Default.vampath,"VaM.exe")))
+            {
+                OpenSetting();
+            }
+            if (!File.Exists(Path.Combine(Settings.Default.vampath, "VaM.exe")))
+            {
+                this.Close();
+                return;
+            }
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
@@ -625,13 +691,13 @@ namespace varManager
             // TODO: 这行代码将数据加载到表“varManagerDataSet.installStatus”中。您可以根据需要移动或删除它。
             this.installStatusTableAdapter.Fill(this.varManagerDataSet.installStatus);
             string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
-            string packpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages")).FullName.ToLower();
+            string packpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages")).FullName;
+           
             string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
             if (varspath == packpath)
             {
                 MessageBox.Show("Vars Path can't be {VamInstallDir}\\AddonPackages");
-                FormSettings formSettings = new FormSettings();
-                formSettings.ShowDialog();
+                OpenSetting();
             }
             comboBoxPreviewType.SelectedIndex = 0;
             comboBoxCreater.Items.Add("____ALL");
@@ -669,7 +735,6 @@ namespace varManager
                 {
                     Comm.DirectoryMoveAll(packpath, Path.Combine(packsSwitchpath, "default"));
                 }
-
             }
             dipackpath = new DirectoryInfo(packpath);
             if (dipackpath.Exists)
@@ -700,13 +765,15 @@ namespace varManager
 
             //string[] packswitchdirs = Directory.GetDirectories(packsSwitchpath, "*", SearchOption.TopDirectoryOnly);
 
-
-
             UpdateVarsInstalled();
-            new DgvFilterManager(varsViewDataGridView);
+            dgvFilterManager= new DgvFilterManager(varsViewDataGridView);
+            if (ExistAddonpackagesVar())
+            {
+                MessageBox.Show("There are unorganized var files in the current switch, please run UPD_DB first");
+                buttonUpdDB.Focus();
+            }
 
         }
-
 
         public delegate void InvokeUpdateVarsViewDataGridView();
 
@@ -1703,7 +1770,14 @@ namespace varManager
                 else
                 {
                     picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, varname, picpath);
-                    imageListPreviewPics.Images.Add(Image.FromFile(picpath));
+                    if (File.Exists(picpath))
+                    {
+                        imageListPreviewPics.Images.Add(Image.FromFile(picpath));
+                    }
+                    else
+                    {
+                        imageListPreviewPics.Images.Add(Image.FromFile("vam.png"));
+                    }
                 }
                 var item = listViewPreviewPics.Items.Add(Path.GetFileNameWithoutExtension(picpath), imageListPreviewPics.Images.Count - 1);
                 item.SubItems.Add(varname);
@@ -2151,6 +2225,7 @@ namespace varManager
                     {
                         buttonLoad.Visible = false;
                         checkBoxMerge.Visible = false;
+                        buttonAnalysis.Visible = false;
                     }
 
                     tableLayoutPanelPreview.Dock = DockStyle.Fill;
@@ -2767,8 +2842,7 @@ namespace varManager
                 if (formAnalysis.ShowDialog() == DialogResult.OK)
                 {
                     string loadlook = "looks\r\n" + "Custom\\Atom\\Person\\Appearance\\Preset_temp.vap";
-                    //string loadlook = "looks\r\n" + "Custom\\Atom\\Person\\Appearance\\Preset_yui.vap";
-                    if (this.loadscenetxt.StartsWith("rescan_"))
+                    if (loadScenetxt.StartsWith("rescan_"))
                     {
                         loadlook = "rescan_" + loadlook;
                     }
@@ -2776,6 +2850,22 @@ namespace varManager
                 }
             }
 
+        }
+
+        private void buttonResetFilter_Click(object sender, EventArgs e)
+        {
+            comboBoxCreater.SelectedItem = "____ALL";
+            textBoxFilter.Text = "";
+            dgvFilterManager.ActivateAllFilters(false);
+        }
+
+        private void SwitchControl_Enter(object sender, EventArgs e)
+        {
+            if (ExistAddonpackagesVar())
+            {
+                MessageBox.Show("There are unorganized var files in the current switch, please run UPD_DB first");
+                buttonUpdDB.Focus();
+            }
         }
     }
 }

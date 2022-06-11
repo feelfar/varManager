@@ -1038,5 +1038,12 @@ namespace varManager
         {
             form1.Analysisscene(loadscenetxt);
         }
+
+        private void buttonResetFilter_Click(object sender, EventArgs e)
+        {
+            textBoxFilter.Text = "";
+            comboBoxCreator.SelectedItem = "____ALL";
+            comboBoxOrderBy.SelectedItem = "New To Old";
+        }
     }
 }

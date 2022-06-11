@@ -97,7 +97,6 @@ namespace varManager
             // 
             this.folderBrowserDialogVars.Description = global::varManager.Properties.Settings.Default.varspath;
             this.folderBrowserDialogVars.SelectedPath = global::varManager.Properties.Settings.Default.varspath;
-            this.folderBrowserDialogVars.ShowNewFolderButton = false;
             // 
             // buttonCancel
             // 
@@ -164,6 +163,7 @@ namespace varManager
             this.MinimizeBox = false;
             this.Name = "FormSettings";
             this.Text = "Settings";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSettings_FormClosing);
             this.Load += new System.EventHandler(this.FormSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -36,7 +36,7 @@ namespace varManager
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBoxSwitch = new System.Windows.Forms.GroupBox();
             this.comboBoxPacksSwitch = new System.Windows.Forms.ComboBox();
             this.buttonPacksDelete = new System.Windows.Forms.Button();
             this.buttonPacksRename = new System.Windows.Forms.Button();
@@ -98,6 +98,7 @@ namespace varManager
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.checkBoxInstalled = new System.Windows.Forms.CheckBox();
+            this.buttonResetFilter = new System.Windows.Forms.Button();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
@@ -140,7 +141,7 @@ namespace varManager
             this.savedepensTableAdapter = new varManager.varManagerDataSetTableAdapters.savedepensTableAdapter();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.groupBoxSwitch.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -209,7 +210,7 @@ namespace varManager
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.groupBox2);
+            this.panel1.Controls.Add(this.groupBoxSwitch);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.buttonScenesManager);
             this.panel1.Controls.Add(this.buttonStaleVars);
@@ -223,19 +224,19 @@ namespace varManager
             this.panel1.Size = new System.Drawing.Size(153, 823);
             this.panel1.TabIndex = 5;
             // 
-            // groupBox2
+            // groupBoxSwitch
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.comboBoxPacksSwitch);
-            this.groupBox2.Controls.Add(this.buttonPacksDelete);
-            this.groupBox2.Controls.Add(this.buttonPacksRename);
-            this.groupBox2.Controls.Add(this.buttonPacksAdd);
-            this.groupBox2.Location = new System.Drawing.Point(9, 10);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(135, 154);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "AddonPacks Switch";
+            this.groupBoxSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSwitch.Controls.Add(this.comboBoxPacksSwitch);
+            this.groupBoxSwitch.Controls.Add(this.buttonPacksDelete);
+            this.groupBoxSwitch.Controls.Add(this.buttonPacksRename);
+            this.groupBoxSwitch.Controls.Add(this.buttonPacksAdd);
+            this.groupBoxSwitch.Location = new System.Drawing.Point(9, 10);
+            this.groupBoxSwitch.Name = "groupBoxSwitch";
+            this.groupBoxSwitch.Size = new System.Drawing.Size(135, 154);
+            this.groupBoxSwitch.TabIndex = 6;
+            this.groupBoxSwitch.TabStop = false;
+            this.groupBoxSwitch.Text = "AddonPacks Switch";
             // 
             // comboBoxPacksSwitch
             // 
@@ -248,6 +249,7 @@ namespace varManager
             this.comboBoxPacksSwitch.TabIndex = 0;
             this.toolTip1.SetToolTip(this.comboBoxPacksSwitch, "Switching AddonPackagess");
             this.comboBoxPacksSwitch.SelectedIndexChanged += new System.EventHandler(this.comboBoxPacksSwitch_SelectedIndexChanged);
+            this.comboBoxPacksSwitch.Enter += new System.EventHandler(this.SwitchControl_Enter);
             // 
             // buttonPacksDelete
             // 
@@ -261,6 +263,7 @@ namespace varManager
             this.toolTip1.SetToolTip(this.buttonPacksDelete, "Delete current AddonPackages");
             this.buttonPacksDelete.UseVisualStyleBackColor = true;
             this.buttonPacksDelete.Click += new System.EventHandler(this.buttonPacksDelete_Click);
+            this.buttonPacksDelete.Enter += new System.EventHandler(this.SwitchControl_Enter);
             // 
             // buttonPacksRename
             // 
@@ -274,6 +277,7 @@ namespace varManager
             this.toolTip1.SetToolTip(this.buttonPacksRename, "Rename current AddonPackages");
             this.buttonPacksRename.UseVisualStyleBackColor = true;
             this.buttonPacksRename.Click += new System.EventHandler(this.buttonPacksRename_Click);
+            this.buttonPacksRename.Enter += new System.EventHandler(this.SwitchControl_Enter);
             // 
             // buttonPacksAdd
             // 
@@ -287,6 +291,7 @@ namespace varManager
             this.toolTip1.SetToolTip(this.buttonPacksAdd, "Add AddonPackages");
             this.buttonPacksAdd.UseVisualStyleBackColor = true;
             this.buttonPacksAdd.Click += new System.EventHandler(this.buttonPacksAdd_Click);
+            this.buttonPacksAdd.Enter += new System.EventHandler(this.SwitchControl_Enter);
             // 
             // groupBox1
             // 
@@ -460,14 +465,14 @@ namespace varManager
             this.disabledDataGridViewCheckBoxColumn});
             this.varsViewDataGridView.DataSource = this.varsViewBindingSource;
             this.varsViewDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.varsViewDataGridView.Location = new System.Drawing.Point(0, 31);
+            this.varsViewDataGridView.Location = new System.Drawing.Point(0, 66);
             this.varsViewDataGridView.Name = "varsViewDataGridView";
             this.varsViewDataGridView.ReadOnly = true;
             this.varsViewDataGridView.RowHeadersWidth = 20;
             this.varsViewDataGridView.RowTemplate.Height = 27;
             this.varsViewDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.varsViewDataGridView.ShowCellToolTips = false;
-            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 475);
+            this.varsViewDataGridView.Size = new System.Drawing.Size(829, 439);
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Multiple selectable,Right click column header for advanced filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
@@ -684,9 +689,9 @@ namespace varManager
             this.flowLayoutPanel2.Controls.Add(this.buttonExpInsted);
             this.flowLayoutPanel2.Controls.Add(this.buttonInstFormTxt);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 506);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 505);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 46);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(829, 47);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // buttonInstall
@@ -695,7 +700,7 @@ namespace varManager
             this.buttonInstall.ForeColor = System.Drawing.SystemColors.Highlight;
             this.buttonInstall.Location = new System.Drawing.Point(3, 3);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(61, 40);
+            this.buttonInstall.Size = new System.Drawing.Size(61, 41);
             this.buttonInstall.TabIndex = 0;
             this.buttonInstall.Text = "Install Selected";
             this.toolTip1.SetToolTip(this.buttonInstall, "Install Selected vars and Dependencies ");
@@ -708,7 +713,7 @@ namespace varManager
             this.buttonUninstallSels.ForeColor = System.Drawing.Color.IndianRed;
             this.buttonUninstallSels.Location = new System.Drawing.Point(70, 3);
             this.buttonUninstallSels.Name = "buttonUninstallSels";
-            this.buttonUninstallSels.Size = new System.Drawing.Size(61, 40);
+            this.buttonUninstallSels.Size = new System.Drawing.Size(61, 41);
             this.buttonUninstallSels.TabIndex = 1;
             this.buttonUninstallSels.Text = "UnInst Selected";
             this.toolTip1.SetToolTip(this.buttonUninstallSels, "Uninstall Selected vars and Dependent impact items");
@@ -722,7 +727,7 @@ namespace varManager
             this.buttonDelete.ForeColor = System.Drawing.Color.Yellow;
             this.buttonDelete.Location = new System.Drawing.Point(137, 3);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(61, 40);
+            this.buttonDelete.Size = new System.Drawing.Size(61, 41);
             this.buttonDelete.TabIndex = 2;
             this.buttonDelete.Text = "Delete Selected";
             this.toolTip1.SetToolTip(this.buttonDelete, "Delete Selected vars and Dependent impact items");
@@ -736,7 +741,7 @@ namespace varManager
             this.buttonMove.ForeColor = System.Drawing.Color.SeaGreen;
             this.buttonMove.Location = new System.Drawing.Point(204, 3);
             this.buttonMove.Name = "buttonMove";
-            this.buttonMove.Size = new System.Drawing.Size(97, 40);
+            this.buttonMove.Size = new System.Drawing.Size(98, 41);
             this.buttonMove.TabIndex = 3;
             this.buttonMove.Text = "Move SeleLinks To SubDir";
             this.buttonMove.UseVisualStyleBackColor = false;
@@ -746,9 +751,9 @@ namespace varManager
             // 
             this.buttonExpInsted.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonExpInsted.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonExpInsted.Location = new System.Drawing.Point(307, 3);
+            this.buttonExpInsted.Location = new System.Drawing.Point(308, 3);
             this.buttonExpInsted.Name = "buttonExpInsted";
-            this.buttonExpInsted.Size = new System.Drawing.Size(61, 40);
+            this.buttonExpInsted.Size = new System.Drawing.Size(61, 41);
             this.buttonExpInsted.TabIndex = 4;
             this.buttonExpInsted.Text = "Export Insted";
             this.toolTip1.SetToolTip(this.buttonExpInsted, "Export Installed vars to text file.");
@@ -759,9 +764,9 @@ namespace varManager
             // 
             this.buttonInstFormTxt.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonInstFormTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonInstFormTxt.Location = new System.Drawing.Point(374, 3);
+            this.buttonInstFormTxt.Location = new System.Drawing.Point(375, 3);
             this.buttonInstFormTxt.Name = "buttonInstFormTxt";
-            this.buttonInstFormTxt.Size = new System.Drawing.Size(61, 40);
+            this.buttonInstFormTxt.Size = new System.Drawing.Size(61, 41);
             this.buttonInstFormTxt.TabIndex = 5;
             this.buttonInstFormTxt.Text = "Install By TXT";
             this.toolTip1.SetToolTip(this.buttonInstFormTxt, "install vars from txt file.");
@@ -778,10 +783,11 @@ namespace varManager
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.textBoxFilter);
             this.flowLayoutPanel1.Controls.Add(this.checkBoxInstalled);
+            this.flowLayoutPanel1.Controls.Add(this.buttonResetFilter);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(829, 31);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(829, 66);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
             // varsBindingNavigator
@@ -900,7 +906,8 @@ namespace varManager
             this.comboBoxCreater.FormattingEnabled = true;
             this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
-            this.comboBoxCreater.Size = new System.Drawing.Size(151, 25);
+            this.comboBoxCreater.Size = new System.Drawing.Size(189, 25);
+            this.comboBoxCreater.Sorted = true;
             this.comboBoxCreater.TabIndex = 2;
             this.toolTip1.SetToolTip(this.comboBoxCreater, "Filter by creator");
             this.comboBoxCreater.SelectedIndexChanged += new System.EventHandler(this.comboBoxCreater_SelectedIndexChanged);
@@ -909,7 +916,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(462, 7);
+            this.label2.Location = new System.Drawing.Point(500, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 17);
             this.label2.TabIndex = 3;
@@ -918,7 +925,7 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(567, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(605, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(75, 25);
             this.textBoxFilter.TabIndex = 4;
@@ -931,7 +938,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(648, 5);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(686, 5);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
             this.checkBoxInstalled.TabIndex = 5;
@@ -940,6 +947,16 @@ namespace varManager
             this.toolTip1.SetToolTip(this.checkBoxInstalled, "Filter by installation status");
             this.checkBoxInstalled.UseVisualStyleBackColor = true;
             this.checkBoxInstalled.CheckStateChanged += new System.EventHandler(this.checkBoxInstalled_CheckStateChanged);
+            // 
+            // buttonResetFilter
+            // 
+            this.buttonResetFilter.Location = new System.Drawing.Point(3, 34);
+            this.buttonResetFilter.Name = "buttonResetFilter";
+            this.buttonResetFilter.Size = new System.Drawing.Size(94, 29);
+            this.buttonResetFilter.TabIndex = 6;
+            this.buttonResetFilter.Text = "Reset";
+            this.buttonResetFilter.UseVisualStyleBackColor = true;
+            this.buttonResetFilter.Click += new System.EventHandler(this.buttonResetFilter_Click);
             // 
             // tableLayoutPanelPreview
             // 
@@ -1313,7 +1330,7 @@ namespace varManager
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
+            this.groupBoxSwitch.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
@@ -1416,7 +1433,7 @@ namespace varManager
         private System.Windows.Forms.OpenFileDialog openFileDialogInstByTXT;
         private System.Windows.Forms.SaveFileDialog saveFileDialogExportInstalled;
         private varManagerDataSetTableAdapters.savedepensTableAdapter savedepensTableAdapter;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBoxSwitch;
         private System.Windows.Forms.ComboBox comboBoxPacksSwitch;
         private System.Windows.Forms.Button buttonPacksDelete;
         private System.Windows.Forms.Button buttonPacksAdd;
@@ -1457,6 +1474,7 @@ namespace varManager
         private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
         private System.Windows.Forms.ToolStripLabel toolStripLabelPreviewItemIndex;
         private System.Windows.Forms.Button buttonAnalysis;
+        private System.Windows.Forms.Button buttonResetFilter;
     }
 }
 
