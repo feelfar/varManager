@@ -824,7 +824,14 @@ namespace varManager
         {
             labelProgress.Text = string.Format("{0}/{1}", cur, total);
             if (total != 0)
-                progressBar1.Value = (int)((float)cur * 100 / (float)total);
+            {
+                int progressvalue = (int)((float)cur * 100 / (float)total);
+                if (progressvalue < 0) progressvalue = 0;
+                if (progressvalue >100) progressvalue = 100;
+
+                progressBar1.Value = progressvalue;
+            }
+               
         }
 
         public delegate void InvokeShowformMissingVars(List<string> missingvars);
