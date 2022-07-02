@@ -38,10 +38,7 @@ namespace varManager
             this.panel6 = new System.Windows.Forms.Panel();
             this.buttonAddFav = new System.Windows.Forms.Button();
             this.buttonRemoveFav = new System.Windows.Forms.Button();
-            this.listViewHide = new DragNDrop.DragAndDropListView();
             this.imageListScenes = new System.Windows.Forms.ImageList(this.components);
-            this.listViewNormal = new DragNDrop.DragAndDropListView();
-            this.listViewFav = new DragNDrop.DragAndDropListView();
             this.panel3 = new System.Windows.Forms.Panel();
             this.buttonNormal = new System.Windows.Forms.Button();
             this.labelNormal = new System.Windows.Forms.Label();
@@ -70,6 +67,7 @@ namespace varManager
             this.comboBoxCreator = new System.Windows.Forms.ComboBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.comboBoxOrderBy = new System.Windows.Forms.ComboBox();
+            this.buttonResetFilter = new System.Windows.Forms.Button();
             this.buttonLoadscene = new System.Windows.Forms.Button();
             this.panelImage = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -87,7 +85,9 @@ namespace varManager
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
             this.installStatusTableAdapter = new varManager.varManagerDataSetTableAdapters.installStatusTableAdapter();
             this.varsTableAdapter = new varManager.varManagerDataSetTableAdapters.varsTableAdapter();
-            this.buttonResetFilter = new System.Windows.Forms.Button();
+            this.listViewHide = new DragNDrop.DragAndDropListView();
+            this.listViewNormal = new DragNDrop.DragAndDropListView();
+            this.listViewFav = new DragNDrop.DragAndDropListView();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -117,7 +117,7 @@ namespace varManager
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 190F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 194F));
             this.tableLayoutPanel1.Controls.Add(this.panel5, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel6, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.listViewHide, 0, 1);
@@ -142,7 +142,7 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(344, 43);
+            this.panel5.Location = new System.Drawing.Point(343, 43);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(49, 590);
             this.panel5.TabIndex = 4;
@@ -176,7 +176,7 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(740, 43);
+            this.panel6.Location = new System.Drawing.Point(737, 43);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(49, 590);
             this.panel6.TabIndex = 5;
@@ -205,84 +205,26 @@ namespace varManager
             this.buttonRemoveFav.UseVisualStyleBackColor = true;
             this.buttonRemoveFav.Click += new System.EventHandler(this.buttonRemoveFav_Click);
             // 
-            // listViewHide
-            // 
-            this.listViewHide.AllowDrop = true;
-            this.listViewHide.AllowReorder = true;
-            this.listViewHide.AllowSelfDrop = false;
-            this.listViewHide.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewHide.HideSelection = false;
-            this.listViewHide.LargeImageList = this.imageListScenes;
-            this.listViewHide.LineColor = System.Drawing.Color.Red;
-            this.listViewHide.Location = new System.Drawing.Point(3, 43);
-            this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(335, 590);
-            this.listViewHide.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
-            this.listViewHide.UseCompatibleStateImageBehavior = false;
-            this.listViewHide.VirtualMode = true;
-            this.listViewHide.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewHide_ListViewDragDrop);
-            this.listViewHide.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
-            this.listViewHide.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewHide_RetrieveVirtualItem);
-            // 
             // imageListScenes
             // 
             this.imageListScenes.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
             this.imageListScenes.ImageSize = new System.Drawing.Size(128, 128);
             this.imageListScenes.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // listViewNormal
-            // 
-            this.listViewNormal.AllowDrop = true;
-            this.listViewNormal.AllowReorder = true;
-            this.listViewNormal.AllowSelfDrop = false;
-            this.listViewNormal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewNormal.HideSelection = false;
-            this.listViewNormal.LargeImageList = this.imageListScenes;
-            this.listViewNormal.LineColor = System.Drawing.Color.Red;
-            this.listViewNormal.Location = new System.Drawing.Point(399, 43);
-            this.listViewNormal.Name = "listViewNormal";
-            this.listViewNormal.Size = new System.Drawing.Size(335, 590);
-            this.listViewNormal.TabIndex = 7;
-            this.listViewNormal.UseCompatibleStateImageBehavior = false;
-            this.listViewNormal.VirtualMode = true;
-            this.listViewNormal.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewNormal_ListViewDragDrop);
-            this.listViewNormal.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
-            this.listViewNormal.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewNormal_RetrieveVirtualItem);
-            // 
-            // listViewFav
-            // 
-            this.listViewFav.AllowDrop = true;
-            this.listViewFav.AllowReorder = true;
-            this.listViewFav.AllowSelfDrop = false;
-            this.listViewFav.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewFav.HideSelection = false;
-            this.listViewFav.LargeImageList = this.imageListScenes;
-            this.listViewFav.LineColor = System.Drawing.Color.Red;
-            this.listViewFav.Location = new System.Drawing.Point(795, 43);
-            this.listViewFav.Name = "listViewFav";
-            this.listViewFav.Size = new System.Drawing.Size(335, 590);
-            this.listViewFav.TabIndex = 7;
-            this.listViewFav.UseCompatibleStateImageBehavior = false;
-            this.listViewFav.VirtualMode = true;
-            this.listViewFav.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewFav_ListViewDragDrop);
-            this.listViewFav.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
-            this.listViewFav.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewFav_RetrieveVirtualItem);
-            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.buttonNormal);
             this.panel3.Controls.Add(this.labelNormal);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(399, 3);
+            this.panel3.Location = new System.Drawing.Point(398, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(335, 34);
+            this.panel3.Size = new System.Drawing.Size(333, 34);
             this.panel3.TabIndex = 10;
             // 
             // buttonNormal
             // 
             this.buttonNormal.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonNormal.Location = new System.Drawing.Point(101, 5);
+            this.buttonNormal.Location = new System.Drawing.Point(100, 5);
             this.buttonNormal.Name = "buttonNormal";
             this.buttonNormal.Size = new System.Drawing.Size(91, 26);
             this.buttonNormal.TabIndex = 0;
@@ -294,7 +236,7 @@ namespace varManager
             // 
             this.labelNormal.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelNormal.AutoSize = true;
-            this.labelNormal.Location = new System.Drawing.Point(198, 10);
+            this.labelNormal.Location = new System.Drawing.Point(197, 10);
             this.labelNormal.Name = "labelNormal";
             this.labelNormal.Size = new System.Drawing.Size(16, 17);
             this.labelNormal.TabIndex = 6;
@@ -305,15 +247,15 @@ namespace varManager
             this.panel4.Controls.Add(this.buttonFav);
             this.panel4.Controls.Add(this.labelFav);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(795, 3);
+            this.panel4.Location = new System.Drawing.Point(792, 3);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(335, 34);
+            this.panel4.Size = new System.Drawing.Size(333, 34);
             this.panel4.TabIndex = 10;
             // 
             // buttonFav
             // 
             this.buttonFav.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonFav.Location = new System.Drawing.Point(241, 5);
+            this.buttonFav.Location = new System.Drawing.Point(239, 5);
             this.buttonFav.Name = "buttonFav";
             this.buttonFav.Size = new System.Drawing.Size(91, 26);
             this.buttonFav.TabIndex = 0;
@@ -325,7 +267,7 @@ namespace varManager
             // 
             this.labelFav.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.labelFav.AutoSize = true;
-            this.labelFav.Location = new System.Drawing.Point(194, 10);
+            this.labelFav.Location = new System.Drawing.Point(192, 10);
             this.labelFav.Name = "labelFav";
             this.labelFav.Size = new System.Drawing.Size(16, 17);
             this.labelFav.TabIndex = 6;
@@ -338,7 +280,7 @@ namespace varManager
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(3, 3);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(335, 34);
+            this.panel7.Size = new System.Drawing.Size(334, 34);
             this.panel7.TabIndex = 10;
             // 
             // buttonHide
@@ -371,10 +313,10 @@ namespace varManager
             this.flowLayoutPanel1.Controls.Add(this.groupBox5);
             this.flowLayoutPanel1.Controls.Add(this.groupBox6);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(1136, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(1131, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.tableLayoutPanel1.SetRowSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(185, 630);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(190, 630);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // groupBox3
@@ -586,6 +528,17 @@ namespace varManager
             this.comboBoxOrderBy.TabIndex = 0;
             this.comboBoxOrderBy.SelectedIndexChanged += new System.EventHandler(this.comboBoxOrderBy_SelectedIndexChanged);
             // 
+            // buttonResetFilter
+            // 
+            this.buttonResetFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonResetFilter.Location = new System.Drawing.Point(60, 53);
+            this.buttonResetFilter.Name = "buttonResetFilter";
+            this.buttonResetFilter.Size = new System.Drawing.Size(101, 32);
+            this.buttonResetFilter.TabIndex = 1;
+            this.buttonResetFilter.Text = "Reset Filter";
+            this.buttonResetFilter.UseVisualStyleBackColor = true;
+            this.buttonResetFilter.Click += new System.EventHandler(this.buttonResetFilter_Click);
+            // 
             // buttonLoadscene
             // 
             this.buttonLoadscene.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -740,16 +693,63 @@ namespace varManager
             // 
             this.varsTableAdapter.ClearBeforeFill = true;
             // 
-            // buttonResetFilter
+            // listViewHide
             // 
-            this.buttonResetFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonResetFilter.Location = new System.Drawing.Point(60, 53);
-            this.buttonResetFilter.Name = "buttonResetFilter";
-            this.buttonResetFilter.Size = new System.Drawing.Size(101, 32);
-            this.buttonResetFilter.TabIndex = 1;
-            this.buttonResetFilter.Text = "Reset Filter";
-            this.buttonResetFilter.UseVisualStyleBackColor = true;
-            this.buttonResetFilter.Click += new System.EventHandler(this.buttonResetFilter_Click);
+            this.listViewHide.AllowDrop = true;
+            this.listViewHide.AllowReorder = true;
+            this.listViewHide.AllowSelfDrop = false;
+            this.listViewHide.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewHide.HideSelection = false;
+            this.listViewHide.LargeImageList = this.imageListScenes;
+            this.listViewHide.LineColor = System.Drawing.Color.Red;
+            this.listViewHide.Location = new System.Drawing.Point(3, 43);
+            this.listViewHide.Name = "listViewHide";
+            this.listViewHide.Size = new System.Drawing.Size(334, 590);
+            this.listViewHide.TabIndex = 7;
+            this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
+            this.listViewHide.UseCompatibleStateImageBehavior = false;
+            this.listViewHide.VirtualMode = true;
+            this.listViewHide.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewHide_ListViewDragDrop);
+            this.listViewHide.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
+            this.listViewHide.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewHide_RetrieveVirtualItem);
+            // 
+            // listViewNormal
+            // 
+            this.listViewNormal.AllowDrop = true;
+            this.listViewNormal.AllowReorder = true;
+            this.listViewNormal.AllowSelfDrop = false;
+            this.listViewNormal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewNormal.HideSelection = false;
+            this.listViewNormal.LargeImageList = this.imageListScenes;
+            this.listViewNormal.LineColor = System.Drawing.Color.Red;
+            this.listViewNormal.Location = new System.Drawing.Point(398, 43);
+            this.listViewNormal.Name = "listViewNormal";
+            this.listViewNormal.Size = new System.Drawing.Size(333, 590);
+            this.listViewNormal.TabIndex = 7;
+            this.listViewNormal.UseCompatibleStateImageBehavior = false;
+            this.listViewNormal.VirtualMode = true;
+            this.listViewNormal.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewNormal_ListViewDragDrop);
+            this.listViewNormal.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
+            this.listViewNormal.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewNormal_RetrieveVirtualItem);
+            // 
+            // listViewFav
+            // 
+            this.listViewFav.AllowDrop = true;
+            this.listViewFav.AllowReorder = true;
+            this.listViewFav.AllowSelfDrop = false;
+            this.listViewFav.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewFav.HideSelection = false;
+            this.listViewFav.LargeImageList = this.imageListScenes;
+            this.listViewFav.LineColor = System.Drawing.Color.Red;
+            this.listViewFav.Location = new System.Drawing.Point(792, 43);
+            this.listViewFav.Name = "listViewFav";
+            this.listViewFav.Size = new System.Drawing.Size(333, 590);
+            this.listViewFav.TabIndex = 7;
+            this.listViewFav.UseCompatibleStateImageBehavior = false;
+            this.listViewFav.VirtualMode = true;
+            this.listViewFav.ListViewDragDrop += new DragNDrop.DragAndDropListView.DragDropHandle(this.listViewFav_ListViewDragDrop);
+            this.listViewFav.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
+            this.listViewFav.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewFav_RetrieveVirtualItem);
             // 
             // FormScenes
             // 

@@ -70,8 +70,7 @@ namespace varManager
         {
             panelImage.Dock = DockStyle.Fill;
             comboBoxOrderBy.SelectedIndex = 0;
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
-            //this.installedScenesTableAdapter.Fill(this.varManagerDataSet.installedScenes);
+
             progressBar1.Visible = true;
             chklistLocation.SetItemChecked(0,true);
             checkedListBoxHideFav.SetItemChecked(0,true);

@@ -72,6 +72,7 @@ namespace varManager
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripComboBoxIgnoreVersion = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openFileDialogLoadTXT = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogSaveTxt = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
@@ -342,7 +343,7 @@ namespace varManager
             // 
             this.buttonSaveTxt.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonSaveTxt.ForeColor = System.Drawing.Color.DarkGreen;
-            this.buttonSaveTxt.Location = new System.Drawing.Point(693, 9);
+            this.buttonSaveTxt.Location = new System.Drawing.Point(667, 9);
             this.buttonSaveTxt.Name = "buttonSaveTxt";
             this.buttonSaveTxt.Size = new System.Drawing.Size(117, 28);
             this.buttonSaveTxt.TabIndex = 9;
@@ -354,7 +355,7 @@ namespace varManager
             // 
             this.buttonLoadTxt.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttonLoadTxt.ForeColor = System.Drawing.Color.Sienna;
-            this.buttonLoadTxt.Location = new System.Drawing.Point(816, 9);
+            this.buttonLoadTxt.Location = new System.Drawing.Point(790, 9);
             this.buttonLoadTxt.Name = "buttonLoadTxt";
             this.buttonLoadTxt.Size = new System.Drawing.Size(117, 28);
             this.buttonLoadTxt.TabIndex = 10;
@@ -426,10 +427,11 @@ namespace varManager
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.toolStripSeparator1,
-            this.toolStripComboBoxIgnoreVersion});
+            this.toolStripComboBoxIgnoreVersion,
+            this.toolStripSeparator2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(664, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(830, 39);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -439,7 +441,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 36);
             this.bindingNavigatorMoveFirstItem.Text = "First";
             this.bindingNavigatorMoveFirstItem.Click += new System.EventHandler(this.bindingNavigatorMoveFirstItem_Click);
             // 
@@ -449,7 +451,7 @@ namespace varManager
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 36);
             this.bindingNavigatorMovePreviousItem.Text = "Previous";
             this.bindingNavigatorMovePreviousItem.Click += new System.EventHandler(this.bindingNavigatorMovePreviousItem_Click);
             // 
@@ -466,7 +468,7 @@ namespace varManager
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 28);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 36);
             this.bindingNavigatorCountItem.Text = "/ {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number";
             // 
@@ -476,7 +478,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 36);
             this.bindingNavigatorMoveNextItem.Text = "Next";
             this.bindingNavigatorMoveNextItem.Click += new System.EventHandler(this.bindingNavigatorMoveNextItem_Click);
             // 
@@ -486,24 +488,30 @@ namespace varManager
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 36);
             this.bindingNavigatorMoveLastItem.Text = "Last";
             this.bindingNavigatorMoveLastItem.Click += new System.EventHandler(this.bindingNavigatorMoveLastItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 39);
             // 
             // toolStripComboBoxIgnoreVersion
             // 
             this.toolStripComboBoxIgnoreVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxIgnoreVersion.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.toolStripComboBoxIgnoreVersion.Items.AddRange(new object[] {
             "Ignore missing version",
             "All missing vars"});
             this.toolStripComboBoxIgnoreVersion.Name = "toolStripComboBoxIgnoreVersion";
-            this.toolStripComboBoxIgnoreVersion.Size = new System.Drawing.Size(200, 31);
+            this.toolStripComboBoxIgnoreVersion.Size = new System.Drawing.Size(200, 39);
             this.toolStripComboBoxIgnoreVersion.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxIgnoreVersion_SelectedIndexChanged);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 39);
             // 
             // openFileDialogLoadTXT
             // 
@@ -585,5 +593,6 @@ namespace varManager
         private System.Windows.Forms.SaveFileDialog saveFileDialogSaveTxt;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxIgnoreVersion;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
