@@ -1,5 +1,5 @@
 ﻿using DgvFilterPopup;
-using SimpleJSON;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,18 +7,17 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
+//using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 //using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using varManager.Properties;
+using static SimpleLogger;
 
 namespace varManager
 {
@@ -41,10 +40,11 @@ namespace varManager
         private static string missingVarLinkDirName = "___MissingVarLink___";
         private static string tempVarLinkDirName = "___TempVarLink___";
         //private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
-
+        private InvokeAddLoglist addlog;
         public Form1()
         {
             InitializeComponent();
+            addlog = new InvokeAddLoglist(UpdateAddLoglist);
         }
 
         private void buttonSetting_Click(object sender, EventArgs e)
@@ -113,9 +113,8 @@ namespace varManager
             string notComplRulepath = Path.Combine(Settings.Default.varspath, notComplyRuleDirName);
             if (!Directory.Exists(notComplRulepath))
                 Directory.CreateDirectory(notComplRulepath);
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             InvokeProgress mi = new InvokeProgress(UpdateProgress);
-            this.BeginInvoke(addlog, new Object[] { "Tidy Vars..." });
+            this.BeginInvoke(addlog, new Object[] { "Tidy Vars...", LogLevel.INFO });
             int curVarfile = 0;
             foreach (string varfile in vars)
             {
@@ -126,7 +125,7 @@ namespace varManager
                     //if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     //{
                     //string errlog = $"{varfile} is a symlink,Please check and process it appropriately";
-                    //this.BeginInvoke(addlog, new Object[] { errlog });
+                    //this.BeginInvoke(addlog, new Object[] { errlog,LogLevel.ERROR });
                     //varsForInstall.Remove(varfilename);
                     //continue;
                     //}
@@ -139,7 +138,7 @@ namespace varManager
                     if (File.Exists(destvarfilename))
                     {
                         string errlog = $"{varfile} has same filename in tidy directory,moved into the {redundantDirName} directory";
-                        this.BeginInvoke(addlog, new Object[] { errlog });
+                        this.BeginInvoke(addlog, new Object[] { errlog ,LogLevel.ERROR});
                         string redundantfilename = Path.Combine(redundantpath, Path.GetFileName(varfile));
 
                         int count = 1;
@@ -160,7 +159,7 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
+                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}", LogLevel.ERROR });
                         }
                     }
                     else
@@ -171,7 +170,7 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
+                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" ,LogLevel.ERROR });
                         }
                         //OpenAsZip(destvarfilename);
                     }
@@ -179,7 +178,7 @@ namespace varManager
                 else
                 {
                     string errlog = $"{varfile} not comply Var filename rule, move into {notComplyRuleDirName} directory";
-                    this.BeginInvoke(addlog, new Object[] { errlog });
+                    this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.ERROR });
                     string notComplRulefilename = Path.Combine(notComplRulepath, Path.GetFileName(varfile));
 
                     int count = 1;
@@ -199,7 +198,7 @@ namespace varManager
                     }
                     catch (Exception ex)
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" });
+                        this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}", LogLevel.ERROR });
                     }
                 }
                 this.BeginInvoke(mi, new Object[] { curVarfile, vars.Count() });
@@ -264,7 +263,6 @@ namespace varManager
 
         List<string> Getdependencies(string jsonstring)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             string dependencies = "";
             List<string> dependenciesList = new List<string>();
             try
@@ -297,125 +295,7 @@ namespace varManager
             }
             return dependenciesList;
         }
-
-        /*
-        void JsonRead(string jsonstring)
-        {
-            string creatorName = "", packageName = "", dependencies = "";
-            List<string> dependenciesList = new List<string>();
-
-            try
-            {
-                JsonDocument jsondoc = JsonDocument.Parse(jsonstring);
-                creatorName = jsondoc.RootElement.GetProperty("creatorName").GetString();
-                packageName = jsondoc.RootElement.GetProperty("packageName").GetString();
-                dependencies = jsondoc.RootElement.GetProperty("dependencies").GetRawText().ToString();
-                try
-                {
-                    Regex regexObj = new Regex(@"\""(([^\x3A\x2E]{1,60})\.([^\x3A\x2E]{1,80})\.(\d+|latest))\""\s*\x3A", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                    Match matchResults = regexObj.Match(dependencies);
-                    while (matchResults.Success)
-                    {
-                        Group groupObj = matchResults.Groups[1];
-                        if (groupObj.Success)
-                        {
-                            dependenciesList.Add(groupObj.Value);
-                            // match start: groupObj.Index
-                            // match length: groupObj.Length
-                        }
-
-                        matchResults = matchResults.NextMatch();
-                    }
-                    dependenciesList = dependenciesList.Distinct().ToList();
-                }
-                catch (ArgumentException ex)
-                {
-                    // Syntax error in the regular expression
-                    simpLog.Error(ex.Message);
-                    listBoxLog.Items.Add(ex.Message);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                simpLog.Error(ex.Message);
-                listBoxLog.Items.Add(ex.Message);
-            }
-            
-            byte[] b = Encoding.UTF8.GetBytes(jsonstring);
-            ReadOnlySpan<byte> bb = new ReadOnlySpan<byte>(b);
-
-            Utf8JsonReader reader = new Utf8JsonReader(bb);
-            while (reader.Read())
-            {
-                JsonTokenType tokenType = reader.TokenType;
-
-                switch (tokenType)
-                {
-                    case JsonTokenType.PropertyName:
-                        string propertyName = reader.GetString();
-                        if (propertyName.ToLower() == "creatorname")
-                        {
-                            reader.Read();
-                            string creatorName = reader.GetString();
-                        }
-                        if (propertyName.ToLower() == "packagename")
-                        {
-                            reader.Read();
-                            string packageName = reader.GetString();
-                        }
-                        break;
-                }
-            }
-           
-        } 
-
-        private void FillInstalledDependencies()
-        {
-            installedDependencies.Clear();
-            List<varManagerDataSet.dependenciesRow> deprows = new List<varManagerDataSet.dependenciesRow>();
-            foreach (string varfile in Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories))
-            {
-                string varName = Path.GetFileNameWithoutExtension(varfile);
-                foreach (varManagerDataSet.dependenciesRow depRow in varManagerDataSet.dependencies.Where(q => q.varName == varName))
-                {
-                    deprows.Add(depRow);
-                }
-            }
-            foreach(varManagerDataSet.dependenciesRow deprow in deprows)
-            {
-               string[] varnameparts= deprow.dependency.Split('.');
-                if (varnameparts.Length == 3)
-                {
-                    string searchPattern = deprow.dependency + ".var";
-                    if (varnameparts[2].ToLower()=="lastest")
-                     searchPattern = varnameparts[0] + "." + varnameparts[1] + ".*.var";
-                    string[] files = new string[] { };
-                    try
-                    {
-                        files = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), searchPattern, SearchOption.AllDirectories);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                    if (files.Length > 0)
-                    {
-                        int maxversion = 0;
-                        foreach (var file in files)
-                        {
-                            string filename = Path.GetFileNameWithoutExtension(file);
-                            int version = int.Parse(filename.Split('.')[2]);
-                            if (version > maxversion) maxversion = version;
-                        }
-                        string depvarname = varnameparts[0] + "." + varnameparts[1] + "." + maxversion.ToString();
-                        installedDependencies.AdddependenciesRow(deprow.varName,depvarname);
-                    }
-                }
-            }
-            installedDependencies.AcceptChanges();
-        }
-        */
+        
         private bool Varislatest(string varname)
         {
             bool latest = true;
@@ -524,7 +404,6 @@ namespace varManager
 
         private void UnintallVars(List<string> varnames)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             //FillInstalledDependencies();
             List<string> varimplics = ImplicatedVars(varnames);
 
@@ -545,14 +424,17 @@ namespace varManager
                     string linkvar;
                     if (installedvars.TryGetValue(varname, out linkvar))
                         if (File.Exists(linkvar))
+                        {
                             File.Delete(linkvar);
+                            this.BeginInvoke(addlog, new Object[] { $"{varname} is uninstalled.", LogLevel.INFO });
+
+                        }
                 }
             }
         }
 
         private void DeleteVars(List<string> varnames)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             // FillInstalledDependencies();
             List<string> varimplics = ImplicatedVars(varnames);
 
@@ -590,7 +472,7 @@ namespace varManager
                     }
                     catch (Exception ex)
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                        this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}", LogLevel.ERROR });
                     }
                 }
             }
@@ -777,14 +659,13 @@ namespace varManager
         }
         private void FillDataTables()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { $"load vars..." });
+            this.BeginInvoke(addlog, new Object[] { $"load vars...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars); 
-            this.BeginInvoke(addlog, new Object[] { $"load scenes..." });
+            this.BeginInvoke(addlog, new Object[] { $"load scenes...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
-            this.BeginInvoke(addlog, new Object[] { $"load dependencies..." });
+            this.BeginInvoke(addlog, new Object[] { $"load dependencies...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
             this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
             
@@ -827,12 +708,12 @@ namespace varManager
             tableLayoutPanelPreview.Visible = false;
         }
 
-        public delegate void InvokeAddLoglist(string message);
+        public delegate void InvokeAddLoglist(string message, LogLevel logLevel);
 
-        public void UpdateAddLoglist(string message)
+        public void UpdateAddLoglist(string message, LogLevel logLevel)
         {
-            simpLog.Error(message);
-            listBoxLog.Items.Add(message);
+            string msg = simpLog.WriteFormattedLog(logLevel, message);
+            listBoxLog.Items.Add(msg);
             listBoxLog.TopIndex = listBoxLog.Items.Count - 1;
         }
 
@@ -878,7 +759,6 @@ namespace varManager
 
         private void UpdDB(string destvarfilename)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             try
             {
                 string basename = Path.GetFileNameWithoutExtension(destvarfilename);
@@ -905,7 +785,10 @@ namespace varManager
                             version = 1;
                         varsrow.version = version;
                         varsrow.varPath = curpath;
-                        ZipArchive varzipfile = ZipFile.OpenRead(destvarfilename);
+                        ZipFile zipFile = new ZipFile(destvarfilename);
+                        
+                        ZipFile varzipfile = new ZipFile(destvarfilename);
+
                         var metajson = varzipfile.GetEntry("meta.json");
 
                         if (metajson == null)
@@ -913,101 +796,104 @@ namespace varManager
                             string notComplRulefilename = Path.Combine(Settings.Default.varspath, notComplyRuleDirName, Path.GetFileName(destvarfilename));
                             string errlog = $"{basename}, Invalid var package structure, move into {notComplyRuleDirName} directory";
                             //string errorMessage = destvarfilename + " is invalid,please check";
-                            this.BeginInvoke(addlog, new Object[] { errlog });
-                            varzipfile.Dispose();
+                            this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.WARNING});
+                            //varzipfile.Dispose();
+                            varzipfile.Close();
                             File.Move(destvarfilename, notComplRulefilename);
                             return;
                         }
-                        varsrow.metaDate = metajson.LastWriteTime.DateTime;
-
+                        //varsrow.metaDate = metajson.LastWriteTime.DateTime;
+                        varsrow.metaDate = metajson.DateTime;
                         int countscene = 0, countlook = 0, countclothing = 0, counthair = 0, countplugincs = 0, countplugincslist = 0, countasset = 0, countmorphs = 0, countpose = 0, countskin = 0;
-                        foreach (var zfile in varzipfile.Entries)
+                        //foreach (var zfile in varzipfile.Entries)
+                        //varzipfile
+                        foreach (ZipEntry zfile in varzipfile)
                         {
                             string typename = "";
                             bool isPreset = false;
                             try
                             {
-                                if (Regex.IsMatch(zfile.FullName, @"saves/scene/.*?\x2e(?:json)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"saves/scene/.*?\x2e(?:json)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "scenes";
                                     countscene++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"saves/person/appearance/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"saves/person/appearance/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "looks";
                                     isPreset =  zfile.Name.EndsWith(".json");
                                     countlook++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "looks";
                                     isPreset = true;
                                     countlook++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "clothing";
                                     isPreset = false;
                                     countclothing++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/clothing/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "clothing";
                                     isPreset = zfile.Name.EndsWith(".vap");
                                     countclothing++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "hairstyle";
                                     isPreset = false;
                                     counthair++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/hair/.*?\x2e(?:vam|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "hairstyle";
                                     isPreset = zfile.Name.EndsWith(".vap");
                                     counthair++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     countplugincs++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/scripts/.*?\x2e(?:cs)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     countplugincs++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     countplugincslist++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/scripts/.*?\x2e(?:cslist)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     countplugincslist++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/assets/.*?\x2e(?:assetbundle)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/assets/.*?\x2e(?:assetbundle)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "assets";
                                     countasset++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/morphs/.*?\x2e(?:vmi|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/morphs/.*?\x2e(?:vmi|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "morphs";
                                     isPreset = zfile.Name.EndsWith(".vap");
                                     countmorphs++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/pose/.*?\x2e(?:vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/pose/.*?\x2e(?:vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "pose";
                                     isPreset = true;
                                     countpose++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"saves/person/pose/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"saves/person/pose/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "pose";
                                     isPreset = zfile.Name.EndsWith(".json");
                                     countpose++;
                                 }
-                                if (Regex.IsMatch(zfile.FullName, @"custom/atom/person/skin/.*?\x2e(?:vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                                if (Regex.IsMatch(zfile.Name, @"custom/atom/person/skin/.*?\x2e(?:vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "skin";
                                     isPreset = true;
@@ -1027,7 +913,7 @@ namespace varManager
                                         case "pose": jpgcount = countpose; break;
                                         case "skin": jpgcount = countskin; break;
                                     }
-                                    string jpgfile = zfile.FullName.Substring(0, zfile.FullName.LastIndexOf('.')) + ".jpg";
+                                    string jpgfile = zfile.Name.Substring(0, zfile.Name.LastIndexOf('.')) + ".jpg";
                                     var jpg = varzipfile.GetEntry(jpgfile);
                                     string jpgname = "";
                                     if (jpg != null)
@@ -1040,18 +926,38 @@ namespace varManager
                                         jpgname = typename + jpgcount.ToString("000") + "_" + namejpg + ".jpg";
                                         string jpgextratname = Path.Combine(typepath, typename + jpgcount.ToString("000") + "_" + namejpg + ".jpg");
                                         if (!File.Exists(jpgextratname))
-                                            jpg.ExtractToFile(jpgextratname);
+                                        {
+                                            using (FileStream streamWriter = File.Create(jpgextratname))
+                                            {
+                                                var sr = varzipfile.GetInputStream(jpg);
+
+                                                int size = 2048;
+                                                byte[] data = new byte[2048];
+                                                while (true)
+                                                {
+                                                    size = sr.Read(data, 0, data.Length);
+                                                    if (size > 0)
+                                                    {
+                                                        streamWriter.Write(data, 0, size);
+                                                    }
+                                                    else
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                     // string ext = zfile.FullName.Substring(zfile.FullName.LastIndexOf('.')).ToLower();
                                     // if (ext == ".vap" || ext == ".json")
                                     if (typename == "scenes" || typename == "looks" || typename == "clothing" || typename == "hairstyle" || typename == "morphs" || typename == "pose" || typename == "skin")
-                                        varManagerDataSet.scenes.AddscenesRow(basename, typename, isPreset, zfile.FullName, jpgname);
+                                        varManagerDataSet.scenes.AddscenesRow(basename, typename, isPreset, zfile.Name, jpgname);
                                 }
 
                             }
                             catch (ArgumentException ex)
                             {
-                                this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
+                                this.BeginInvoke(addlog, new Object[] { zfile.Name + " " + ex.Message, LogLevel.ERROR });
                             }
                         }
                         scenesTableAdapter.Update(varManagerDataSet.scenes);
@@ -1073,7 +979,8 @@ namespace varManager
 
 
                         List<string> dependencies = new List<string>();
-                        var metajsonsteam = new StreamReader(metajson.Open());
+
+                        var metajsonsteam = new StreamReader( varzipfile.GetInputStream(metajson));
                         string jsonstring = metajsonsteam.ReadToEnd();
                         try
                         {
@@ -1081,7 +988,7 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            this.BeginInvoke(addlog, new Object[] { destvarfilename + " get dependencies failed " + ex.Message });
+                            this.BeginInvoke(addlog, new Object[] { destvarfilename + " get dependencies failed " + ex.Message, LogLevel.ERROR });
 
                         }
                         var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == basename).ToList();
@@ -1108,14 +1015,13 @@ namespace varManager
             }
             catch (Exception ex)
             {
-                this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message });
+                this.BeginInvoke(addlog, new Object[] { destvarfilename + " " + ex.Message, LogLevel.ERROR });
             }
         }
         private bool UpdDB()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             InvokeProgress mi = new InvokeProgress(UpdateProgress);
-            this.BeginInvoke(addlog, new Object[] { "Analyze Var files, extract preview images, save info to DB" });
+            this.BeginInvoke(addlog, new Object[] { "Analyze Var files, extract preview images, save info to DB", LogLevel.INFO });
             string[] vars = Directory.GetFiles(Path.Combine(Settings.Default.varspath, tidiedDirName), "*.var", SearchOption.AllDirectories);
             if (vars.Length <= 0)
             {
@@ -1140,7 +1046,7 @@ namespace varManager
             {
                 if (!existVars.Contains(row.varName))
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"{row.varName} The target VAR file is not found and the record will be deleted" });
+                    this.BeginInvoke(addlog, new Object[] { $"{row.varName} The target VAR file is not found and the record will be deleted", LogLevel.WARNING });
                     deletevars.Add(row.varName);
                 }
             }
@@ -1156,10 +1062,9 @@ namespace varManager
         }
         private bool CleanVars(List<string> deletevars)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             try
             {
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup dependencies table..." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup dependencies table...", LogLevel.INFO });
                 var dependencierows = varManagerDataSet.dependencies.Where(q => deletevars.Contains(q.varName)).ToList();
                 for (int i = dependencierows.Count() - 1; i >= 0; i--)
                 {
@@ -1167,9 +1072,9 @@ namespace varManager
                 }
                 dependenciesTableAdapter.Update(varManagerDataSet.dependencies);
                 varManagerDataSet.dependencies.AcceptChanges();
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup dependencies table completed." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup dependencies table completed.", LogLevel.INFO });
 
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup scenes table..." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup scenes table...", LogLevel.INFO });
                 var scenes = varManagerDataSet.scenes.Where(q => deletevars.Contains(q.varName)).ToList();
                 for (int i = scenes.Count() - 1; i >= 0; i--)
                 {
@@ -1177,9 +1082,9 @@ namespace varManager
                 }
                 scenesTableAdapter.Update(varManagerDataSet.scenes);
                 varManagerDataSet.scenes.AcceptChanges();
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup scenes table completed." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup scenes table completed.", LogLevel.INFO });
 
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup vars table..." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup vars table...", LogLevel.INFO });
                 var varrows = varManagerDataSet.vars.Where(q => deletevars.Contains(q.varName)).ToList();
                 for (int i = varrows.Count() - 1; i >= 0; i--)
                 {
@@ -1187,25 +1092,24 @@ namespace varManager
                 }
                 varsTableAdapter.Update(varManagerDataSet.vars);
                 varManagerDataSet.vars.AcceptChanges();
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup vars table completed." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup vars table completed.", LogLevel.INFO });
 
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup PreviewPics..." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup PreviewPics...", LogLevel.INFO });
                 foreach (string deletevar in deletevars)
                     DelePreviewPics(deletevar);
                 FixPreview();
-                this.BeginInvoke(addlog, new Object[] { $"Cleanup PreviewPics completed." });
+                this.BeginInvoke(addlog, new Object[] { $"Cleanup PreviewPics completed.", LogLevel.INFO });
 
             }
             catch (Exception ex)
             {
-                this.BeginInvoke(addlog, new Object[] { "delete record or preview error, " + ex.Message });
+                this.BeginInvoke(addlog, new Object[] { "delete record or preview error, " + ex.Message, LogLevel.ERROR });
                 return false;
             }
             return true;
         }
         private bool CleanVar(string deletevar)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             try
             {
                 var dependencierows = varManagerDataSet.dependencies.Where(q => q.varName == deletevar).ToList();
@@ -1233,7 +1137,7 @@ namespace varManager
             }
             catch (Exception ex)
             {
-                this.BeginInvoke(addlog, new Object[] { deletevar + ",delete record or preview error, " + ex.Message });
+                this.BeginInvoke(addlog, new Object[] { deletevar + ",delete record or preview error, " + ex.Message, LogLevel.ERROR });
             }
             return true;
         }
@@ -1267,10 +1171,9 @@ namespace varManager
                         using (File.Create(linkvar + ".disabled")) { }
                     }
                     Comm.SetSymboLinkFileTime(linkvar, File.GetCreationTime(destvarfile), File.GetLastWriteTime(destvarfile));
-
+                    this.BeginInvoke(addlog, new Object[] { $"{varName}  Installed", LogLevel.INFO });
                     success = true;
                 }
-
             }
             return success;
         }
@@ -1380,8 +1283,7 @@ namespace varManager
 
         private void MissingDepends()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { "Search for dependencies..." });
+            this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
             List<string> dependencies = new List<string>();
             foreach (var varrow in varManagerDataSet.varsView.Where(q => q.Installed == true))
             {
@@ -1396,17 +1298,17 @@ namespace varManager
                 {
                     varexistname = varexistname.Substring(0, varexistname.Length - 1);
                     missingvars.Add(varname+"$");
-                    this.BeginInvoke(addlog, new Object[] { varname + " missing version" });
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing version", LogLevel.INFO });
                 }
                 if (varexistname != "missing")
                 {
                     VarInstall(varexistname);
-                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" ,LogLevel.ERROR});
                 }
                 else
                 {
                     missingvars.Add(varname);
-                    this.BeginInvoke(addlog, new Object[] { varname + " missing" });
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing", LogLevel.INFO });
                 }
             }
             if (missingvars.Count > 0)
@@ -1433,13 +1335,12 @@ namespace varManager
         }
         public  void AllMissingDepends()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { "Search for dependencies..." });
+            this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
 
             List<string> missingvars = MissingDependencies();
             if (missingvars.Count > 0)
             {
-                this.BeginInvoke(addlog, new Object[] { $"Total { missingvars.Count } dependencies missing" });
+                this.BeginInvoke(addlog, new Object[] { $"Total { missingvars.Count } dependencies missing", LogLevel.INFO });
                 InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
                 this.BeginInvoke(showformMissingVars, missingvars);
             }
@@ -1460,12 +1361,12 @@ namespace varManager
                 {
                     varexistname = varexistname.Substring(0, varexistname.Length - 1);
                     missingvars.Add(varname + "$");
-                    //this.BeginInvoke(addlog, new Object[] { varname + " missing version" });
+                    //this.BeginInvoke(addlog, new Object[] { varname + " missing version" ,LogLevel.ERROR});
                 }
                 if (varexistname != "missing")
                 {
                     //VarInstall(varexistname);
-                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" ,LogLevel.ERROR});
                 }
                 else
                 {
@@ -1479,8 +1380,7 @@ namespace varManager
 
         private void FixRebuildLink()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { "Check Installed symlink" });
+            this.BeginInvoke(addlog, new Object[] { "Check Installed symlink", LogLevel.INFO });
             //List<string> varfiles = Directory.GetFiles(Path.Combine(Settings.Default.vampath, "AddonPackages", installLinkDirName), "*.var", SearchOption.AllDirectories).ToList();
             List<string> varfiles = GetInstalledVars().Values.ToList();
             if (Directory.Exists(Path.Combine(Settings.Default.vampath, "AddonPackages", missingVarLinkDirName)))
@@ -1494,9 +1394,7 @@ namespace varManager
                     if (pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
                         string destfilename = Comm.ReparsePoint(linkvar);
-
-                        //this.BeginInvoke(addlog, new Object[] { $"The target file {destfilename} linked by {linkvar} is missing, will rebuild symlink..." });
-                        this.BeginInvoke(addlog, new Object[] { $"symlink {linkvar} rebuilding ..." });
+                        this.BeginInvoke(addlog, new Object[] { $"symlink {linkvar} rebuilding ...", LogLevel.INFO });
                         varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(Path.GetFileNameWithoutExtension(destfilename));
                         File.Delete(linkvar);
                         if (varsrow != null)
@@ -1509,7 +1407,7 @@ namespace varManager
                 }
                 catch (Exception ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { linkvar + " rebuild symlink failed " + ex.Message });
+                    this.BeginInvoke(addlog, new Object[] { linkvar + " rebuild symlink failed. " + ex.Message, LogLevel.ERROR });
                 }
             }
 
@@ -1525,7 +1423,8 @@ namespace varManager
                 string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                 if (File.Exists(destvarfile))
                 {
-                    using (ZipArchive varzipfile = ZipFile.OpenRead(destvarfile))
+                    //using (ZipArchive varzipfile = ZipFile.OpenRead(destvarfile))
+                    using (ZipFile varzipfile = new  ZipFile(destvarfile))
                     {
                         string jpgfile = scenerow.scenePath.Substring(0, scenerow.scenePath.LastIndexOf('.')) + ".jpg";
                         var jpg = varzipfile.GetEntry(jpgfile);
@@ -1537,7 +1436,27 @@ namespace varManager
                             if(!Directory.Exists(jpgdirectory))
                                 Directory.CreateDirectory(jpgdirectory);
                             if (!File.Exists(picpath))
-                                jpg.ExtractToFile(picpath);
+                            {
+                                using (FileStream streamWriter = File.Create(picpath))
+                                {
+                                    var sr = varzipfile.GetInputStream(jpg);
+
+                                    int size = 2048;
+                                    byte[] data = new byte[2048];
+                                    while (true)
+                                    {
+                                        size = sr.Read(data, 0, data.Length);
+                                        if (size > 0)
+                                        {
+                                            streamWriter.Write(data, 0, size);
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             success = true;
                         }
                     }
@@ -1547,8 +1466,6 @@ namespace varManager
         }
         private void FixPreview()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            //this.BeginInvoke(addlog, new Object[] { "Check Installed symlink" });
             foreach (varManagerDataSet.scenesRow scenerow in this.varManagerDataSet.scenes.Where(q=> !string.IsNullOrEmpty(q.previewPic)))
             {
                 string picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, scenerow.atomType, scenerow.varName, scenerow.previewPic);
@@ -1556,11 +1473,11 @@ namespace varManager
                 {
                     if (ReExtractedPreview(scenerow))
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"missing {picpath} is fixed." });
+                        this.BeginInvoke(addlog, new Object[] { $"missing {picpath} is fixed.", LogLevel.INFO });
                     }
                     else
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"{picpath} is missing and the repair failed" });
+                        this.BeginInvoke(addlog, new Object[] { $"{picpath} is missing and the repair failed", LogLevel.WARNING });
                     }
                 }
             }
@@ -1568,9 +1485,8 @@ namespace varManager
         }
         private void FixSavseDependencies()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> dependencies = new List<string>();
-            this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory" });
+            this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory", LogLevel.INFO });
             this.varManagerDataSet.savedepens.Clear();
             this.varManagerDataSet.savedepens.AcceptChanges();
             this.savedepensTableAdapter.Fill(this.varManagerDataSet.savedepens);
@@ -1582,7 +1498,7 @@ namespace varManager
                 string savepath = jsonfile.Substring(Settings.Default.vampath.Length);
                 if (savepath.Length > 255) savepath = savepath.Substring(savepath.Length - 255);
 
-                this.BeginInvoke(addlog, new Object[] { $"Analyze { Path.GetFileName(jsonfile)} ..." });
+                this.BeginInvoke(addlog, new Object[] { $"Analyze { Path.GetFileName(jsonfile)} ...", LogLevel.INFO });
 
                 var rows = this.varManagerDataSet.savedepens.Where(q => q.savepath == savepath && Math.Abs((q.modidate - fi.LastWriteTime).TotalSeconds) <= 2);
 
@@ -1609,7 +1525,7 @@ namespace varManager
                     }
                     catch (Exception ex)
                     {
-                        this.BeginInvoke(addlog, new Object[] { jsonfile + " Get dependencies failed " + ex.Message });
+                        this.BeginInvoke(addlog, new Object[] { jsonfile + " Get dependencies failed " + ex.Message, LogLevel.ERROR });
                     }
                 }
             }
@@ -1636,7 +1552,7 @@ namespace varManager
             //}
             List<string> varinstalled = GetInstalledVars().Keys.ToList();
             dependencies = dependencies.Except(varinstalled).ToList();
-            this.BeginInvoke(addlog, new Object[] { $"{dependencies.Count()} var files will be installed" });
+            this.BeginInvoke(addlog, new Object[] { $"{dependencies.Count()} var files will be installed", LogLevel.INFO });
             List<string> missingvars = new List<string>();
             foreach (string varname in dependencies)
             {
@@ -1649,7 +1565,7 @@ namespace varManager
                 if (varexistname != "missing")
                 {
                     VarInstall(varexistname);
-                    this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                    this.BeginInvoke(addlog, new Object[] { varexistname + " installed", LogLevel.INFO });
                 }
                 else
                 {
@@ -1996,7 +1912,6 @@ namespace varManager
 
         private void listViewPreviewPics_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             var curpriviewpic = previewpicsfilter[e.ItemIndex];
             string key = "vam.png";
             if (!string.IsNullOrWhiteSpace(curpriviewpic.Picpath))
@@ -2006,7 +1921,7 @@ namespace varManager
                     key = picpath;
                 else
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"{picpath} is missing,Please run 'fix preview'" });
+                    this.BeginInvoke(addlog, new Object[] { $"{picpath} is missing,Please run 'fix preview'", LogLevel.WARNING });
                     buttonFixPreview.Focus();
                 }
 
@@ -2149,7 +2064,6 @@ namespace varManager
 
         void StaleVars()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             var query = varManagerDataSet.vars.GroupBy(g => g.creatorName + "." + g.packageName,
                                      q => q.version,
                                      (baseName, versions) => new
@@ -2189,13 +2103,13 @@ namespace varManager
                     string stalev = Path.Combine(stalepath, oldvar + ".var");
                     try
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {stalepath}." });
+                        this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {stalepath}.", LogLevel.INFO });
                         File.Move(oldv, stalev);
                         CleanVar(oldvar);
                     }
                     catch (Exception ex)
                     {
-                        this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}" });
+                        this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}", LogLevel.ERROR });
                     }
                 }
             }
@@ -2205,7 +2119,6 @@ namespace varManager
 
         void OldVersionVars()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             var versionLastest = varManagerDataSet.vars.Where(q=>q.plugins<=0||q.scenes>0||q.looks>0)
                                      .GroupBy(g => g.creatorName + "." + g.packageName,
                                      q => q.version,
@@ -2247,13 +2160,13 @@ namespace varManager
                 string oldversionv = Path.Combine(oldversionpath, oldvar + ".var");
                 try
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {oldversionpath}." });
+                    this.BeginInvoke(addlog, new Object[] { $"move {oldv} to {oldversionpath}.", LogLevel.INFO });
                     File.Move(oldv, oldversionv);
                     CleanVar(oldvar);
                 }
                 catch (Exception ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}" });
+                    this.BeginInvoke(addlog, new Object[] { $"{oldv} move failed,{ex.Message}", LogLevel.ERROR });
                 }
 
             }
@@ -2486,7 +2399,6 @@ namespace varManager
 
         private void LogAnalysis()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             Guid localLowId = new Guid("A520A1A4-1780-4FF6-BD18-167343C5AF16");
             string appdataPath = GetKnownFolderPath(localLowId);
             string logfile = Path.Combine(appdataPath, "MeshedVR\\VaM\\output_log.txt");
@@ -2509,7 +2421,7 @@ namespace varManager
                 }
                 catch (ArgumentException ex)
                 {
-                    this.BeginInvoke(addlog, new Object[] { "LogAnalysis failed" + ex.Message });
+                    this.BeginInvoke(addlog, new Object[] { "LogAnalysis failed" + ex.Message, LogLevel.ERROR });
                 }
                 dependencies = dependencies.Distinct().ToList();
                 List<string> missingvars = new List<string>();
@@ -2524,7 +2436,7 @@ namespace varManager
                     if (varexistname != "missing")
                     {
                         VarInstall(varexistname);
-                        this.BeginInvoke(addlog, new Object[] { varexistname + " installed" });
+                        this.BeginInvoke(addlog, new Object[] { varexistname + " installed", LogLevel.INFO });
                     }
                     else
                     {
@@ -2541,8 +2453,7 @@ namespace varManager
 
         private void varsViewDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { e.Exception.Message });
+            this.BeginInvoke(addlog, new Object[] { e.Exception.Message, LogLevel.ERROR });
         }
 
         private void buttonUninstallSels_Click(object sender, EventArgs e)
@@ -2612,49 +2523,6 @@ namespace varManager
 
         private void buttonMove_Click(object sender, EventArgs e)
         {
-            /*
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            List<string> varNames = new List<string>();
-            foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
-            {
-                string varName = row.Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
-
-                varNames.Add(varName);
-            }
-            if (varNames.Count <= 0) return;
-            FormVarsMove fvm = new FormVarsMove();
-            fvm.TidiedDirName = tidiedDirName;
-            fvm.VarsToMove = varNames;
-            if (fvm.ShowDialog() == DialogResult.OK)
-            {
-
-                string movetovarspath = Path.Combine(Settings.Default.varspath, tidiedDirName, fvm.MovetoDirName);
-                if (!Directory.Exists(movetovarspath))
-                    Directory.CreateDirectory(movetovarspath);
-
-                foreach (string varname in varNames)
-                {
-                    string operav = Path.Combine(Settings.Default.varspath, varManagerDataSet.vars.FindByvarName(varname).varPath, varname + ".var");
-                    string movetodv = Path.Combine(movetovarspath, varname + ".var");
-                    if(File.Exists(movetodv))
-                    {
-                        string errlog = $"{varname} has same filename in tidy directory,moved into the {redundantDirName} directory";
-                        this.BeginInvoke(addlog, new Object[] { errlog });
-                    }
-                    else
-                    try
-                    {
-                        File.Move(operav, movetodv);
-                        //CleanVar(varname);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
-                    }
-                }
-            }
-            */
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             List<string> varNames = new List<string>();
             foreach (DataGridViewRow row in varsViewDataGridView.SelectedRows)
             {
@@ -2694,7 +2562,7 @@ namespace varManager
                             }
                             catch (Exception ex)
                             {
-                                this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}" });
+                                this.BeginInvoke(addlog, new Object[] { $"{operav} move failed,{ex.Message}", LogLevel.ERROR });
                             }
                         }
                     }
@@ -2748,10 +2616,9 @@ namespace varManager
 
         private void varpacksSwitch(string sw)
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
             string packsSwitchpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, addonPacksSwitch)).FullName.ToLower();
             DirectoryInfo diswitch = new DirectoryInfo(Path.Combine(packsSwitchpath, sw));
-            this.BeginInvoke(addlog, new Object[] { $"Point the Addonpackages symbo-link to '{sw}'" });
+            this.BeginInvoke(addlog, new Object[] { $"Point the Addonpackages symbo-link to '{sw}'", LogLevel.INFO });
             if (!diswitch.Exists) diswitch.Create();
             DirectoryInfo dipack = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages"));
             if (dipack.Exists)
@@ -3045,11 +2912,13 @@ namespace varManager
                 string entryname = filepath.Substring(filepath.IndexOf(":/") + 2).Trim();
                 var varsrow = varManagerDataSet.vars.FindByvarName(varName);
                 string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
-                using (ZipArchive varzipfile = ZipFile.OpenRead(destvarfile))
+                using (ZipFile varzipfile = new ZipFile(destvarfile))
                 {
-                    var entryStream = varzipfile.GetEntry(entryname).Open();
-                    StreamReader sr = new StreamReader(entryStream);
-                    jsonscene= sr.ReadToEnd();
+                    var entry = varzipfile.GetEntry(entryname);
+                    var entryStream = new StreamReader(varzipfile.GetInputStream(entry));
+                    jsonscene = entryStream.ReadToEnd();
+                    //StreamReader sr = new StreamReader(entryStream);
+                    //jsonscene= sr.ReadToEnd();
                 }
             }
             else

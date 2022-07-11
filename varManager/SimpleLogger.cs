@@ -122,7 +122,7 @@ public class SimpleLogger
         }
     }
 
-    private void WriteFormattedLog(LogLevel level, string text)
+    public string WriteFormattedLog(LogLevel level, string text)
     {
         string pretext;
         switch (level)
@@ -151,10 +151,11 @@ public class SimpleLogger
         }
 
         WriteLine(pretext + text, true);
+        return pretext + text;
     }
 
     [System.Flags]
-    private enum LogLevel
+    public enum LogLevel
     {
         TRACE,
         INFO,

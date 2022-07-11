@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static SimpleLogger;
 
 namespace varManager
 {
@@ -24,9 +25,11 @@ namespace varManager
         private bool downlistHide = true;
         Dictionary<string, string> downloadUrls = new Dictionary<string, string>();
         private const int intPerPage = 48;
+        private InvokeAddLoglist addlog;
         public FormHub()
         {
             InitializeComponent();
+            addlog = new InvokeAddLoglist(UpdateAddLoglist);
             httpClient = new HttpClient();
             cancellationToken = new CancellationToken();
         }
@@ -44,26 +47,24 @@ namespace varManager
                 AllMissingDepends();
             }
         }
+        public delegate void InvokeAddLoglist(string message, LogLevel logLevel);
 
-        public delegate void InvokeAddLoglist(string message);
-
-        public void UpdateAddLoglist(string message)
+        public void UpdateAddLoglist(string message, LogLevel logLevel)
         {
-            simpLog.Error(message);
-            listBoxLog.Items.Add(message);
+            string msg = simpLog.WriteFormattedLog(logLevel, message);
+            listBoxLog.Items.Add(msg);
             listBoxLog.TopIndex = listBoxLog.Items.Count - 1;
         }
-
         private async void AllMissingDepends()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { "Search for dependencies..." });
+           
+            this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
            
             List<string> missingvars = form1.MissingDependencies();
             if (missingvars.Count > 0)
             {
                 string packages = string.Join(",", missingvars);
-                this.BeginInvoke(addlog, new Object[] { " Search downloadable dependencies in the HUB." });
+                this.BeginInvoke(addlog, new Object[] { " Search downloadable dependencies in the HUB.", LogLevel.INFO });
                 var reponse = await FindPackages(packages);
                 JSONNode jsonResult = JSON.Parse(reponse);
                 JSONClass packageArray = jsonResult["packages"] as JSONClass;
@@ -71,7 +72,7 @@ namespace varManager
                 //Dictionary< string, string> downloadurls = new Dictionary<string, string>();
                 if (packageArray.Count > 0)
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"{packageArray.Count} return records will be analyzed" });
+                    this.BeginInvoke(addlog, new Object[] { $"{packageArray.Count} return records will be analyzed", LogLevel.INFO });
                     foreach (var package in packageArray.Childs)
                     {
                         string downloadurl = package["downloadUrl"];
@@ -83,7 +84,7 @@ namespace varManager
                                 filename = filename.Substring(0, filename.IndexOf(".var"));
                                 if (!form1.FindByvarName(filename))
                                 {
-                                    this.BeginInvoke(addlog, new Object[] { $"Find {filename} in the HUB" });
+                                    this.BeginInvoke(addlog, new Object[] { $"Find {filename} in the HUB", LogLevel.INFO });
                                     //if (!downloadUrls.ContainsKey(filename))
                                     downloadUrls[filename] = downloadurl;
                                 }
@@ -94,7 +95,7 @@ namespace varManager
                 }
                 if (downloadUrls.Count > 0)
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"Total {downloadUrls.Count} download links found" });
+                    this.BeginInvoke(addlog, new Object[] { $"Total {downloadUrls.Count} download links found", LogLevel.INFO });
                     ShowDownList();
                     DrawDownloadListView();
                     // listBoxDownList.Items.AddRange(downloadurls.ToArray());
@@ -113,7 +114,7 @@ namespace varManager
                 }
                 else
                 {
-                    this.BeginInvoke(addlog, new Object[] { "No download link found" });
+                    this.BeginInvoke(addlog, new Object[] { "No download link found", LogLevel.INFO });
                 }
             }
         }
@@ -341,7 +342,7 @@ namespace varManager
             }
             // string reponse = Task<int>.Run(() => GetResources(48, location, paytype, category, username, tags, search, sort, page)).Result;
             try { GetResources(intPerPage, location, paytype, category, username, tags, search, sort, page); }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -528,11 +529,10 @@ namespace varManager
         }
         private async void UpdatAllPackages()
         {
-            InvokeAddLoglist addlog = new InvokeAddLoglist(UpdateAddLoglist);
-            this.BeginInvoke(addlog, new Object[] { "Search for upgradable vars..." });
+            this.BeginInvoke(addlog, new Object[] { "Search for upgradable vars...", LogLevel.INFO });
             var reponse = await GetHubPackages();
             JSONClass jsonPackages = JSON.Parse(reponse) as JSONClass;
-            this.BeginInvoke(addlog, new Object[] { $"Total {jsonPackages.Count} Packages found in the HUB." }); 
+            this.BeginInvoke(addlog, new Object[] { $"Total {jsonPackages.Count} Packages found in the HUB.", LogLevel.INFO }); 
             Dictionary<string, PackVerDownID> hubPackages = new Dictionary<string, PackVerDownID>();
             foreach (string package in jsonPackages.Keys)
             {
@@ -573,7 +573,7 @@ namespace varManager
                         int.TryParse(varlastname.Substring(splitindex + 1), out version);
                         if (hubpackage.Value.ver > version)
                         {
-                            this.BeginInvoke(addlog, new Object[] { $"Find the upgradeable package,{varlastname} " });
+                            this.BeginInvoke(addlog, new Object[] { $"Find the upgradeable package,{varlastname} ", LogLevel.INFO });
                             toBeUpdVars.Add(hubpackage.Key + ".latest");
                         }
                     }
@@ -582,14 +582,14 @@ namespace varManager
             if (toBeUpdVars.Count > 0)
             {
                 string packages = string.Join(",", toBeUpdVars);
-                this.BeginInvoke(addlog, new Object[] { $"Total {toBeUpdVars.Count} upgradable var files found in the HUB." });
+                this.BeginInvoke(addlog, new Object[] { $"Total {toBeUpdVars.Count} upgradable var files found in the HUB.", LogLevel.INFO });
                 reponse = await FindPackages(packages);
                 JSONNode jsonResult = JSON.Parse(reponse);
                 JSONClass packageArray = jsonResult["packages"] as JSONClass;
                 //List<string> downloadurls = new List<string>();
                 if (packageArray.Count > 0)
                 {
-                    this.BeginInvoke(addlog, new Object[] { $"{packageArray.Count} return records will be analyzed" });
+                    this.BeginInvoke(addlog, new Object[] { $"{packageArray.Count} return records will be analyzed", LogLevel.INFO });
                     foreach (var package in packageArray.Childs)
                     {
                         string downloadurl = package["downloadUrl"];
@@ -601,7 +601,7 @@ namespace varManager
                                 filename = filename.Substring(0, filename.IndexOf(".var"));
                                 if (!form1.FindByvarName(filename))
                                 {
-                                    this.BeginInvoke(addlog, new Object[] { $"Find {filename} in the HUB" });
+                                    this.BeginInvoke(addlog, new Object[] { $"Find {filename} in the HUB", LogLevel.INFO });
                                     if (!downloadUrls.ContainsKey(filename))
                                         downloadUrls.Add(filename, downloadurl);
                                 }
@@ -612,27 +612,14 @@ namespace varManager
                 }
                 if (downloadUrls.Count > 0)
                 {
-
-                    this.BeginInvoke(addlog, new Object[] { $"Total {downloadUrls.Count} updatable download links found" });
+                    this.BeginInvoke(addlog, new Object[] { $"Total {downloadUrls.Count} updatable download links found", LogLevel.INFO });
                     ShowDownList();
                     DrawDownloadListView();
-                    //textBoxDownList.Text += string.Join("\r\n", downloadurls);
-                    /*
-                    this.BeginInvoke(addlog, new Object[] { $"Total {downloadurls.Count} download links found" });
-                    string hubvars = Guid.NewGuid().ToString() + ".txt";
-                    StreamWriter sw = new StreamWriter(hubvars);
-                    foreach (var downloadurl in downloadurls)
-                    {
-                        sw.WriteLine(downloadurl);
-                    }
-                    sw.Close();
-                    System.Diagnostics.Process.Start(hubvars);
-                    */
-
+                    
                 }
                 else
                 {
-                    this.BeginInvoke(addlog, new Object[] { "No download link found" });
+                    this.BeginInvoke(addlog, new Object[] { "No download link found", LogLevel.WARNING });
                 }
             }
         }
