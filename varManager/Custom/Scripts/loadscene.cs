@@ -70,22 +70,22 @@ namespace MVRPlugin
                     {
                         SuperController.LogMessage("find loadscene.txt");
                         string atomforload = FileManagerSecure.ReadAllText(loadscenetxt);
-						Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                         FileManagerSecure.DeleteFile(loadscenetxt);
-                        if(atomforload == "rescan")
+                        if (atomforload == "rescan")
                         {
-							SuperController.LogMessage("RescanPackages");
+                            SuperController.LogMessage("RescanPackages");
                             SuperController.singleton.RescanPackages();
                             return;
                         }
-                        
+
                         string[] strLoadscene = atomforload.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                         if (strLoadscene.Length >= 2)
                         {
                             string scenetype = strLoadscene[0];
                             if (scenetype.StartsWith("rescan_"))
                             {
-								SuperController.LogMessage("RescanPackages");
+                                SuperController.LogMessage("RescanPackages");
                                 SuperController.singleton.RescanPackages();
                             }
                             bool merge = false;
@@ -138,7 +138,20 @@ namespace MVRPlugin
                                             LoadLegacyl("appearance", scenefile);
                                     }
                                     else
-                                        LoadPreset("AppearancePresets", merge, scenefile);
+                                    {
+                                        bool futaasfemale = false;
+                                        if (strLoadscene.Length >= 3)
+                                            if (strLoadscene[2].ToLower() == "true") futaasfemale = true;
+                                        int presonorder = 1;
+                                        if (strLoadscene.Length >= 4)
+                                        {
+                                            if (!int.TryParse(strLoadscene[3], out presonorder))
+                                            {
+                                                presonorder = 1;
+                                            }
+                                        }
+                                        LoadPreset("AppearancePresets", merge, scenefile, futaasfemale, presonorder);
+                                    }
                                 }
 
                             }
@@ -161,20 +174,22 @@ namespace MVRPlugin
                 SuperController.LogError("Exception caught: " + e);
             }
         }
-        private void LoadPreset(string presetType, bool merge, string presetFile)
+        private void LoadPreset(string presetType, bool merge, string presetFile, bool futaasfemale = false, int atomOrder = 1)
         {
             SuperController.LogMessage((merge ? " Merge LoadPreset " : "LoadPreset ") + presetType + ":" + presetFile);
 
-            bool formale = ForMale(presetFile);
+            bool formale = ForMale(presetFile, futaasfemale);
             bool findatom = false;
             foreach (var atom in SuperController.singleton.GetAtoms())
             {
                 if (atom.type == "Person" && atom.on)
                 {
-
-                    SuperController.LogMessage("Find Person " + (IsMale(atom) ? "Male :" : "Female :") + atom.name);
-                    if (IsMale(atom) == formale)
+                    SuperController.LogMessage("Find Person " + (IsMale(atom, futaasfemale) ? "Male :" : "Female :") + atom.name);
+                    if (IsMale(atom, futaasfemale) == formale)
                     {
+                        atomOrder--;
+                        if (atomOrder > 0)
+                            continue;
                         atom.SetOn(false);
                         JSONStorable js = atom.GetStorableByID(presetType);
 
@@ -203,7 +218,7 @@ namespace MVRPlugin
 
         }
 
-        private static bool ForMale(string presetFile)
+        private static bool ForMale(string presetFile, bool futaAsFemale = false)
         {
             bool formale = false;
             string presetstr = SuperController.singleton.ReadFileIntoString(presetFile);
@@ -225,11 +240,14 @@ namespace MVRPlugin
                 if (!string.IsNullOrEmpty(resultString))
                 {
                     resultString = resultString.Trim().ToLower();
-                    if (resultString.StartsWith("male") || resultString.StartsWith("lee")
-                          || resultString.StartsWith("julian") || resultString.StartsWith("futa"))
-                    {
-                        formale = true;
-                    }
+                    formale = resultString.StartsWith("male") ||
+                            resultString.StartsWith("lee") ||
+                            resultString.StartsWith("jarlee") ||
+                            resultString.StartsWith("julian") ||
+                            resultString.StartsWith("jarjulian");
+                    if (!futaAsFemale)
+                        formale = formale || resultString.StartsWith("futa");
+
                 }
             }
 
@@ -268,16 +286,18 @@ namespace MVRPlugin
 
         }
 
-        public bool IsMale(Atom atom)
+        public bool IsMale(Atom atom, bool futaAsFemale = false)
         {
             bool isMale = false;
             string atomCharacter = atom.GetComponentInChildren<DAZCharacter>().name.ToLower();
             // If the peson atom is not "On", then we cant determine their gender it seems as GetComponentInChildren<DAZCharacter> just returns null
             isMale = atomCharacter.StartsWith("male") ||
-                     atomCharacter.StartsWith("jarlee") ||
                      atomCharacter.StartsWith("lee") ||
-                     atomCharacter.StartsWith("jarjulian") ||
-                     atomCharacter.StartsWith("futa");
+                     atomCharacter.StartsWith("jarlee") ||
+                     atomCharacter.StartsWith("julian") ||
+                     atomCharacter.StartsWith("jarjulian");
+            if (!futaAsFemale)
+                isMale = isMale || atomCharacter.StartsWith("futa");
             return (isMale);
         }
 

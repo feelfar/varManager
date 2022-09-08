@@ -28,7 +28,8 @@ namespace varManager
         public string VarName { get => varName; set => varName = value; }
         public string SceneName { get => sceneName; set => sceneName = value; }
         public string Jsonscene { get => jsonscene; set => jsonscene = value; }
-
+        public int personOrder = 0;
+        public bool futaAsFemale=false;
         public static string CharacterGender(string character)
         {
             string isMale = "Female";
@@ -56,6 +57,8 @@ namespace varManager
             {
                 listBoxAtom.SelectedIndex = 0;
             }
+            personOrder = 0;
+            listBoxPerson.SelectedIndex = 0;
         }
 
         private void AnalsisJson()
@@ -109,11 +112,16 @@ namespace varManager
                 {
                     checkBoxGlute.Visible  = true;
                     checkBoxBreast.Visible = true;
+                    checkBoxFutaAsFemale.Enabled = true;
                 }
                 else
                 {
                     checkBoxGlute.Visible = false;
                     checkBoxBreast.Visible = false;
+                    if (listBoxAtom.SelectedItem.ToString().Contains("(Futa)"))
+                        checkBoxFutaAsFemale.Enabled = true;
+                    else
+                        checkBoxFutaAsFemale.Enabled = false;
                 }
             }
             else
@@ -130,6 +138,12 @@ namespace varManager
                 SavePreset(atomitem, checkBoxMorphs.Checked, checkBoxHair.Checked,
                     checkBoxClothing.Checked, checkBoxSkin.Checked, 
                     checkBoxBreast.Checked, checkBoxGlute.Checked);
+                personOrder = 0;
+                if (listBoxPerson.SelectedIndex > 0)
+                    personOrder = listBoxPerson.SelectedIndex;
+                futaAsFemale = false;
+                if (checkBoxFutaAsFemale.Enabled && checkBoxFutaAsFemale.Checked)
+                    futaAsFemale = true;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -161,6 +175,8 @@ namespace varManager
                     jnsstorablesArray.Add(new JSONClass());
                     JSONClass jsongeometry = (JSONClass)jnsstorablesArray[jnsstorablesArray.Count - 1];
                     jsongeometry.Add("id", "geometry");
+                    if( storablesitem.HasKey("useFemaleMorphsOnMale"))
+                        jsongeometry.Add("useFemaleMorphsOnMale", storablesitem["useFemaleMorphsOnMale"].Value);
                     if (skin) jsongeometry.Add("character", storablesitem["character"].Value);
                     if (clothing) jsongeometry.Add("clothing",storablesitem["clothing"]);
                     if (hair) jsongeometry.Add("hair",storablesitem["hair"]);

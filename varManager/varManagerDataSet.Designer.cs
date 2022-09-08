@@ -1830,6 +1830,10 @@ namespace varManager {
             
             private global::System.Data.DataColumn columnskin;
             
+            private static System.DateTime columnmetaDate_defaultValue = global::System.DateTime.Parse("2000-01-01T00:00:00");
+            
+            private static System.DateTime columnvarDate_defaultValue = global::System.DateTime.Parse("2000-01-01T00:00:00");
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public varsDataTable() {
@@ -2166,6 +2170,18 @@ namespace varManager {
                 this.columnvarPath.MaxLength = 255;
                 this.columncreatorName.MaxLength = 255;
                 this.columnpackageName.MaxLength = 255;
+                this.columnmetaDate.DefaultValue = ((System.DateTime)(varsDataTable.columnmetaDate_defaultValue));
+                this.columnvarDate.DefaultValue = ((System.DateTime)(varsDataTable.columnvarDate_defaultValue));
+                this.columnfilesize.DefaultValue = ((double)(0D));
+                this.columnscenes.DefaultValue = ((int)(0));
+                this.columnlooks.DefaultValue = ((int)(0));
+                this.columnclothing.DefaultValue = ((int)(0));
+                this.columnhairstyle.DefaultValue = ((int)(0));
+                this.columnplugins.DefaultValue = ((int)(0));
+                this.columnassets.DefaultValue = ((int)(0));
+                this.columnmorphs.DefaultValue = ((int)(0));
+                this.columnpose.DefaultValue = ((int)(0));
+                this.columnskin.DefaultValue = ((int)(0));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2499,6 +2515,7 @@ namespace varManager {
                 this.columnID.Unique = true;
                 this.columnvarName.MaxLength = 255;
                 this.columnatomType.MaxLength = 255;
+                this.columnisPreset.DefaultValue = ((bool)(false));
                 this.columnscenePath.MaxLength = 255;
                 this.columnpreviewPic.MaxLength = 255;
             }
@@ -2673,6 +2690,10 @@ namespace varManager {
             private global::System.Data.DataColumn columnDisabled;
             
             private global::System.Data.DataColumn columnfsize;
+            
+            private static System.DateTime columnmetaDate_defaultValue = global::System.DateTime.Parse("2000-01-01T00:00:00");
+            
+            private static System.DateTime columnvarDate_defaultValue = global::System.DateTime.Parse("2000-01-01T00:00:00");
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
@@ -3049,9 +3070,22 @@ namespace varManager {
                 this.columnvarPath.MaxLength = 255;
                 this.columncreatorName.MaxLength = 255;
                 this.columnpackageName.MaxLength = 255;
+                this.columnmetaDate.DefaultValue = ((System.DateTime)(varsViewDataTable.columnmetaDate_defaultValue));
+                this.columnvarDate.DefaultValue = ((System.DateTime)(varsViewDataTable.columnvarDate_defaultValue));
+                this.columnfilesize.DefaultValue = ((double)(0D));
+                this.columnscenes.DefaultValue = ((int)(0));
+                this.columnlooks.DefaultValue = ((int)(0));
+                this.columnclothing.DefaultValue = ((int)(0));
+                this.columnhairstyle.DefaultValue = ((int)(0));
+                this.columnplugins.DefaultValue = ((int)(0));
+                this.columnassets.DefaultValue = ((int)(0));
+                this.columnmorphs.DefaultValue = ((int)(0));
+                this.columnpose.DefaultValue = ((int)(0));
+                this.columnskin.DefaultValue = ((int)(0));
                 this.columnInstalled.DefaultValue = ((bool)(false));
                 this.columnDisabled.DefaultValue = ((bool)(false));
                 this.columnfsize.ReadOnly = true;
+                this.columnfsize.DefaultValue = ((double)(0D));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7305,11 +7339,17 @@ namespace varManager.varManagerDataSetTableAdapters {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[1];
+            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[2];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT ID, savepath, modidate, dependency FROM savedepens";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.OleDb.OleDbCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT  ID, savepath, modidate, dependency\r\nFROM      savedepens whe\r\nWHERE   (de" +
+                "pendency = ?)";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("dependency", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "dependency", global::System.Data.DataRowVersion.Current, false, null));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7331,6 +7371,42 @@ namespace varManager.varManagerDataSetTableAdapters {
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual varManagerDataSet.savedepensDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            varManagerDataSet.savedepensDataTable dataTable = new varManagerDataSet.savedepensDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByDepens(varManagerDataSet.savedepensDataTable dataTable, string dependency) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((dependency == null)) {
+                throw new global::System.ArgumentNullException("dependency");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(dependency));
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual varManagerDataSet.savedepensDataTable GetDataByDepens(string dependency) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((dependency == null)) {
+                throw new global::System.ArgumentNullException("dependency");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(dependency));
+            }
             varManagerDataSet.savedepensDataTable dataTable = new varManagerDataSet.savedepensDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;

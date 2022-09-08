@@ -145,6 +145,12 @@
     <Compile Include="FormUninstallVars.Designer.cs">
       <DependentUpon>FormUninstallVars.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormVarDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVarDetail.Designer.cs">
+      <DependentUpon>FormVarDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormVarsMove.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormUninstallVars.resx">
       <DependentUpon>FormUninstallVars.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormVarDetail.resx">
+      <DependentUpon>FormVarDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormVarsMove.resx">
       <DependentUpon>FormVarsMove.cs</DependentUpon>

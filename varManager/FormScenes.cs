@@ -897,7 +897,6 @@ namespace varManager
                 varName = Path.Combine(Settings.Default.vampath, varName.Replace('/','\\'));
                 Comm.LocateFile(varName);
             }
-            
         }
         int layoutPanelWidthMode = 0;
         private void buttonFav_Click(object sender, EventArgs e)
@@ -1043,6 +1042,23 @@ namespace varManager
             textBoxFilter.Text = "";
             comboBoxCreator.SelectedItem = "____ALL";
             comboBoxOrderBy.SelectedItem = "New To Old";
+        }
+
+        private void buttonFilterByCreator_Click(object sender, EventArgs e)
+        {
+            string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2);
+            if (varName.IndexOf(":/") > 0)
+            {
+                varName = varName.Substring(0, varName.IndexOf(":/"));
+                string[] varnamepart = varName.Split('.');
+
+                if (varnamepart.Length == 3)
+                {
+                    comboBoxCreator.SelectedItem = varnamepart[0];
+                    textBoxFilter.Text = "";
+                    panelImage.Visible = false;
+                }
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace varManager
     {
         private static string missingVarLinkDirName = "___MissingVarLink___";
         private List<string> missingVars;
+        public Form1 form1;
         public FormMissingVars()
         {
             InitializeComponent();
@@ -126,6 +127,13 @@ namespace varManager
                 string missingvarnamepart = missingVarName.Split('.')[1];
                 textBoxMissingVar.Text = missingVarName;
                 textBoxFilter.Text = missingvarnamepart;
+
+                List<string> depends = form1.GetDependents(missingVarName);
+                dataGridViewDependent.Rows.Clear();
+                foreach (string depend in depends)
+                {
+                    dataGridViewDependent.Rows.Add(depend, "locate");
+                }
             }
         }
 
@@ -306,5 +314,33 @@ namespace varManager
             FillMissVarGridView();
         }
 
+        private void dataGridViewDependent_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridViewDependent.Columns[e.ColumnIndex].Name == "ColumnLocate" && e.RowIndex >= 0)
+            {
+                string dependentName = dataGridViewDependent.Rows[e.RowIndex].Cells["ColumnDependentName"].Value.ToString();
+                if (dependentName.StartsWith("\\"))
+                {
+                    dependentName = dependentName.Substring(1);
+                    string destsavedfile = Path.Combine(Settings.Default.vampath, dependentName);
+                    Comm.LocateFile(destsavedfile);
+                }
+                else
+                {
+                    if (Form1.ComplyVarName(dependentName))
+                        form1.LocateVar(dependentName);
+                }
+
+            }
+        }
+
+        private void varsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (varsDataGridView.Columns[e.ColumnIndex].Name == "ColumnLocateExistVar" && e.RowIndex >= 0)
+            {
+                string varName = varsDataGridView.Rows[e.RowIndex].Cells["dataGridViewTextBoxColumnvarName"].Value.ToString();
+                form1.LocateVar(varName);
+            }
+        }
     }
 }

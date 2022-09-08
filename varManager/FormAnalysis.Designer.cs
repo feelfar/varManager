@@ -39,6 +39,10 @@
             this.checkBoxHair = new System.Windows.Forms.CheckBox();
             this.checkBoxMorphs = new System.Windows.Forms.CheckBox();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.listBoxPerson = new System.Windows.Forms.ListBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxFutaAsFemale = new System.Windows.Forms.CheckBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBoxAtom
@@ -54,10 +58,10 @@
             // buttonLoadLook
             // 
             this.buttonLoadLook.Enabled = false;
-            this.buttonLoadLook.Location = new System.Drawing.Point(368, 221);
+            this.buttonLoadLook.Location = new System.Drawing.Point(376, 328);
             this.buttonLoadLook.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonLoadLook.Name = "buttonLoadLook";
-            this.buttonLoadLook.Size = new System.Drawing.Size(126, 35);
+            this.buttonLoadLook.Size = new System.Drawing.Size(118, 35);
             this.buttonLoadLook.TabIndex = 4;
             this.buttonLoadLook.Text = "Load Look";
             this.buttonLoadLook.UseVisualStyleBackColor = true;
@@ -168,6 +172,46 @@
             this.buttonExit.Text = "Cancel";
             this.buttonExit.UseVisualStyleBackColor = true;
             // 
+            // listBoxPerson
+            // 
+            this.listBoxPerson.Font = new System.Drawing.Font("Cambria", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxPerson.FormattingEnabled = true;
+            this.listBoxPerson.ItemHeight = 23;
+            this.listBoxPerson.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.listBoxPerson.Location = new System.Drawing.Point(6, 24);
+            this.listBoxPerson.Name = "listBoxPerson";
+            this.listBoxPerson.Size = new System.Drawing.Size(112, 142);
+            this.listBoxPerson.TabIndex = 9;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.listBoxPerson);
+            this.groupBox1.Location = new System.Drawing.Point(244, 198);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(124, 174);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Person Order";
+            // 
+            // checkBoxFutaAsFemale
+            // 
+            this.checkBoxFutaAsFemale.AutoSize = true;
+            this.checkBoxFutaAsFemale.Location = new System.Drawing.Point(376, 288);
+            this.checkBoxFutaAsFemale.Name = "checkBoxFutaAsFemale";
+            this.checkBoxFutaAsFemale.Size = new System.Drawing.Size(118, 21);
+            this.checkBoxFutaAsFemale.TabIndex = 8;
+            this.checkBoxFutaAsFemale.Text = "Futa⇔Female";
+            this.checkBoxFutaAsFemale.UseVisualStyleBackColor = true;
+            // 
             // FormAnalysis
             // 
             this.AcceptButton = this.buttonLoadLook;
@@ -176,6 +220,9 @@
             this.CancelButton = this.buttonExit;
             this.ClientSize = new System.Drawing.Size(503, 431);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.buttonLoadLook);
+            this.Controls.Add(this.checkBoxFutaAsFemale);
             this.Controls.Add(this.checkBoxGlute);
             this.Controls.Add(this.checkBoxBreast);
             this.Controls.Add(this.checkBoxSkin);
@@ -185,16 +232,16 @@
             this.Controls.Add(this.labelSceneName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonExit);
-            this.Controls.Add(this.buttonLoadLook);
             this.Controls.Add(this.listBoxAtom);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FormAnalysis";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Analylsis";
+            this.Text = "Load Person Appearence";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormAnalysis_FormClosed);
             this.Load += new System.EventHandler(this.FormAnalysis_Load);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -213,5 +260,8 @@
         private System.Windows.Forms.CheckBox checkBoxBreast;
         private System.Windows.Forms.CheckBox checkBoxGlute;
         private System.Windows.Forms.Button buttonExit;
+        private System.Windows.Forms.ListBox listBoxPerson;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox checkBoxFutaAsFemale;
     }
 }

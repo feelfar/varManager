@@ -37,6 +37,9 @@ namespace varManager
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMissingVars));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.varsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.varManagerDataSet = new varManager.varManagerDataSet();
             this.varsTableAdapter = new varManager.varManagerDataSetTableAdapters.varsTableAdapter();
@@ -47,8 +50,6 @@ namespace varManager
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.varsDataGridView = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.createDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewMissingVars = new System.Windows.Forms.DataGridView();
             this.ColumnVarname = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnLinkto = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -73,8 +74,18 @@ namespace varManager
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripComboBoxIgnoreVersion = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.dataGridViewDependent = new System.Windows.Forms.DataGridView();
+            this.ColumnDependentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnLocate = new System.Windows.Forms.DataGridViewButtonColumn();
             this.openFileDialogLoadTXT = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogSaveTxt = new System.Windows.Forms.SaveFileDialog();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.dataGridViewTextBoxColumnvarName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnLocateExistVar = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).BeginInit();
             this.panel2.SuspendLayout();
@@ -83,6 +94,11 @@ namespace varManager
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDependent)).BeginInit();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // varsBindingSource
@@ -111,19 +127,17 @@ namespace varManager
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.textBoxFilter);
-            this.panel2.Controls.Add(this.comboBoxCreater);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.groupBox2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(667, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(658, 28);
+            this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
+            this.panel2.Size = new System.Drawing.Size(658, 270);
             this.panel2.TabIndex = 4;
             // 
             // textBoxFilter
             // 
-            this.textBoxFilter.Location = new System.Drawing.Point(324, 2);
+            this.textBoxFilter.Location = new System.Drawing.Point(334, 7);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(196, 25);
             this.textBoxFilter.TabIndex = 7;
@@ -134,7 +148,7 @@ namespace varManager
             this.comboBoxCreater.AllowDrop = true;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(82, 3);
+            this.comboBoxCreater.Location = new System.Drawing.Point(92, 8);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(153, 23);
             this.comboBoxCreater.TabIndex = 6;
@@ -143,7 +157,7 @@ namespace varManager
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(255, 7);
+            this.label2.Location = new System.Drawing.Point(265, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 15);
             this.label2.TabIndex = 0;
@@ -152,7 +166,7 @@ namespace varManager
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 7);
+            this.label1.Location = new System.Drawing.Point(15, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 15);
             this.label1.TabIndex = 0;
@@ -173,8 +187,9 @@ namespace varManager
             this.varsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.varsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.varsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.createDate});
+            this.dataGridViewTextBoxColumnvarName,
+            this.varDate,
+            this.ColumnLocateExistVar});
             this.varsDataGridView.DataSource = this.varsBindingSource;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
@@ -185,7 +200,7 @@ namespace varManager
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.varsDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.varsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.varsDataGridView.Location = new System.Drawing.Point(667, 37);
+            this.varsDataGridView.Location = new System.Drawing.Point(3, 62);
             this.varsDataGridView.MultiSelect = false;
             this.varsDataGridView.Name = "varsDataGridView";
             this.varsDataGridView.ReadOnly = true;
@@ -200,27 +215,10 @@ namespace varManager
             this.varsDataGridView.RowHeadersWidth = 51;
             this.varsDataGridView.RowTemplate.Height = 27;
             this.varsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.varsDataGridView.Size = new System.Drawing.Size(658, 479);
+            this.varsDataGridView.Size = new System.Drawing.Size(652, 205);
             this.varsDataGridView.TabIndex = 3;
+            this.varsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsDataGridView_CellContentClick);
             this.varsDataGridView.SelectionChanged += new System.EventHandler(this.varsDataGridView_SelectionChanged);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "varName";
-            this.dataGridViewTextBoxColumn1.HeaderText = "varName";
-            this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 200;
-            // 
-            // createDate
-            // 
-            this.createDate.DataPropertyName = "createDate";
-            this.createDate.HeaderText = "createDate";
-            this.createDate.MinimumWidth = 6;
-            this.createDate.Name = "createDate";
-            this.createDate.ReadOnly = true;
-            this.createDate.Width = 125;
             // 
             // dataGridViewMissingVars
             // 
@@ -249,7 +247,7 @@ namespace varManager
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridViewMissingVars.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewMissingVars.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewMissingVars.Location = new System.Drawing.Point(3, 37);
+            this.dataGridViewMissingVars.Location = new System.Drawing.Point(3, 21);
             this.dataGridViewMissingVars.MultiSelect = false;
             this.dataGridViewMissingVars.Name = "dataGridViewMissingVars";
             this.dataGridViewMissingVars.ReadOnly = true;
@@ -264,7 +262,7 @@ namespace varManager
             this.dataGridViewMissingVars.RowHeadersWidth = 51;
             this.dataGridViewMissingVars.RowTemplate.Height = 27;
             this.dataGridViewMissingVars.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewMissingVars.Size = new System.Drawing.Size(658, 479);
+            this.dataGridViewMissingVars.Size = new System.Drawing.Size(652, 454);
             this.dataGridViewMissingVars.TabIndex = 0;
             this.dataGridViewMissingVars.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewMissingVars_CellContentClick);
             this.dataGridViewMissingVars.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewMissingVars_RowEnter);
@@ -307,19 +305,19 @@ namespace varManager
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.varsDataGridView, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dataGridViewMissingVars, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.toolStrip1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1328, 569);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -334,9 +332,9 @@ namespace varManager
             this.panel1.Controls.Add(this.buttonCancel);
             this.panel1.Controls.Add(this.buttonOK);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 522);
+            this.panel1.Location = new System.Drawing.Point(3, 521);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1322, 44);
+            this.panel1.Size = new System.Drawing.Size(1322, 45);
             this.panel1.TabIndex = 1;
             // 
             // buttonSaveTxt
@@ -431,7 +429,7 @@ namespace varManager
             this.toolStripSeparator2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(830, 39);
+            this.toolStrip1.Size = new System.Drawing.Size(664, 28);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -441,7 +439,7 @@ namespace varManager
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 36);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 25);
             this.bindingNavigatorMoveFirstItem.Text = "First";
             this.bindingNavigatorMoveFirstItem.Click += new System.EventHandler(this.bindingNavigatorMoveFirstItem_Click);
             // 
@@ -451,7 +449,7 @@ namespace varManager
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 36);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 25);
             this.bindingNavigatorMovePreviousItem.Text = "Previous";
             this.bindingNavigatorMovePreviousItem.Click += new System.EventHandler(this.bindingNavigatorMovePreviousItem_Click);
             // 
@@ -459,7 +457,6 @@ namespace varManager
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "位置";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 27);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -468,7 +465,7 @@ namespace varManager
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 36);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(38, 25);
             this.bindingNavigatorCountItem.Text = "/ {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number";
             // 
@@ -478,7 +475,7 @@ namespace varManager
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 36);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 25);
             this.bindingNavigatorMoveNextItem.Text = "Next";
             this.bindingNavigatorMoveNextItem.Click += new System.EventHandler(this.bindingNavigatorMoveNextItem_Click);
             // 
@@ -488,30 +485,124 @@ namespace varManager
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 36);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 25);
             this.bindingNavigatorMoveLastItem.Text = "Last";
             this.bindingNavigatorMoveLastItem.Click += new System.EventHandler(this.bindingNavigatorMoveLastItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 39);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
             // toolStripComboBoxIgnoreVersion
             // 
             this.toolStripComboBoxIgnoreVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBoxIgnoreVersion.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.toolStripComboBoxIgnoreVersion.Items.AddRange(new object[] {
             "Ignore missing version",
             "All missing vars"});
             this.toolStripComboBoxIgnoreVersion.Name = "toolStripComboBoxIgnoreVersion";
-            this.toolStripComboBoxIgnoreVersion.Size = new System.Drawing.Size(200, 39);
+            this.toolStripComboBoxIgnoreVersion.Size = new System.Drawing.Size(200, 28);
             this.toolStripComboBoxIgnoreVersion.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxIgnoreVersion_SelectedIndexChanged);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 39);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.dataGridViewMissingVars);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(3, 37);
+            this.groupBox1.Name = "groupBox1";
+            this.tableLayoutPanel1.SetRowSpan(this.groupBox1, 2);
+            this.groupBox1.Size = new System.Drawing.Size(658, 478);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Missing Vars";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.varsDataGridView);
+            this.groupBox2.Controls.Add(this.panel3);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(658, 270);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Exist Vars";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.dataGridViewDependent);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(667, 279);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(658, 236);
+            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Dependents";
+            // 
+            // dataGridViewDependent
+            // 
+            this.dataGridViewDependent.AllowUserToAddRows = false;
+            this.dataGridViewDependent.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewDependent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            this.dataGridViewDependent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDependent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColumnDependentName,
+            this.ColumnLocate});
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewDependent.DefaultCellStyle = dataGridViewCellStyle8;
+            this.dataGridViewDependent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewDependent.Location = new System.Drawing.Point(3, 21);
+            this.dataGridViewDependent.MultiSelect = false;
+            this.dataGridViewDependent.Name = "dataGridViewDependent";
+            this.dataGridViewDependent.ReadOnly = true;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewDependent.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            this.dataGridViewDependent.RowHeadersWidth = 51;
+            this.dataGridViewDependent.RowTemplate.Height = 27;
+            this.dataGridViewDependent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridViewDependent.Size = new System.Drawing.Size(652, 212);
+            this.dataGridViewDependent.TabIndex = 4;
+            this.dataGridViewDependent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewDependent_CellContentClick);
+            // 
+            // ColumnDependentName
+            // 
+            this.ColumnDependentName.HeaderText = "DependentName";
+            this.ColumnDependentName.MinimumWidth = 6;
+            this.ColumnDependentName.Name = "ColumnDependentName";
+            this.ColumnDependentName.ReadOnly = true;
+            this.ColumnDependentName.Width = 200;
+            // 
+            // ColumnLocate
+            // 
+            this.ColumnLocate.HeaderText = "Locate";
+            this.ColumnLocate.MinimumWidth = 6;
+            this.ColumnLocate.Name = "ColumnLocate";
+            this.ColumnLocate.ReadOnly = true;
+            this.ColumnLocate.Width = 125;
             // 
             // openFileDialogLoadTXT
             // 
@@ -524,6 +615,47 @@ namespace varManager
             this.saveFileDialogSaveTxt.DefaultExt = "txt";
             this.saveFileDialogSaveTxt.FileName = "missingvarlinks";
             this.saveFileDialogSaveTxt.Filter = "text file|*.txt";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.label1);
+            this.panel3.Controls.Add(this.textBoxFilter);
+            this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.comboBoxCreater);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(3, 21);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(652, 41);
+            this.panel3.TabIndex = 8;
+            // 
+            // dataGridViewTextBoxColumnvarName
+            // 
+            this.dataGridViewTextBoxColumnvarName.DataPropertyName = "varName";
+            this.dataGridViewTextBoxColumnvarName.HeaderText = "varName";
+            this.dataGridViewTextBoxColumnvarName.MinimumWidth = 6;
+            this.dataGridViewTextBoxColumnvarName.Name = "dataGridViewTextBoxColumnvarName";
+            this.dataGridViewTextBoxColumnvarName.ReadOnly = true;
+            this.dataGridViewTextBoxColumnvarName.Width = 200;
+            // 
+            // varDate
+            // 
+            this.varDate.DataPropertyName = "varDate";
+            this.varDate.HeaderText = "varDate";
+            this.varDate.MinimumWidth = 6;
+            this.varDate.Name = "varDate";
+            this.varDate.ReadOnly = true;
+            this.varDate.Width = 125;
+            // 
+            // ColumnLocateExistVar
+            // 
+            this.ColumnLocateExistVar.DataPropertyName = "varDate";
+            this.ColumnLocateExistVar.HeaderText = "Locate";
+            this.ColumnLocateExistVar.MinimumWidth = 6;
+            this.ColumnLocateExistVar.Name = "ColumnLocateExistVar";
+            this.ColumnLocateExistVar.ReadOnly = true;
+            this.ColumnLocateExistVar.Text = "Locate";
+            this.ColumnLocateExistVar.UseColumnTextForButtonValue = true;
+            this.ColumnLocateExistVar.Width = 125;
             // 
             // FormMissingVars
             // 
@@ -542,7 +674,6 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.varManagerDataSet)).EndInit();
             this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMissingVars)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -551,6 +682,12 @@ namespace varManager
             this.panel1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDependent)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -566,8 +703,6 @@ namespace varManager
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView varsDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn createDate;
         private System.Windows.Forms.DataGridView dataGridViewMissingVars;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnVarname;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnLinkto;
@@ -594,5 +729,15 @@ namespace varManager
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxIgnoreVersion;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.DataGridView dataGridViewDependent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnDependentName;
+        private System.Windows.Forms.DataGridViewButtonColumn ColumnLocate;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumnvarName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn varDate;
+        private System.Windows.Forms.DataGridViewButtonColumn ColumnLocateExistVar;
     }
 }

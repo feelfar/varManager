@@ -62,11 +62,15 @@ namespace varManager
             }
         }
 
-        private static bool ComplyVarFile(string varfile)
+        public static bool ComplyVarFile(string varfile)
         {
-            bool complyRule = false;
             string varfilename = Path.GetFileNameWithoutExtension(varfile);
-            string[] varnamepart = varfilename.Split('.');
+            return ComplyVarName(varfilename);
+        }
+
+        public static bool ComplyVarName(string varname)
+        {
+            string[] varnamepart = varname.Split('.');
 
             if (varnamepart.Length == 3)
             {
@@ -74,11 +78,12 @@ namespace varManager
                 if (Regex.IsMatch(varnamepart[2], "^[0-9]+$"))
                 //if (int.TryParse(varnamepart[2], out version))
                 {
-                    complyRule = true;
+                    return true;
                 }
             }
-            return complyRule;
+            return false;
         }
+
         private List<string> varsForInstall = new List<string>();
         private void TidyVars()
         {
@@ -261,7 +266,7 @@ namespace varManager
             return varsUsed;
         }
 
-        List<string> Getdependencies(string jsonstring)
+        private List<string> Getdependencies(string jsonstring)
         {
             string dependencies = "";
             List<string> dependenciesList = new List<string>();
@@ -348,6 +353,55 @@ namespace varManager
             return varnames;
         }
 
+        private List<string> DependentVars(string varname)
+        {
+            List<string> varnames = new List<string>();
+
+            if (Varislatest(varname))
+            {
+                string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
+                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname || q.dependency == latest))
+                {
+                    varnames.Add(row.varName);
+                }
+            }
+            else
+            {
+                foreach (var row in varManagerDataSet.dependencies.Where(q => q.dependency == varname))
+                {
+                    varnames.Add(row.varName);
+                }
+            }
+            
+            return varnames;
+        }
+        private List<string> DependentSaved(string varname)
+        {
+            List<string> saveds = new List<string>();
+            varManagerDataSet.savedepensDataTable savedepens = new varManagerDataSet.savedepensDataTable();
+            
+            if (Varislatest(varname))
+            {
+                string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
+                savedepensTableAdapter.FillByDepens(savedepens, latest);
+                savedepens.AcceptChanges();
+                foreach (var row in savedepens)
+                {
+                    saveds.Add(row.savepath);
+                }
+            }
+            savedepens.Clear();
+            savedepens.AcceptChanges();
+
+            savedepensTableAdapter.FillByDepens(savedepens, varname);
+            savedepens.AcceptChanges();
+            foreach (var row in savedepens)
+            {
+                saveds.Add(row.savepath);
+            }
+            saveds= saveds.Distinct().ToList();
+            return saveds;
+        }
         private List<string> ImplicatedVars(List<string> varnames)
         {
             List<string> varnameexist = new List<string>();
@@ -642,21 +696,7 @@ namespace varManager
                 buttonUpdDB.Focus();
             }
         }
-        private void fillscenes()
-        {
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
-            this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
-        }
-        private void fillvars()
-        {
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
-            this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
-        }
-        private void filldependencies()
-        {
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
-            this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
-        }
+        
         private void FillDataTables()
         {
             this.BeginInvoke(addlog, new Object[] { $"load vars...", LogLevel.INFO });
@@ -740,6 +780,7 @@ namespace varManager
             if (missingvars.Count > 0)
             {
                 FormMissingVars formMissingVars = new FormMissingVars();
+                formMissingVars.form1 = this;
                 formMissingVars.MissingVars = missingvars;
                 formMissingVars.Show();
             }
@@ -1572,6 +1613,7 @@ namespace varManager
                     missingvars.Add(varname);
                 }
             }
+            missingvars = missingvars.Distinct().ToList();
             if (missingvars.Count > 0)
             {
                 InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
@@ -1931,7 +1973,12 @@ namespace varManager
                 imageListPreviewPics.Images.Add(key, Image.FromFile(key));
                 if (imageListPreviewPics.Images.Count > 20) imageListPreviewPics.Images.RemoveAt(0);
             }
-            e.Item = new ListViewItem(Path.GetFileNameWithoutExtension(curpriviewpic.Picpath), imageListPreviewPics.Images.IndexOfKey(key));
+            string itemname = Path.GetFileNameWithoutExtension(curpriviewpic.Picpath);
+            if(string.IsNullOrEmpty(itemname))
+            {
+                itemname = curpriviewpic.Atomtype + "_" + Path.GetFileNameWithoutExtension(curpriviewpic.ScenePath);
+            }
+            e.Item = new ListViewItem(itemname, imageListPreviewPics.Images.IndexOfKey(key));
             e.Item.SubItems.Add(curpriviewpic.Varname);
             e.Item.SubItems.Add(key);
             e.Item.SubItems.Add(curpriviewpic.Installed.ToString());
@@ -2235,10 +2282,46 @@ namespace varManager
                     }
                 }
             }
-            if (varsViewDataGridView.Columns[e.ColumnIndex].Name == "ColumnLocate" && e.RowIndex >= 0)
+            if (varsViewDataGridView.Columns[e.ColumnIndex].Name == "ColumnDetail" && e.RowIndex >= 0)
             {
                 string varName = varsViewDataGridView.Rows[e.RowIndex].Cells["varNameDataGridViewTextBoxColumn"].Value.ToString();
-                LocateVar(varName);
+                VarDetail(varName);
+            }
+        }
+
+        public bool IsVarInstalled(string varName)
+        {
+            var installstatusrow = varManagerDataSet.installStatus.FindByvarName(varName);
+            if (installstatusrow!=null)
+                return installstatusrow.Installed;
+            else
+                return false;
+        }
+        private void VarDetail(string varName)
+        {
+            FormVarDetail formVarDetail = new FormVarDetail();
+            formVarDetail.form1 = this;
+            formVarDetail.strVarName = varName;
+
+            formVarDetail.dependencies = new Dictionary<string, string>();
+            foreach(var dependrow in this.varManagerDataSet.dependencies.Where(q=>q.varName == varName))
+            {
+                string existName = VarExistName(dependrow.dependency);
+                if (existName.EndsWith("$"))
+                {
+                    existName = existName.Substring(0, existName.Length - 1);
+                }
+                formVarDetail.dependencies[dependrow.dependency] = existName;
+            }
+            formVarDetail.DependentVarList = DependentVars(varName);
+            formVarDetail.DependentJsonList = DependentSaved(varName);
+            if (formVarDetail.ShowDialog() == DialogResult.OK)
+            {
+                if (formVarDetail.strAction == "filter")
+                {
+                    string creator = varName.Substring(0, varName.IndexOf("."));
+                    comboBoxCreater.Text = creator;
+                }
             }
         }
 
@@ -2284,6 +2367,20 @@ namespace varManager
                 }
                 UpdateVarsInstalled();
             }
+        }
+        public List<string> GetDependents(string dependName)
+        {
+            List<string> result = new List<string>();
+            foreach (var dependrow in varManagerDataSet.dependencies.Where(q => q.dependency == dependName))
+            {
+                result.Add(dependrow.varName);
+            }
+            foreach (var dependrow in varManagerDataSet.savedepens.Where(q => q.dependency == dependName))
+            {
+                result.Add(dependrow.savepath);
+            }
+            return result;
+
         }
 
         private void buttonpreviewback_Click(object sender, EventArgs e)
@@ -2453,7 +2550,7 @@ namespace varManager
 
         private void varsViewDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            this.BeginInvoke(addlog, new Object[] { e.Exception.Message, LogLevel.ERROR });
+            this.BeginInvoke(addlog, new Object[] { $"varsViewDataGridView_DataError, {e.Exception.Message}", LogLevel.ERROR });
         }
 
         private void buttonUninstallSels_Click(object sender, EventArgs e)
@@ -2748,6 +2845,7 @@ namespace varManager
                 deletetempfiles = AddDeleteTemp();
             if (loadScenetxt.StartsWith("rescan_"))
             {
+                
                 if(varName=="")
                     varName = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2, loadScenetxt.IndexOf(":/") - loadScenetxt.IndexOf("\r\n") - 2);
                 var installtemplist = InstallTemp(varName);
@@ -2945,6 +3043,9 @@ namespace varManager
                     {
                         loadlook = "rescan_" + loadlook;
                     }
+                    loadlook = loadlook + "\r\n" + formAnalysis.futaAsFemale;
+                    int personOrder = formAnalysis.personOrder;
+                    loadlook = loadlook + "\r\n" + (personOrder + 1).ToString();
                     this.GenLoadscenetxt(loadlook, false, varName);
                 }
             }

@@ -57,7 +57,7 @@ namespace varManager
             this.varsViewDataGridView = new System.Windows.Forms.DataGridView();
             this.varNamedataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.installedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ColumnLocate = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.ColumnDetail = new System.Windows.Forms.DataGridViewButtonColumn();
             this.fsize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.varPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.creatorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -473,7 +473,7 @@ namespace varManager
             this.varsViewDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.varNamedataGridViewTextBoxColumn,
             this.installedDataGridViewCheckBoxColumn,
-            this.ColumnLocate,
+            this.ColumnDetail,
             this.fsize,
             this.varPathDataGridViewTextBoxColumn,
             this.creatorNameDataGridViewTextBoxColumn,
@@ -504,6 +504,7 @@ namespace varManager
             this.varsViewDataGridView.TabIndex = 6;
             this.toolTip1.SetToolTip(this.varsViewDataGridView, "Multiple selectable,Right click column header for advanced filter");
             this.varsViewDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.varsViewDataGridView_CellContentClick);
+            this.varsViewDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.varsViewDataGridView_DataError);
             // 
             // varNamedataGridViewTextBoxColumn
             // 
@@ -523,15 +524,15 @@ namespace varManager
             this.installedDataGridViewCheckBoxColumn.ReadOnly = true;
             this.installedDataGridViewCheckBoxColumn.Width = 68;
             // 
-            // ColumnLocate
+            // ColumnDetail
             // 
-            this.ColumnLocate.HeaderText = "Locate";
-            this.ColumnLocate.MinimumWidth = 6;
-            this.ColumnLocate.Name = "ColumnLocate";
-            this.ColumnLocate.ReadOnly = true;
-            this.ColumnLocate.Text = "Locate";
-            this.ColumnLocate.UseColumnTextForButtonValue = true;
-            this.ColumnLocate.Width = 60;
+            this.ColumnDetail.HeaderText = "Detail";
+            this.ColumnDetail.MinimumWidth = 6;
+            this.ColumnDetail.Name = "ColumnDetail";
+            this.ColumnDetail.ReadOnly = true;
+            this.ColumnDetail.Text = "Detail";
+            this.ColumnDetail.UseColumnTextForButtonValue = true;
+            this.ColumnDetail.Width = 60;
             // 
             // fsize
             // 
@@ -859,7 +860,7 @@ namespace varManager
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(276, 27);
             this.varsBindingNavigator.TabIndex = 0;
             this.varsBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -934,7 +935,7 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(240, 7);
+            this.label1.Location = new System.Drawing.Point(279, 7);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 17);
             this.label1.TabIndex = 1;
@@ -946,7 +947,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
+            this.comboBoxCreater.Location = new System.Drawing.Point(344, 3);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(179, 25);
             this.comboBoxCreater.Sorted = true;
@@ -958,7 +959,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(490, 7);
+            this.label2.Location = new System.Drawing.Point(529, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 17);
             this.label2.TabIndex = 3;
@@ -967,7 +968,7 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(595, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(634, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(75, 25);
             this.textBoxFilter.TabIndex = 4;
@@ -980,7 +981,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(676, 5);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(715, 5);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
             this.checkBoxInstalled.TabIndex = 5;
@@ -1133,10 +1134,10 @@ namespace varManager
             this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewPreviewPics.HideSelection = false;
             this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 29);
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(542, 523);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(542, 521);
             this.listViewPreviewPics.TabIndex = 0;
             this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
@@ -1162,7 +1163,7 @@ namespace varManager
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(542, 29);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(542, 31);
             this.flowLayoutPanel3.TabIndex = 10;
             // 
             // toolStripPreview
@@ -1238,7 +1239,7 @@ namespace varManager
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(194, 6);
+            this.label4.Location = new System.Drawing.Point(194, 7);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 17);
             this.label4.TabIndex = 1;
@@ -1272,7 +1273,7 @@ namespace varManager
             this.checkBoxPreviewTypeLoadable.AutoSize = true;
             this.checkBoxPreviewTypeLoadable.Checked = true;
             this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(362, 4);
+            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(362, 5);
             this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
             this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
             this.checkBoxPreviewTypeLoadable.TabIndex = 3;
@@ -1494,18 +1495,16 @@ namespace varManager
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label labelProgress;
         private System.Windows.Forms.Button buttonLocate;
-        private System.Windows.Forms.DataGridViewButtonColumn ColumnLocate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn fsize;
-        private System.Windows.Forms.DataGridViewTextBoxColumn morphs;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pose;
-        private System.Windows.Forms.DataGridViewTextBoxColumn skin;
         private System.Windows.Forms.ToolStripLabel toolStripLabelPreviewItemIndex;
         private System.Windows.Forms.Button buttonAnalysis;
         private System.Windows.Forms.Button buttonResetFilter;
         private System.Windows.Forms.Button buttonFixPreview;
         private System.Windows.Forms.Button buttonAllMissingDepends;
+        private System.Windows.Forms.Button buttonHub;
         private System.Windows.Forms.DataGridViewTextBoxColumn varNamedataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn installedDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.DataGridViewButtonColumn ColumnDetail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fsize;
         private System.Windows.Forms.DataGridViewTextBoxColumn varPathDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn creatorNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn packageNameDataGridViewTextBoxColumn;
@@ -1518,8 +1517,10 @@ namespace varManager
         private System.Windows.Forms.DataGridViewTextBoxColumn hairstyleDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pluginsDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn assetsDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn morphs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pose;
+        private System.Windows.Forms.DataGridViewTextBoxColumn skin;
         private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.Button buttonHub;
     }
 }
 

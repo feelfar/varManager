@@ -751,36 +751,49 @@ namespace varManager
                         var hubfiles = resource["hubFiles"].AsArray;
                         if (hubfiles.Count > 0)
                         {
-                            JSONClass hubfile = hubfiles[0] as JSONClass;
-                            string filename = hubfile["filename"];
-                            if (filename.EndsWith(".var"))
-                                filename = filename.Substring(0, filename.Length - 4);
-                            hubItem.PackageName = filename;
-                            int splitindex = filename.LastIndexOf('.');
-                            if (splitindex >= 0)
+                            int inrepons = -1;
+                            //JSONClass hubfile = hubfiles[0] as JSONClass;
+                            foreach (JSONClass hubfile in hubfiles)
                             {
-                                string hubpackageName = filename.Substring(0, splitindex);
-                                int hubversion = int.Parse(filename.Substring(splitindex+1));
-                                string varlastname = form1.VarExistName(hubpackageName + ".latest");
-                                if (varlastname != "missing")
+                                string filename = hubfile["filename"];
+                                if (filename.EndsWith(".var"))
+                                    filename = filename.Substring(0, filename.Length - 4);
+                                hubItem.PackageName = filename;
+                                int splitindex = filename.LastIndexOf('.');
+                                if (splitindex >= 0)
                                 {
-                                    int lastversion= int.Parse(varlastname.Substring(filename.LastIndexOf('.') + 1));
-                                    if(lastversion>= hubversion)
+                                    string hubpackageName = filename.Substring(0, splitindex);
+                                    int hubversion = int.Parse(filename.Substring(splitindex + 1));
+                                    string varlastname = form1.VarExistName(hubpackageName + ".latest");
+                                    if (varlastname != "missing")
                                     {
-                                        inRepository = "In Repository";
+                                        int lastversion = int.Parse(varlastname.Substring(filename.LastIndexOf('.') + 1));
+                                        if (lastversion >= hubversion)
+                                        {
+                                            if (inrepons < 0)
+                                            {
+                                                inRepository = "In Repository";
+                                                inrepons = 0;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (inrepons < 1)
+                                            {
+                                                inRepository = $"{lastversion} Upgrade to {hubversion}";
+                                                inrepons = 1;
+                                            }
+                                            
+                                        }
+
                                     }
                                     else
                                     {
-                                        inRepository = $"{lastversion} Upgrade to {hubversion}";
+                                        inRepository = "Generate Download List";
+                                        break;
                                     }
-                                   
-                                }
-                                else
-                                {
-                                    inRepository = "Generate Download List";
                                 }
                             }
-                            
                         }
                     }
                     else
