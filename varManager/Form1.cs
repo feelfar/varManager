@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using varManager.Properties;
+using SimpleJSON;
 using static SimpleLogger;
 
 namespace varManager
@@ -1183,9 +1184,16 @@ namespace varManager
             return true;
         }
 
-        private bool VarInstall(string varName, bool bTemp = false, int operate = 1)
+        /// <summary>
+        /// varInstall
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <param name="bTemp"></param>
+        /// <param name="operate"></param>
+        /// <returns>0:faile,1:success，2：installed</returns>
+        private int VarInstall(string varName, bool bTemp = false, int operate = 1)
         {
-            bool success = false;
+            int success = 0;
             if (operate >= 1)
             {
                 varManagerDataSet.varsRow varsrow = varManagerDataSet.vars.FindByvarName(varName);
@@ -1197,7 +1205,7 @@ namespace varManager
                     if (File.Exists(linkvar + ".disabled") && operate == 1)
                         File.Delete(linkvar + ".disabled");
                     if (File.Exists(linkvar))
-                        return true;
+                        return 2;
 
                     string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
 
@@ -1205,7 +1213,7 @@ namespace varManager
                     {
                         MessageBox.Show("Error: Unable to create symbolic link. " +
                                 "(Error Code: " + Marshal.GetLastWin32Error() + ")");
-                        return false;
+                        return 0;
                     }
                     if (operate == 2)
                     {
@@ -1213,7 +1221,7 @@ namespace varManager
                     }
                     Comm.SetSymboLinkFileTime(linkvar, File.GetCreationTime(destvarfile), File.GetLastWriteTime(destvarfile));
                     this.BeginInvoke(addlog, new Object[] { $"{varName}  Installed", LogLevel.INFO });
-                    success = true;
+                    success = 1;
                 }
             }
             return success;
@@ -1527,7 +1535,7 @@ namespace varManager
         private void FixSavseDependencies()
         {
             List<string> dependencies = new List<string>();
-            this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory", LogLevel.INFO });
+            this.BeginInvoke(addlog, new Object[] { "Analyze the *.json files in the 'Save' directory and  the *.vap files in the 'Custom' directory ", LogLevel.INFO });
             this.varManagerDataSet.savedepens.Clear();
             this.varManagerDataSet.savedepens.AcceptChanges();
             this.savedepensTableAdapter.Fill(this.varManagerDataSet.savedepens);
@@ -2399,7 +2407,8 @@ namespace varManager
         {
             tableLayoutPanelPreview.Visible = false;
         }
-        private string loadscenetxt = "";
+        //private string loadscenetxt = "";
+        private JSONClass jsonLoadScene;
         private void listViewPreviewPics_Click(object sender, EventArgs e)
         {
             if (listViewPreviewPics.SelectedIndices.Count >= 1)
@@ -2433,10 +2442,20 @@ namespace varManager
                         checkBoxMerge.Visible = true;
                         checkBoxMerge.Checked = false;
                         buttonLoad.Text = "Load " + item.SubItems[4].Text;
-                        string rescan = "";
+                        string rescan = "false";
                         if (item.SubItems[3].Text.ToLower() == "false")
-                            rescan = "rescan_";
-                        loadscenetxt = rescan + item.SubItems[4].Text.ToLower() + "\r\n" + item.SubItems[1].Text + ":/" + item.SubItems[5].Text;
+                            rescan = "true";
+                        jsonLoadScene = new JSONClass();
+                        jsonLoadScene.Add("rescan", rescan);
+
+                        jsonLoadScene.Add("resources", new JSONArray());
+                        JSONArray resources = jsonLoadScene["resources"].AsArray;
+                        resources.Add(new JSONClass());
+                        JSONClass resource = (JSONClass)resources[resources.Count - 1];
+                        resource.Add("type", item.SubItems[4].Text.ToLower());
+                        resource.Add("saveName", item.SubItems[1].Text + ":/" + item.SubItems[5].Text);
+
+                        //loadscenetxt = rescan ++ "\r\n" + item.SubItems[1].Text + ":/" + item.SubItems[5].Text;
                         if(item.SubItems[4].Text.ToLower() == "scenes"|| item.SubItems[4].Text.ToLower() == "looks")
                         {
                             buttonAnalysis.Visible = true;
@@ -2444,6 +2463,28 @@ namespace varManager
                         else
                         {
                             buttonAnalysis.Visible = false;
+                        }
+                        if (item.SubItems[4].Text.ToLower() == "looks" || item.SubItems[4].Text.ToLower() == "clothing" ||
+                           item.SubItems[4].Text.ToLower() == "morphs" || item.SubItems[4].Text.ToLower() == "hairstyle" ||
+                           item.SubItems[4].Text.ToLower() == "skin" || item.SubItems[4].Text.ToLower() == "pose")
+                        {
+                            groupBoxPersonOrder.Visible = true;
+                            checkBoxFutaAsFemale.Visible = true;
+                        }
+                        else
+                        {
+                            groupBoxPersonOrder.Visible = false;
+                            checkBoxFutaAsFemale.Visible = false;
+                        }
+                        if (item.SubItems[4].Text.ToLower() == "morphs" ||
+                           item.SubItems[4].Text.ToLower() == "skin" ||
+                           item.SubItems[4].Text.ToLower() == "pose")
+                        {
+                            checkBoxForMale.Visible = true;
+                        }
+                        else
+                        {
+                            checkBoxForMale.Visible = false;
                         }
                     }
                     else
@@ -2756,11 +2797,13 @@ namespace varManager
             var vamproc = Process.GetProcessesByName("vam");
             if (vamproc.Length > 0)
             {
-                string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+                string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
                 if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
                 Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
+                JSONClass jc = new JSONClass();
+                jc["rescan"] = "true";
                 StreamWriter swLoad = new StreamWriter(loadscenefile);
-                swLoad.Write("rescan");
+                swLoad.Write(jc.ToString());
                 swLoad.Close();
             }
         }
@@ -2821,10 +2864,40 @@ namespace varManager
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
+            tableLayoutPanelPreview.Visible = false;
+            Cursor = Cursors.WaitCursor;
             bool merge = false;
             if (checkBoxMerge.Checked) merge = true;
+            bool futaasfemale = false;
+            if (checkBoxFutaAsFemale.Checked) futaasfemale = true;
+            string characterGender = "unknown";
+            if (checkBoxForMale.Visible)
+            {
+                if (checkBoxForMale.Checked) characterGender = "male";
+                else characterGender = "female";
+            }
+            int personOrder = 1;
+            foreach (RadioButton rbperson in groupBoxPersonOrder.Controls)
+            {
+                if (rbperson.Checked)
+                {
+                    personOrder = int.Parse(rbperson.Text);
+                    break;
+                }
+            }
+            JSONArray resources = jsonLoadScene["resources"].AsArray;
+            string saveName = "";
 
-            GenLoadscenetxt(loadscenetxt,merge);
+            if (resources.Count > 0)
+            {
+                JSONClass resource = (JSONClass)resources[0];
+                saveName = resource["saveName"].Value;
+            }
+            string varName = "";
+            List<string> varNames = null;
+            ReadSaveName(saveName, ref varName, ref varNames,ref characterGender);
+            GenLoadscenetxt(jsonLoadScene, merge, varNames, characterGender,futaasfemale, personOrder);
+            Cursor = Cursors.Arrow;
         }
 
         public bool FindByvarName(string varName)
@@ -2838,27 +2911,65 @@ namespace varManager
             }
             return inRepository;
         }
-        public void GenLoadscenetxt(string loadScenetxt,bool merge,string varName="")
+        public void GenLoadscenetxt(JSONClass jsonLS,bool merge, List<string> varNames,string characterGender="female", bool futaasfemale=false,int personOrder=1 )
         {
+            JSONClass jsonls = (JSONClass)JSONNode.Parse(jsonLS.ToString());
             List<string> deletetempfiles = new List<string>();
-            if (!merge && (loadScenetxt.StartsWith("rescan_scenes") || loadScenetxt.StartsWith("scenes")))
-                deletetempfiles = AddDeleteTemp();
-            if (loadScenetxt.StartsWith("rescan_"))
+            JSONArray resources = jsonls["resources"].AsArray;
+            foreach (JSONClass resource in resources)
             {
-                
-                if(varName=="")
-                    varName = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2, loadScenetxt.IndexOf(":/") - loadScenetxt.IndexOf("\r\n") - 2);
-                var installtemplist = InstallTemp(varName);
-                foreach (var installtemp in installtemplist)
-                    deletetempfiles.Remove(installtemp.ToLower()+".var");
+                if (resource.HasKey("type"))
+                {
+                    if (resource["type"].Value == "scenes")
+                    {
+                        deletetempfiles = AddDeleteTemp();
+                        break;
+                    }
+                }
             }
-            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+
+            // if (jsonls["rescan"].AsBool)
+            //{
+            //List<string> varnames = new List<string>();
+            if (varNames == null)
+            {
+                varNames = new List<string>();
+                foreach (JSONClass resource in resources)
+                {
+                    string saveName = resource["saveName"].Value;
+                    varNames.Add(saveName.Substring(0, saveName.IndexOf(":/")));
+                }
+            }
+            bool rescan = false;
+            var installtemplist = InstallTemp(varNames.ToArray(), ref rescan);
+            jsonls["rescan"].Value = rescan.ToString();
+            foreach (var installtemp in installtemplist)
+                deletetempfiles.Remove(installtemp.ToLower() + ".var");
+            // }
+            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
-            StreamWriter sw = new StreamWriter(loadscenefile);
-            if (merge) loadScenetxt = loadScenetxt + "_merge";
-            sw.Write(loadScenetxt);
-            sw.Close();
+            //StreamWriter sw = new StreamWriter(loadscenefile);
+            if (!jsonls.HasKey("merge"))
+                jsonls["merge"] = merge.ToString().ToLower();
+            if (!jsonls.HasKey("characterGender"))
+                jsonls["characterGender"] = characterGender;
+            if (!jsonls.HasKey("futaAsFemale"))
+                jsonls["futaAsFemale"] = futaasfemale.ToString().ToLower();
+            if (!jsonls.HasKey("personOrder"))
+                jsonls["personOrder"] = personOrder.ToString();
+
+            string strLS = jsonls.ToString();
+            using (FileStream fileStream = File.OpenWrite(loadscenefile))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(strLS);
+                sw.Close();
+            }
+            // jsonLS.SaveToFile(loadscenefile);
+            //sw.Write(jsonLS);
+            //sw.Close();
             if (deletetempfiles.Count > 0)
             {
                 Thread.Sleep(2000);
@@ -2885,7 +2996,7 @@ namespace varManager
         public static void DeleteTempThread(object data)
         {
             List<string> tempfiles = data as List<string>;
-            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.txt");
+            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
 
             while (true)
             {
@@ -2908,21 +3019,26 @@ namespace varManager
             }
         }
 
-        public List<string> InstallTemp(string varName)
+        public List<string> InstallTemp(string[] varNames,ref bool rescan)
         {
+            rescan = false;
             List<string> varnames = new List<string>();
-            varnames.Add(varName);
+            varnames.AddRange(varNames);
             varnames = VarsDependencies(varnames);
             varnames = varnames.Except(GetInstalledVars().Keys).ToList();
             DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
 
             foreach (string varname in varnames)
             {
-                var rows = varManagerDataSet.varsView.Where(q => q.varName == varName);
+                var rows = varManagerDataSet.varsView.Where(q => q.varName == varname);
                 if (rows.Count() > 0)
                 {
                     if (!rows.First().Installed)
-                        VarInstall(varname, true);
+                        if (VarInstall(varname, true) == 1) rescan = true;
+                }
+                else
+                {
+                    this.BeginInvoke(addlog, new Object[] { string.Format("missing var:{ 0},install failed", varname), LogLevel.INFO });
                 }
             }
             return varnames;
@@ -2938,7 +3054,6 @@ namespace varManager
         {
             string varName = labelPreviewVarName.Text;
             LocateVar(varName);
-
         }
 
         public void LocateVar(string varName)
@@ -2995,19 +3110,57 @@ namespace varManager
 
         private void buttonAnalysis_Click(object sender, EventArgs e)
         {
-            Analysisscene(loadscenetxt);
+            Analysisscene(jsonLoadScene);
         }
 
-        public void Analysisscene(string loadScenetxt)
+        public void Analysisscene(JSONClass jsonLS)
         {
-            string filepath = loadScenetxt.Substring(loadScenetxt.IndexOf("\r\n") + 2);
-            string varName = "";
-            
-            string jsonscene = "";
-            if (filepath.IndexOf(":/") > 1)
+            JSONClass jsonls = (JSONClass)JSONNode.Parse(jsonLS.ToString());
+            JSONArray resources = jsonls["resources"].AsArray;
+            string saveName = "";
+
+            if (resources.Count > 0)
             {
-                varName = filepath.Substring(0, filepath.IndexOf(":/"));
-                string entryname = filepath.Substring(filepath.IndexOf(":/") + 2).Trim();
+                JSONClass resource = (JSONClass)resources[0];
+                saveName = resource["saveName"].Value;
+            }
+            string varName = "";
+            List<string> varNames = null;
+            string unuse="female";
+            string jsonscene = ReadSaveName(saveName, ref varName,ref varNames,ref unuse);
+            if (jsonscene != "")
+            {
+                FormAnalysis formAnalysis = new FormAnalysis();
+                formAnalysis.VarName = varName;
+                formAnalysis.SceneName = saveName;
+                formAnalysis.Jsonscene = jsonscene;
+                if (formAnalysis.ShowDialog() == DialogResult.OK)
+                {
+                    for (; resources.Count > 0;)
+                        resources.Remove(0);
+                    foreach (JSONClass jc in formAnalysis.saveNames)
+                    {
+                        resources.Add(jc);
+
+                    }
+                    jsonls["characterGender"] = formAnalysis.CharacterGender.ToLower();
+                    jsonls["futaAsFemale"] = formAnalysis.FutaAsFemale.ToString().ToLower();
+                    jsonls["personOrder"] = (formAnalysis.PersonOrder + 1).ToString();
+                    this.GenLoadscenetxt(jsonls, false, varNames);
+                }
+            }
+
+        }
+
+        public string ReadSaveName(string saveName, ref string varName, ref List<string> varNames, ref string characterGender)
+        {
+            string jsonscene = "";
+            varNames=new List<string>();
+            if (saveName.IndexOf(":/") > 1)
+            {
+                varName = saveName.Substring(0, saveName.IndexOf(":/"));
+                varNames.Add(varName);
+                string entryname = saveName.Substring(saveName.IndexOf(":/") + 2).Trim();
                 var varsrow = varManagerDataSet.vars.FindByvarName(varName);
                 string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                 using (ZipFile varzipfile = new ZipFile(destvarfile))
@@ -3015,41 +3168,30 @@ namespace varManager
                     var entry = varzipfile.GetEntry(entryname);
                     var entryStream = new StreamReader(varzipfile.GetInputStream(entry));
                     jsonscene = entryStream.ReadToEnd();
-                    //StreamReader sr = new StreamReader(entryStream);
-                    //jsonscene= sr.ReadToEnd();
                 }
             }
             else
             {
-             string jsonfile=  Path.Combine( Settings.Default.vampath,filepath);
+                string jsonfile = Path.Combine(Settings.Default.vampath, saveName);
                 if (File.Exists(jsonfile))
                 {
-                    using(StreamReader sr = new StreamReader(jsonfile))
+                    using (StreamReader sr = new StreamReader(jsonfile))
                     {
                         jsonscene = sr.ReadToEnd();
                     }
                 }
             }
-            if (jsonscene != "")
+            if (characterGender == "unknown")
             {
-                FormAnalysis formAnalysis = new FormAnalysis();
-                formAnalysis.VarName = varName;
-                formAnalysis.SceneName = filepath;
-                formAnalysis.Jsonscene = jsonscene;
-                if (formAnalysis.ShowDialog() == DialogResult.OK)
+                characterGender = "male";
+
+                if (jsonscene.IndexOf("/Female/") > 0|| saveName.IndexOf("/Female/") > 0)
                 {
-                    string loadlook = "looks\r\n" + "Custom\\Atom\\Person\\Appearance\\Preset_temp.vap";
-                    if (loadScenetxt.StartsWith("rescan_"))
-                    {
-                        loadlook = "rescan_" + loadlook;
-                    }
-                    loadlook = loadlook + "\r\n" + formAnalysis.futaAsFemale;
-                    int personOrder = formAnalysis.personOrder;
-                    loadlook = loadlook + "\r\n" + (personOrder + 1).ToString();
-                    this.GenLoadscenetxt(loadlook, false, varName);
+                    characterGender = "female";
                 }
             }
-
+            varNames.AddRange(Getdependencies(jsonscene));
+            return jsonscene;
         }
 
         private void buttonResetFilter_Click(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleJSON;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -70,9 +71,10 @@ namespace varManager
         {
             panelImage.Dock = DockStyle.Fill;
             comboBoxOrderBy.SelectedIndex = 0;
-
             progressBar1.Visible = true;
             chklistLocation.SetItemChecked(0,true);
+            chklistLocation.SetItemChecked(1, true);
+            chklistLocation.SetItemChecked(3, true);
             checkedListBoxHideFav.SetItemChecked(0,true);
             checkedListBoxHideFav.SetItemChecked(1, true);
             checkedListBoxHideFav.SetItemChecked(2, true);
@@ -466,6 +468,7 @@ namespace varManager
         }
         private void GenerateItems()
         {
+            panelImage.Visible = false;
             if (comboBoxOrderBy.Text != strOrderBy)
             {
                 strOrderBy = comboBoxOrderBy.Text;
@@ -725,7 +728,8 @@ namespace varManager
                 GenerateItems();
             }
         }
-        string loadscenetxt = "";
+        private string curVarName;
+        private JSONClass jsonLoadScene;
 
         private void listView_ItemActivate(object sender, EventArgs e)
         {
@@ -740,10 +744,19 @@ namespace varManager
                     string varname = "";
                     if (!string.IsNullOrEmpty(item.SubItems[1].Text))
                     {
+                        curVarName = item.SubItems[1].Text;
                         varname = item.SubItems[1].Text+ ":/";
                     }
-                    
-                    loadscenetxt = (item.SubItems[7].Text== "not Installed"?"rescan_":"")+ item.SubItems[6].Text+"\r\n"+ varname+ item.SubItems[2].Text.Replace('\\','/');
+                    jsonLoadScene=new JSONClass();
+                    jsonLoadScene.Add("rescan", item.SubItems[7].Text == "not Installed" ? "true" : "false");
+
+                    jsonLoadScene.Add("resources", new JSONArray());
+                    JSONArray resources = jsonLoadScene["resources"].AsArray;
+                    resources.Add(new JSONClass());
+                    JSONClass resource = (JSONClass)resources[resources.Count - 1];
+                    resource.Add("type", item.SubItems[6].Text);
+                    resource.Add("saveName", varname + item.SubItems[2].Text.Replace('\\', '/'));
+
                     if (!string.IsNullOrEmpty(item.SubItems[3].Text))
                     {
                         labelPreviewVarName.Text = item.Text;
@@ -752,6 +765,7 @@ namespace varManager
                         pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
                        
                         panelImage.Visible = true;
+                        radioButtonPersonOrder1.Checked = true;
                         if (item.SubItems[6].Text.ToLower() == "scenes" || item.SubItems[6].Text.ToLower() == "looks")
                         {
                             buttonAnalysis.Visible = true;
@@ -759,6 +773,28 @@ namespace varManager
                         else
                         {
                             buttonAnalysis.Visible = false;
+                        }
+                        if ( item.SubItems[6].Text.ToLower() == "looks"|| item.SubItems[6].Text.ToLower() == "clothing" ||                           
+                            item.SubItems[6].Text.ToLower() == "morphs" || item.SubItems[6].Text.ToLower() == "hairstyle"||
+                            item.SubItems[6].Text.ToLower() == "skin" || item.SubItems[6].Text.ToLower() == "pose" )               
+                        {
+                            groupBoxPersonOrder.Visible = true;
+                            checkBoxFutaAsFemale.Visible = true;
+                        }
+                        else
+                        {
+                            groupBoxPersonOrder.Visible = false;
+                            checkBoxFutaAsFemale.Visible = false;
+                        }
+                        if (item.SubItems[6].Text.ToLower() == "morphs" ||
+                           item.SubItems[6].Text.ToLower() == "skin" ||
+                           item.SubItems[6].Text.ToLower() == "pose")
+                        {
+                            checkBoxForMale.Visible = true;
+                        }
+                        else
+                        {
+                            checkBoxForMale.Visible = false;
                         }
                     }
                 }
@@ -848,9 +884,40 @@ namespace varManager
 
         private void buttonLoadscene_Click(object sender, EventArgs e)
         {
+            panelImage.Visible = false;
+            Cursor = Cursors.WaitCursor;
             bool merge = false;
             if (checkBoxMerge.Checked) merge = true;
-            form1.GenLoadscenetxt(loadscenetxt, merge);
+            bool futaasfemale=false;
+            if(checkBoxFutaAsFemale.Checked) futaasfemale = true;
+            string characterGender = "unknown";
+            if (checkBoxForMale.Visible)
+            {
+                if (checkBoxForMale.Checked) characterGender = "male";
+                else characterGender = "female";
+            }
+            int personOrder = 1;
+            foreach (RadioButton rbperson in groupBoxPersonOrder.Controls)
+            {
+                if (rbperson.Checked)
+                {
+                    personOrder = int.Parse(rbperson.Text);
+                    break;
+                }
+            }
+            JSONArray resources = jsonLoadScene["resources"].AsArray;
+            string saveName = "";
+
+            if (resources.Count > 0)
+            {
+                JSONClass resource = (JSONClass)resources[0];
+                saveName = resource["saveName"].Value;
+            }
+            string varName = "";
+            List<string> varNames = null;
+            form1.ReadSaveName(saveName, ref varName, ref varNames, ref characterGender);
+            form1.GenLoadscenetxt(jsonLoadScene, merge, varNames, characterGender, futaasfemale, personOrder);
+            Cursor = Cursors.Arrow;
         }
 
         private void chklistLocation_SelectedIndexChanged(object sender, EventArgs e)
@@ -886,7 +953,9 @@ namespace varManager
 
         private void buttonLocate_Click(object sender, EventArgs e)
         {
-            string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2);
+            JSONArray resources = jsonLoadScene["resources"].AsArray;
+            JSONClass resource = (JSONClass)resources[resources.Count - 1];
+            string varName = resource["saveName"];
             if (varName.IndexOf(":/") > 0)
             {
                 varName = varName.Substring(0, varName.IndexOf(":/"));
@@ -898,6 +967,7 @@ namespace varManager
                 Comm.LocateFile(varName);
             }
         }
+
         int layoutPanelWidthMode = 0;
         private void buttonFav_Click(object sender, EventArgs e)
         {
@@ -1018,7 +1088,6 @@ namespace varManager
 
         private void radioButtonCategory_CheckedChanged(object sender, EventArgs e)
         {
-           
             RadioButton rb = sender as RadioButton;
             if (rb == null)
             {
@@ -1034,7 +1103,7 @@ namespace varManager
 
         private void buttonAnalysis_Click(object sender, EventArgs e)
         {
-            form1.Analysisscene(loadscenetxt);
+            form1.Analysisscene(jsonLoadScene);
         }
 
         private void buttonResetFilter_Click(object sender, EventArgs e)
@@ -1046,7 +1115,9 @@ namespace varManager
 
         private void buttonFilterByCreator_Click(object sender, EventArgs e)
         {
-            string varName = loadscenetxt.Substring(loadscenetxt.IndexOf("\r\n") + 2);
+            JSONArray resources = jsonLoadScene["resources"].AsArray;
+            JSONClass resource = (JSONClass)resources[resources.Count - 1];
+            string varName = resource["saveName"];
             if (varName.IndexOf(":/") > 0)
             {
                 varName = varName.Substring(0, varName.IndexOf(":/"));

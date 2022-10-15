@@ -103,15 +103,25 @@ namespace varManager
             this.checkBoxInstalled = new System.Windows.Forms.CheckBox();
             this.buttonResetFilter = new System.Windows.Forms.Button();
             this.tableLayoutPanelPreview = new System.Windows.Forms.TableLayoutPanel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.checkBoxMerge = new System.Windows.Forms.CheckBox();
-            this.labelPreviewVarName = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.buttonAnalysis = new System.Windows.Forms.Button();
-            this.buttonLoad = new System.Windows.Forms.Button();
-            this.buttonLocate = new System.Windows.Forms.Button();
-            this.buttonpreviewinstall = new System.Windows.Forms.Button();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
+            this.labelPreviewVarName = new System.Windows.Forms.Label();
+            this.buttonLocate = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.buttonLoad = new System.Windows.Forms.Button();
+            this.checkBoxForMale = new System.Windows.Forms.CheckBox();
+            this.checkBoxFutaAsFemale = new System.Windows.Forms.CheckBox();
+            this.groupBoxPersonOrder = new System.Windows.Forms.GroupBox();
+            this.radioButtonPersonOrder6 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder8 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder7 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder5 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder4 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder3 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder2 = new System.Windows.Forms.RadioButton();
+            this.radioButtonPersonOrder1 = new System.Windows.Forms.RadioButton();
+            this.checkBoxMerge = new System.Windows.Forms.CheckBox();
+            this.buttonAnalysis = new System.Windows.Forms.Button();
+            this.buttonpreviewinstall = new System.Windows.Forms.Button();
             this.listViewPreviewPics = new System.Windows.Forms.ListView();
             this.imageListPreviewPics = new System.Windows.Forms.ImageList(this.components);
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
@@ -159,8 +169,9 @@ namespace varManager
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingNavigator)).BeginInit();
             this.varsBindingNavigator.SuspendLayout();
             this.tableLayoutPanelPreview.SuspendLayout();
-            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.groupBoxPersonOrder.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.toolStripPreview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.varsBindingSource)).BeginInit();
@@ -860,7 +871,7 @@ namespace varManager
             this.varsBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.varsBindingNavigator.Name = "varsBindingNavigator";
             this.varsBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.varsBindingNavigator.Size = new System.Drawing.Size(276, 27);
+            this.varsBindingNavigator.Size = new System.Drawing.Size(237, 27);
             this.varsBindingNavigator.TabIndex = 0;
             this.varsBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -935,7 +946,7 @@ namespace varManager
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(279, 7);
+            this.label1.Location = new System.Drawing.Point(240, 7);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 17);
             this.label1.TabIndex = 1;
@@ -947,7 +958,7 @@ namespace varManager
             this.comboBoxCreater.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.comboBoxCreater.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCreater.FormattingEnabled = true;
-            this.comboBoxCreater.Location = new System.Drawing.Point(344, 3);
+            this.comboBoxCreater.Location = new System.Drawing.Point(305, 4);
             this.comboBoxCreater.Name = "comboBoxCreater";
             this.comboBoxCreater.Size = new System.Drawing.Size(179, 25);
             this.comboBoxCreater.Sorted = true;
@@ -959,7 +970,7 @@ namespace varManager
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(529, 7);
+            this.label2.Location = new System.Drawing.Point(490, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 17);
             this.label2.TabIndex = 3;
@@ -968,7 +979,7 @@ namespace varManager
             // textBoxFilter
             // 
             this.textBoxFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxFilter.Location = new System.Drawing.Point(634, 3);
+            this.textBoxFilter.Location = new System.Drawing.Point(595, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(75, 25);
             this.textBoxFilter.TabIndex = 4;
@@ -981,7 +992,7 @@ namespace varManager
             this.checkBoxInstalled.AutoSize = true;
             this.checkBoxInstalled.Checked = true;
             this.checkBoxInstalled.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBoxInstalled.Location = new System.Drawing.Point(715, 5);
+            this.checkBoxInstalled.Location = new System.Drawing.Point(676, 5);
             this.checkBoxInstalled.Name = "checkBoxInstalled";
             this.checkBoxInstalled.Size = new System.Drawing.Size(84, 21);
             this.checkBoxInstalled.TabIndex = 5;
@@ -1003,131 +1014,258 @@ namespace varManager
             // 
             // tableLayoutPanelPreview
             // 
-            this.tableLayoutPanelPreview.ColumnCount = 1;
-            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 1);
+            this.tableLayoutPanelPreview.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.tableLayoutPanelPreview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
+            this.tableLayoutPanelPreview.ColumnCount = 3;
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 88F));
             this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
+            this.tableLayoutPanelPreview.Controls.Add(this.labelPreviewVarName, 1, 1);
+            this.tableLayoutPanelPreview.Controls.Add(this.buttonLocate, 0, 1);
+            this.tableLayoutPanelPreview.Controls.Add(this.panel3, 0, 2);
+            this.tableLayoutPanelPreview.Controls.Add(this.buttonpreviewinstall, 2, 1);
             this.tableLayoutPanelPreview.Location = new System.Drawing.Point(6, 62);
             this.tableLayoutPanelPreview.Name = "tableLayoutPanelPreview";
-            this.tableLayoutPanelPreview.RowCount = 2;
+            this.tableLayoutPanelPreview.RowCount = 3;
             this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 73F));
-            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(540, 113);
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.tableLayoutPanelPreview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 85F));
+            this.tableLayoutPanelPreview.Size = new System.Drawing.Size(540, 238);
             this.tableLayoutPanelPreview.TabIndex = 1;
             this.tableLayoutPanelPreview.Visible = false;
             // 
-            // panel3
+            // pictureBoxPreview
             // 
-            this.panel3.Controls.Add(this.checkBoxMerge);
-            this.panel3.Controls.Add(this.labelPreviewVarName);
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.buttonAnalysis);
-            this.panel3.Controls.Add(this.buttonLoad);
-            this.panel3.Controls.Add(this.buttonLocate);
-            this.panel3.Controls.Add(this.buttonpreviewinstall);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.ForeColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel3.Location = new System.Drawing.Point(3, 43);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(534, 67);
-            this.panel3.TabIndex = 0;
-            // 
-            // checkBoxMerge
-            // 
-            this.checkBoxMerge.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.checkBoxMerge.AutoSize = true;
-            this.checkBoxMerge.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.checkBoxMerge.Location = new System.Drawing.Point(255, 38);
-            this.checkBoxMerge.Name = "checkBoxMerge";
-            this.checkBoxMerge.Size = new System.Drawing.Size(69, 21);
-            this.checkBoxMerge.TabIndex = 3;
-            this.checkBoxMerge.Text = "Merge";
-            this.toolTip1.SetToolTip(this.checkBoxMerge, "Merge Load");
-            this.checkBoxMerge.UseVisualStyleBackColor = true;
+            this.pictureBoxPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tableLayoutPanelPreview.SetColumnSpan(this.pictureBoxPreview, 3);
+            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(5, 5);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(530, 102);
+            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxPreview.TabIndex = 1;
+            this.pictureBoxPreview.TabStop = false;
+            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
             // 
             // labelPreviewVarName
             // 
-            this.labelPreviewVarName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelPreviewVarName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelPreviewVarName.Font = new System.Drawing.Font("Cambria", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelPreviewVarName.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.labelPreviewVarName.Location = new System.Drawing.Point(81, 11);
+            this.labelPreviewVarName.Location = new System.Drawing.Point(87, 112);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(418, 17);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(358, 37);
             this.labelPreviewVarName.TabIndex = 2;
             this.labelPreviewVarName.Text = "a.a.1";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(4, 11);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 17);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "VarName:";
-            // 
-            // buttonAnalysis
-            // 
-            this.buttonAnalysis.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAnalysis.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.buttonAnalysis.Location = new System.Drawing.Point(107, 35);
-            this.buttonAnalysis.Name = "buttonAnalysis";
-            this.buttonAnalysis.Size = new System.Drawing.Size(98, 26);
-            this.buttonAnalysis.TabIndex = 0;
-            this.buttonAnalysis.Text = "LoadPerson";
-            this.toolTip1.SetToolTip(this.buttonAnalysis, "Extract Preson from scene and load to VAM");
-            this.buttonAnalysis.UseVisualStyleBackColor = true;
-            this.buttonAnalysis.Click += new System.EventHandler(this.buttonAnalysis_Click);
-            // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonLoad.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.buttonLoad.Location = new System.Drawing.Point(324, 35);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(98, 26);
-            this.buttonLoad.TabIndex = 0;
-            this.buttonLoad.Text = "Load";
-            this.toolTip1.SetToolTip(this.buttonLoad, "Load to VAM");
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+            this.labelPreviewVarName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonLocate
             // 
-            this.buttonLocate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.buttonLocate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonLocate.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonLocate.Location = new System.Drawing.Point(3, 35);
+            this.buttonLocate.Location = new System.Drawing.Point(5, 115);
             this.buttonLocate.Name = "buttonLocate";
-            this.buttonLocate.Size = new System.Drawing.Size(98, 26);
+            this.buttonLocate.Size = new System.Drawing.Size(74, 31);
             this.buttonLocate.TabIndex = 0;
             this.buttonLocate.Text = "Locate";
             this.toolTip1.SetToolTip(this.buttonLocate, "Locate the current var file in Explorer");
             this.buttonLocate.UseVisualStyleBackColor = true;
             this.buttonLocate.Click += new System.EventHandler(this.buttonLocate_Click);
             // 
+            // panel3
+            // 
+            this.tableLayoutPanelPreview.SetColumnSpan(this.panel3, 3);
+            this.panel3.Controls.Add(this.buttonLoad);
+            this.panel3.Controls.Add(this.checkBoxForMale);
+            this.panel3.Controls.Add(this.checkBoxFutaAsFemale);
+            this.panel3.Controls.Add(this.groupBoxPersonOrder);
+            this.panel3.Controls.Add(this.checkBoxMerge);
+            this.panel3.Controls.Add(this.buttonAnalysis);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.ForeColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel3.Location = new System.Drawing.Point(5, 154);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(530, 79);
+            this.panel3.TabIndex = 0;
+            // 
+            // buttonLoad
+            // 
+            this.buttonLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonLoad.ForeColor = System.Drawing.Color.SeaGreen;
+            this.buttonLoad.Location = new System.Drawing.Point(419, 34);
+            this.buttonLoad.Name = "buttonLoad";
+            this.buttonLoad.Size = new System.Drawing.Size(108, 40);
+            this.buttonLoad.TabIndex = 0;
+            this.buttonLoad.Text = "Load";
+            this.toolTip1.SetToolTip(this.buttonLoad, "Load to VAM,Add loadscene.cs as session plugin in VAM first.");
+            this.buttonLoad.UseVisualStyleBackColor = true;
+            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+            // 
+            // checkBoxForMale
+            // 
+            this.checkBoxForMale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxForMale.ForeColor = System.Drawing.Color.SeaGreen;
+            this.checkBoxForMale.Location = new System.Drawing.Point(329, 31);
+            this.checkBoxForMale.Name = "checkBoxForMale";
+            this.checkBoxForMale.Size = new System.Drawing.Size(118, 21);
+            this.checkBoxForMale.TabIndex = 15;
+            this.checkBoxForMale.Text = "For Male";
+            this.toolTip1.SetToolTip(this.checkBoxForMale, "Load to male atom.");
+            this.checkBoxForMale.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxFutaAsFemale
+            // 
+            this.checkBoxFutaAsFemale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxFutaAsFemale.ForeColor = System.Drawing.Color.SeaGreen;
+            this.checkBoxFutaAsFemale.Location = new System.Drawing.Point(329, 7);
+            this.checkBoxFutaAsFemale.Name = "checkBoxFutaAsFemale";
+            this.checkBoxFutaAsFemale.Size = new System.Drawing.Size(118, 21);
+            this.checkBoxFutaAsFemale.TabIndex = 14;
+            this.checkBoxFutaAsFemale.Text = "Futa⇔Female";
+            this.toolTip1.SetToolTip(this.checkBoxFutaAsFemale, "futa are seen as female in this preset and VAM.");
+            this.checkBoxFutaAsFemale.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxPersonOrder
+            // 
+            this.groupBoxPersonOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder6);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder8);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder7);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder5);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder4);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder3);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder2);
+            this.groupBoxPersonOrder.Controls.Add(this.radioButtonPersonOrder1);
+            this.groupBoxPersonOrder.ForeColor = System.Drawing.Color.SeaGreen;
+            this.groupBoxPersonOrder.Location = new System.Drawing.Point(168, 3);
+            this.groupBoxPersonOrder.Name = "groupBoxPersonOrder";
+            this.groupBoxPersonOrder.Size = new System.Drawing.Size(153, 72);
+            this.groupBoxPersonOrder.TabIndex = 13;
+            this.groupBoxPersonOrder.TabStop = false;
+            this.groupBoxPersonOrder.Text = "Person Order";
+            this.toolTip1.SetToolTip(this.groupBoxPersonOrder, "Person atom order in VAM");
+            // 
+            // radioButtonPersonOrder6
+            // 
+            this.radioButtonPersonOrder6.AutoSize = true;
+            this.radioButtonPersonOrder6.Location = new System.Drawing.Point(44, 45);
+            this.radioButtonPersonOrder6.Name = "radioButtonPersonOrder6";
+            this.radioButtonPersonOrder6.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder6.TabIndex = 13;
+            this.radioButtonPersonOrder6.Text = "6";
+            this.radioButtonPersonOrder6.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder8
+            // 
+            this.radioButtonPersonOrder8.AutoSize = true;
+            this.radioButtonPersonOrder8.Location = new System.Drawing.Point(117, 45);
+            this.radioButtonPersonOrder8.Name = "radioButtonPersonOrder8";
+            this.radioButtonPersonOrder8.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder8.TabIndex = 13;
+            this.radioButtonPersonOrder8.Text = "8";
+            this.radioButtonPersonOrder8.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder7
+            // 
+            this.radioButtonPersonOrder7.AutoSize = true;
+            this.radioButtonPersonOrder7.Location = new System.Drawing.Point(82, 45);
+            this.radioButtonPersonOrder7.Name = "radioButtonPersonOrder7";
+            this.radioButtonPersonOrder7.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder7.TabIndex = 13;
+            this.radioButtonPersonOrder7.Text = "7";
+            this.radioButtonPersonOrder7.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder5
+            // 
+            this.radioButtonPersonOrder5.AutoSize = true;
+            this.radioButtonPersonOrder5.Location = new System.Drawing.Point(6, 45);
+            this.radioButtonPersonOrder5.Name = "radioButtonPersonOrder5";
+            this.radioButtonPersonOrder5.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder5.TabIndex = 13;
+            this.radioButtonPersonOrder5.Text = "5";
+            this.radioButtonPersonOrder5.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder4
+            // 
+            this.radioButtonPersonOrder4.AutoSize = true;
+            this.radioButtonPersonOrder4.Location = new System.Drawing.Point(117, 20);
+            this.radioButtonPersonOrder4.Name = "radioButtonPersonOrder4";
+            this.radioButtonPersonOrder4.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder4.TabIndex = 13;
+            this.radioButtonPersonOrder4.Text = "4";
+            this.radioButtonPersonOrder4.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder3
+            // 
+            this.radioButtonPersonOrder3.AutoSize = true;
+            this.radioButtonPersonOrder3.Location = new System.Drawing.Point(82, 20);
+            this.radioButtonPersonOrder3.Name = "radioButtonPersonOrder3";
+            this.radioButtonPersonOrder3.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder3.TabIndex = 13;
+            this.radioButtonPersonOrder3.Text = "3";
+            this.radioButtonPersonOrder3.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder2
+            // 
+            this.radioButtonPersonOrder2.AutoSize = true;
+            this.radioButtonPersonOrder2.Location = new System.Drawing.Point(44, 20);
+            this.radioButtonPersonOrder2.Name = "radioButtonPersonOrder2";
+            this.radioButtonPersonOrder2.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder2.TabIndex = 13;
+            this.radioButtonPersonOrder2.Text = "2";
+            this.radioButtonPersonOrder2.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonPersonOrder1
+            // 
+            this.radioButtonPersonOrder1.AutoSize = true;
+            this.radioButtonPersonOrder1.Checked = true;
+            this.radioButtonPersonOrder1.Location = new System.Drawing.Point(6, 20);
+            this.radioButtonPersonOrder1.Name = "radioButtonPersonOrder1";
+            this.radioButtonPersonOrder1.Size = new System.Drawing.Size(37, 21);
+            this.radioButtonPersonOrder1.TabIndex = 13;
+            this.radioButtonPersonOrder1.TabStop = true;
+            this.radioButtonPersonOrder1.Text = "1";
+            this.radioButtonPersonOrder1.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxMerge
+            // 
+            this.checkBoxMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxMerge.ForeColor = System.Drawing.Color.SeaGreen;
+            this.checkBoxMerge.Location = new System.Drawing.Point(329, 55);
+            this.checkBoxMerge.Name = "checkBoxMerge";
+            this.checkBoxMerge.Size = new System.Drawing.Size(118, 21);
+            this.checkBoxMerge.TabIndex = 3;
+            this.checkBoxMerge.Text = "Merge";
+            this.toolTip1.SetToolTip(this.checkBoxMerge, "Merge Load");
+            this.checkBoxMerge.UseVisualStyleBackColor = true;
+            // 
+            // buttonAnalysis
+            // 
+            this.buttonAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAnalysis.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.buttonAnalysis.Location = new System.Drawing.Point(3, 34);
+            this.buttonAnalysis.Name = "buttonAnalysis";
+            this.buttonAnalysis.Size = new System.Drawing.Size(108, 40);
+            this.buttonAnalysis.TabIndex = 0;
+            this.buttonAnalysis.Text = "LoadPerson";
+            this.toolTip1.SetToolTip(this.buttonAnalysis, "Extract Preson from scene and load to VAM,Add loadscene.cs as session plugin in V" +
+        "AM first.\r\n");
+            this.buttonAnalysis.UseVisualStyleBackColor = true;
+            this.buttonAnalysis.Click += new System.EventHandler(this.buttonAnalysis_Click);
+            // 
             // buttonpreviewinstall
             // 
-            this.buttonpreviewinstall.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonpreviewinstall.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonpreviewinstall.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonpreviewinstall.Location = new System.Drawing.Point(430, 35);
+            this.buttonpreviewinstall.Location = new System.Drawing.Point(453, 115);
             this.buttonpreviewinstall.Name = "buttonpreviewinstall";
-            this.buttonpreviewinstall.Size = new System.Drawing.Size(98, 26);
+            this.buttonpreviewinstall.Size = new System.Drawing.Size(82, 31);
             this.buttonpreviewinstall.TabIndex = 0;
             this.buttonpreviewinstall.Text = "Install";
             this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
             this.buttonpreviewinstall.UseVisualStyleBackColor = true;
             this.buttonpreviewinstall.Click += new System.EventHandler(this.buttonpreviewinstall_Click);
-            // 
-            // pictureBoxPreview
-            // 
-            this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxPreview.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(534, 34);
-            this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxPreview.TabIndex = 1;
-            this.pictureBoxPreview.TabStop = false;
-            this.pictureBoxPreview.Click += new System.EventHandler(this.pictureBoxPreview_Click);
             // 
             // listViewPreviewPics
             // 
@@ -1393,9 +1531,10 @@ namespace varManager
             this.varsBindingNavigator.ResumeLayout(false);
             this.varsBindingNavigator.PerformLayout();
             this.tableLayoutPanelPreview.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.groupBoxPersonOrder.ResumeLayout(false);
+            this.groupBoxPersonOrder.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.toolStripPreview.ResumeLayout(false);
@@ -1449,8 +1588,6 @@ namespace varManager
         private System.Windows.Forms.Button buttonInstall;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanelPreview;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label labelPreviewVarName;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonpreviewinstall;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.ToolStrip toolStripPreview;
@@ -1521,6 +1658,18 @@ namespace varManager
         private System.Windows.Forms.DataGridViewTextBoxColumn pose;
         private System.Windows.Forms.DataGridViewTextBoxColumn skin;
         private System.Windows.Forms.DataGridViewCheckBoxColumn disabledDataGridViewCheckBoxColumn;
+        private System.Windows.Forms.CheckBox checkBoxFutaAsFemale;
+        private System.Windows.Forms.GroupBox groupBoxPersonOrder;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder6;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder8;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder7;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder5;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder4;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder3;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder2;
+        private System.Windows.Forms.RadioButton radioButtonPersonOrder1;
+        private System.Windows.Forms.Label labelPreviewVarName;
+        private System.Windows.Forms.CheckBox checkBoxForMale;
     }
 }
 

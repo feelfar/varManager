@@ -164,10 +164,10 @@
             // buttonExit
             // 
             this.buttonExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonExit.Location = new System.Drawing.Point(368, 379);
+            this.buttonExit.Location = new System.Drawing.Point(376, 379);
             this.buttonExit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(126, 35);
+            this.buttonExit.Size = new System.Drawing.Size(118, 35);
             this.buttonExit.TabIndex = 4;
             this.buttonExit.Text = "Cancel";
             this.buttonExit.UseVisualStyleBackColor = true;
@@ -187,7 +187,7 @@
             "7",
             "8",
             "9"});
-            this.listBoxPerson.Location = new System.Drawing.Point(6, 24);
+            this.listBoxPerson.Location = new System.Drawing.Point(6, 23);
             this.listBoxPerson.Name = "listBoxPerson";
             this.listBoxPerson.Size = new System.Drawing.Size(112, 142);
             this.listBoxPerson.TabIndex = 9;
@@ -195,7 +195,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listBoxPerson);
-            this.groupBox1.Location = new System.Drawing.Point(244, 198);
+            this.groupBox1.Location = new System.Drawing.Point(246, 245);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(124, 174);
             this.groupBox1.TabIndex = 10;

@@ -65,107 +65,191 @@ namespace MVRPlugin
                     if (SuperController.singleton.isLoading) return;
 
 
-                    string loadscenetxt = "Custom\\PluginData\\feelfar\\loadscene.txt";
+                    string loadscenetxt = "Custom\\PluginData\\feelfar\\loadscene.json";
                     if (FileManagerSecure.FileExists(loadscenetxt))
                     {
-                        SuperController.LogMessage("find loadscene.txt");
-                        string atomforload = FileManagerSecure.ReadAllText(loadscenetxt);
+                        SuperController.LogMessage("find loadscene.json");
+
+                        JSONClass atomforload = (JSONClass)JSON.Parse(FileManagerSecure.ReadAllText(loadscenetxt));
+                        //SuperController.LogMessage(atomforload.ToString());
                         Thread.Sleep(1000);
                         FileManagerSecure.DeleteFile(loadscenetxt);
-                        if (atomforload == "rescan")
+                        bool rescan = false;
+                        if (atomforload.HasKey("rescan"))
                         {
-                            SuperController.LogMessage("RescanPackages");
-                            SuperController.singleton.RescanPackages();
-                            return;
+                            rescan = atomforload["rescan"].AsBool;
                         }
-
-                        string[] strLoadscene = atomforload.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                        if (strLoadscene.Length >= 2)
+                        if (rescan)
                         {
-                            string scenetype = strLoadscene[0];
-                            if (scenetype.StartsWith("rescan_"))
+                            SuperController.LogMessage("Rescan Packages...");
+                            SuperController.singleton.RescanPackages();
+                            //Thread.Sleep(10000);
+                        }
+                        bool merge = false;
+                        if (atomforload.HasKey("merge"))
+                        {
+                            SuperController.LogMessage("merge load enabled...");
+                            merge = atomforload["merge"].AsBool;
+                        }
+                        string characterGender = "female";
+                        if (atomforload.HasKey("characterGender"))
+                        {
+                            characterGender = atomforload["characterGender"].Value;
+                            SuperController.LogMessage("Character gender is " + characterGender.ToString());
+                        }
+                        bool futaAsFemale = false;
+                        if (atomforload.HasKey("futaAsFemale"))
+                        {
+                            futaAsFemale = atomforload["futaAsFemale"].AsBool;
+                            SuperController.LogMessage("futaAsFemale is " + futaAsFemale.ToString());
+                        }
+                        bool forMale = (characterGender == "male" || (characterGender == "futa" && (!futaAsFemale)));
+                        int personOrder = 1;
+                        if (atomforload.HasKey("personOrder"))
+                        {
+                            personOrder = atomforload["personOrder"].AsInt;
+                        }
+                        JSONArray resources = atomforload["resources"].AsArray;
+                        List<JSONClass> atompresets = new List<JSONClass>();
+                        foreach (JSONClass resource in resources)
+                        {
+                            while (SuperController.singleton.isLoading)
                             {
-                                SuperController.LogMessage("RescanPackages");
-                                SuperController.singleton.RescanPackages();
+                                Thread.Sleep(1000);
                             }
-                            bool merge = false;
-                            string scenefile = strLoadscene[1];
-                            if (scenefile.EndsWith("_merge"))
+                            string scenetype = "";
+                            if (resource.HasKey("type"))
                             {
-                                merge = true;
-                                scenefile = scenefile.Substring(0, scenefile.Length - 6);
+                                scenetype = resource["type"];
                             }
+                            string scenefile = "";
+                            if (resource.HasKey("saveName"))
+                            {
+                                scenefile = resource["saveName"];
+                            }
+                            if (string.IsNullOrEmpty(scenetype) || string.IsNullOrEmpty(scenefile))
+                                continue;
+
                             if (FileManagerSecure.FileExists(scenefile))
                             {
-                                if (scenetype.EndsWith("scenes"))
+                                if (scenetype == ("scenes"))
                                 {
+                                    SuperController.LogMessage("load " + scenetype + ": " + scenefile);
                                     if (merge)
                                         SuperController.singleton.LoadMerge(scenefile);
                                     else
                                         SuperController.singleton.Load(scenefile);
-                                    SuperController.LogMessage("load scene: " + scenefile);
-                                }
-                                if (scenetype.EndsWith("hairstyle"))
-                                {
-                                    LoadPreset("HairPresets", merge, scenefile);
-                                }
-                                if (scenetype.EndsWith("morphs"))
-                                {
-                                    LoadPreset("MorphPresets", merge, scenefile);
-                                }
-                                if (scenetype.EndsWith("skin"))
-                                {
-                                    LoadPreset("SkinPresets", merge, scenefile);
-                                }
-                                if (scenetype.EndsWith("clothing"))
-                                {
-                                    LoadPreset("ClothingPresets", merge, scenefile);
-                                }
-                                if (scenetype.EndsWith("pose"))
-                                {
-                                    if (scenefile.EndsWith(".json"))
-                                        LoadLegacyl("pose", scenefile);
-                                    else
-                                        LoadPreset("PosePresets", merge, scenefile);
-                                }
-                                if (scenetype.EndsWith("looks"))
-                                {
-                                    if (scenefile.EndsWith(".json"))
-                                    {
-                                        if (scenefile.IndexOf("/Person/full/") >= 0)
-                                            LoadLegacyl("full", scenefile);
-                                        else
-                                            LoadLegacyl("appearance", scenefile);
-                                    }
-                                    else
-                                    {
-                                        bool futaasfemale = false;
-                                        if (strLoadscene.Length >= 3)
-                                            if (strLoadscene[2].ToLower() == "true") futaasfemale = true;
-                                        int presonorder = 1;
-                                        if (strLoadscene.Length >= 4)
-                                        {
-                                            if (!int.TryParse(strLoadscene[3], out presonorder))
-                                            {
-                                                presonorder = 1;
-                                            }
-                                        }
-                                        LoadPreset("AppearancePresets", merge, scenefile, futaasfemale, presonorder);
-                                    }
-                                }
 
+                                }
+                                else
+                                {
+                                    atompresets.Add(resource);
+                                    //SuperController.LogMessage((merge ? " Merge LoadPreset " : "LoadPreset ") + presetType + ":" + presetFile);
+
+                                    //bool formale = ForMale(presetFile, futaasfemale);
+
+                                }
                             }
                             else
                             {
-                                SuperController.LogError("no found " + strLoadscene[1]);
+                                SuperController.LogError("no found " + scenefile);
                             }
                         }
-                        else
+                        if (atompresets.Count > 0)
                         {
-                            SuperController.LogError("unknown format");
+                            bool findatom = false;
+                            foreach (var atom in SuperController.singleton.GetAtoms())
+                            {
+                                if (atom.type == "Person" && atom.on)
+                                {
+                                    if (IsMale(atom, futaAsFemale) == forMale)
+                                    {
+                                        personOrder--;
+                                        if (personOrder > 0)
+                                            continue;
+                                        findatom = true;
+                                        SuperController.LogMessage("Find Person " + forMale + atom.name);
+                                        //atom.SetOn(false);
+										atom.hidden = true;
+                                        foreach (JSONClass resource in atompresets)
+                                        {
+                                            while (SuperController.singleton.isLoading)
+                                            {
+                                                Thread.Sleep(1000);
+                                            }
+											//Thread.Sleep(2000);
+                                            string scenetype = "";
+                                            if (resource.HasKey("type"))
+                                            {
+                                                scenetype = resource["type"];
+                                            }
+                                            string scenefile = "";
+                                            if (resource.HasKey("saveName"))
+                                            {
+                                                scenefile = resource["saveName"];
+                                            }
+                                            if (string.IsNullOrEmpty(scenetype) || string.IsNullOrEmpty(scenefile))
+                                                continue;
+
+                                            if (FileManagerSecure.FileExists(scenefile))
+                                            {
+                                                if (scenetype == ("hairstyle"))
+                                                {
+                                                    LoadPreset(atom, "HairPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("morphs"))
+                                                {
+                                                    LoadPreset(atom, "MorphPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("skin"))
+                                                {
+                                                    LoadPreset(atom, "SkinPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("clothing"))
+                                                {
+                                                    LoadPreset(atom, "ClothingPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("breast"))
+                                                {
+                                                    LoadPreset(atom, "FemaleBreastPhysicsPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("glute"))
+                                                {
+                                                    LoadPreset(atom, "FemaleGlutePhysicsPresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("pose"))
+                                                {
+                                                    if (scenefile.EndsWith(".json"))
+                                                        LoadLegacyl(atom, "pose", scenefile);
+                                                    else
+                                                        LoadPreset(atom, "PosePresets", merge, scenefile);
+                                                }
+                                                if (scenetype == ("looks"))
+                                                {
+                                                    if (scenefile.EndsWith(".json"))
+                                                    {
+                                                        if (scenefile.IndexOf("/Person/full/") >= 0)
+                                                            LoadLegacyl(atom, "full", scenefile);
+                                                        else
+                                                            LoadLegacyl(atom, "appearance", scenefile);
+                                                    }
+                                                    else
+                                                    {
+                                                        LoadPreset(atom, "AppearancePresets", merge, scenefile);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        //atom.SetOn(true);
+										atom.hidden = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!findatom)
+                                SuperController.LogError("Error load Preset,Unable to match the right atom");
                         }
                     }
-
                 }
 
             }
@@ -174,11 +258,41 @@ namespace MVRPlugin
                 SuperController.LogError("Exception caught: " + e);
             }
         }
-        private void LoadPreset(string presetType, bool merge, string presetFile, bool futaasfemale = false, int atomOrder = 1)
+        private void LoadPreset(Atom atom, string presetType, bool merge, string presetFile)
+        {
+            JSONStorable js = atom.GetStorableByID(presetType);
+
+            JSONStorableBool loadOnSelectJSON = js.GetBoolJSONParam("loadPresetOnSelect");
+            bool preState = loadOnSelectJSON.val;
+            loadOnSelectJSON.val = false;
+
+            JSONStorableUrl presetPathJSON = js.GetUrlJSONParam("presetBrowsePath");
+            string pathPreState = presetPathJSON.val;
+            presetPathJSON.val = SuperController.singleton.NormalizePath(presetFile);
+
+            if (merge) js.CallAction("MergeLoadPreset");
+            else js.CallAction("LoadPreset");
+
+            //presetPathJSON.val = pathPreState;
+            //loadOnSelectJSON.val = preState;
+            SuperController.LogMessage("loaded "+ presetType+": " + presetFile);
+        }
+        private void LoadLegacyl(Atom atom, string presetType, string presetFile)
+        {
+            if (presetType == "pose")
+                atom.LoadPhysicalPreset(presetFile);
+            if (presetType == "full")
+                atom.LoadPreset(presetFile);
+            if (presetType == "appearance")
+                atom.LoadAppearancePreset(presetFile);
+			SuperController.LogMessage("loaded "+ presetType+": " + presetFile);
+        }
+		
+        private void LoadPreset(string presetType, bool merge, string presetFile, bool formale = false, bool futaasfemale = false, int personOrder = 1)
         {
             SuperController.LogMessage((merge ? " Merge LoadPreset " : "LoadPreset ") + presetType + ":" + presetFile);
 
-            bool formale = ForMale(presetFile, futaasfemale);
+            //bool formale = ForMale(presetFile, futaasfemale);
             bool findatom = false;
             foreach (var atom in SuperController.singleton.GetAtoms())
             {
@@ -187,8 +301,8 @@ namespace MVRPlugin
                     SuperController.LogMessage("Find Person " + (IsMale(atom, futaasfemale) ? "Male :" : "Female :") + atom.name);
                     if (IsMale(atom, futaasfemale) == formale)
                     {
-                        atomOrder--;
-                        if (atomOrder > 0)
+                        personOrder--;
+                        if (personOrder > 0)
                             continue;
                         atom.SetOn(false);
                         JSONStorable js = atom.GetStorableByID(presetType);
@@ -208,6 +322,41 @@ namespace MVRPlugin
                         loadOnSelectJSON.val = preState;
                         atom.SetOn(true);
                         findatom = true;
+                        SuperController.LogMessage("loaded Preset: " + presetFile);
+                        break;
+                    }
+                }
+            }
+            if (!findatom)
+                SuperController.LogError("Error load Preset " + presetFile + ",Unable to match the right atom");
+
+        }
+
+        private void LoadLegacyl(string presetType, string presetFile, bool formale = false, bool futaasfemale = false, int personOrder = 1)
+        {
+            SuperController.LogMessage("LoadLegacyl " + presetType + ":" + presetFile);
+
+            //bool formale = ForMale(presetFile, futaasfemale);
+            bool findatom = false;
+            foreach (var atom in SuperController.singleton.GetAtoms())
+            {
+                if (atom.type == "Person" && atom.on)
+                {
+                    SuperController.LogMessage("Find Person " + (IsMale(atom, futaasfemale) ? "Male :" : "Female :") + atom.name);
+                    if (IsMale(atom, futaasfemale) == formale)
+                    {
+                        personOrder--;
+                        if (personOrder > 0)
+                            continue;
+                        atom.SetOn(false);
+                        if (presetType == "pose")
+                            atom.LoadPhysicalPreset(presetFile);
+                        if (presetType == "full")
+                            atom.LoadPreset(presetFile);
+                        if (presetType == "appearance")
+                            atom.LoadAppearancePreset(presetFile);
+                        findatom = true;
+                        atom.SetOn(true);
                         SuperController.LogMessage("loaded Preset: " + presetFile);
                         break;
                     }
@@ -252,38 +401,6 @@ namespace MVRPlugin
             }
 
             return formale;
-        }
-
-        private void LoadLegacyl(string presetType, string presetFile)
-        {
-            SuperController.LogMessage("LoadLegacyl " + presetType + ":" + presetFile);
-
-            bool formale = ForMale(presetFile);
-            bool findatom = false;
-            foreach (var atom in SuperController.singleton.GetAtoms())
-            {
-                if (atom.type == "Person" && atom.on)
-                {
-                    SuperController.LogMessage("Find Person " + (IsMale(atom) ? "Male :" : "Female :") + atom.name);
-                    if (IsMale(atom) == formale)
-                    {
-                        atom.SetOn(false);
-                        if (presetType == "pose")
-                            atom.LoadPhysicalPreset(presetFile);
-                        if (presetType == "full")
-                            atom.LoadPreset(presetFile);
-                        if (presetType == "appearance")
-                            atom.LoadAppearancePreset(presetFile);
-                        findatom = true;
-                        atom.SetOn(true);
-                        SuperController.LogMessage("loaded Preset: " + presetFile);
-                        break;
-                    }
-                }
-            }
-            if (!findatom)
-                SuperController.LogError("Error load Preset " + presetFile + ",Unable to match the right atom");
-
         }
 
         public bool IsMale(Atom atom, bool futaAsFemale = false)
