@@ -159,7 +159,7 @@ namespace SimpleJSON
 		// Token: 0x060062C3 RID: 25283 RVA: 0x0024A600 File Offset: 0x00248A00
 		public override void Serialize(BinaryWriter aWriter)
 		{
-			aWriter.Write(1);
+			aWriter.Write((byte)1);
 			aWriter.Write(this.m_List.Count);
 			for (int i = 0; i < this.m_List.Count; i++)
 			{

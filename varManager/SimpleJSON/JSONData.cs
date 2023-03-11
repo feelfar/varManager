@@ -77,32 +77,32 @@ namespace SimpleJSON
 			jsondata.AsInt = this.AsInt;
 			if (jsondata.m_Data == this.m_Data)
 			{
-				aWriter.Write(4);
+				aWriter.Write((byte)4);
 				aWriter.Write(this.AsInt);
 				return;
 			}
 			jsondata.AsFloat = this.AsFloat;
 			if (jsondata.m_Data == this.m_Data)
 			{
-				aWriter.Write(7);
+				aWriter.Write((byte)7);
 				aWriter.Write(this.AsFloat);
 				return;
 			}
 			jsondata.AsDouble = this.AsDouble;
 			if (jsondata.m_Data == this.m_Data)
 			{
-				aWriter.Write(5);
+				aWriter.Write((byte)5);
 				aWriter.Write(this.AsDouble);
 				return;
 			}
 			jsondata.AsBool = this.AsBool;
 			if (jsondata.m_Data == this.m_Data)
 			{
-				aWriter.Write(6);
+				aWriter.Write((byte)6);
 				aWriter.Write(this.AsBool);
 				return;
 			}
-			aWriter.Write(3);
+			aWriter.Write((byte)3);
 			aWriter.Write(this.m_Data);
 		}
 

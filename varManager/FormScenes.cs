@@ -266,8 +266,8 @@ namespace varManager
             i = 0;
             foreach (var savescene in savescenes)
             {
-                this.varManagerDataSet.scenesView.AddscenesViewRow("Save", "", savescene.strType, true,
-                           savescene.strPath, savescene.strPreviewPic, true, "_", "_", "_", savescene.filesize,
+                this.varManagerDataSet.scenesView.AddscenesViewRow("Save", "(save).", savescene.strType, true,
+                           savescene.strPath, savescene.strPreviewPic, true, "(save)", "_", "_", savescene.filesize,
                            savescene.fdate, savescene.fdate, savescene.hidefav);
                 progressBar1.Value = 80 + (i * 20 / savescenes.Count());
                 //this.BeginInvoke(progressBarSetValue, 80 + (i * 20 / savescenes.Count()));
@@ -298,6 +298,7 @@ namespace varManager
                         hidefav = 1;
                     var saveScene = new SaveScene();
                     saveScene.strType = strType;
+                    saveScene.strName = Path.GetFileNameWithoutExtension(path);
                     saveScene.strPath = path;
                     saveScene.filesize = fileinfo.Length;
                     saveScene.fdate = fileinfo.LastWriteTime;
@@ -313,6 +314,7 @@ namespace varManager
         struct SaveScene
         {
             public string strType;
+            public string strName;
             public string strPath;
             public string strPreviewPic;
             public long filesize;
@@ -382,7 +384,7 @@ namespace varManager
                 if (comboBoxCreator.Items.Contains(creatorname))
                 {
                     comboBoxCreator.SelectedItem = creatorname;
-                    listFilterCreatorScene = listFilterScene3.Where(q => q.varName.StartsWith(creatorname)).ToList();
+                    listFilterCreatorScene = listFilterScene3.Where(q => q.varName.StartsWith(creatorname + ".")).ToList();
                 }
             }
             else
@@ -400,7 +402,7 @@ namespace varManager
 
             if (!string.IsNullOrEmpty(creatorname) && creatorname != "____ALL")
             {
-                listFilterCreatorScene = listFilterScene3.Where(q => q.varName.StartsWith(creatorname)).ToList();
+                listFilterCreatorScene = listFilterScene3.Where(q => q.varName.StartsWith(creatorname+".")).ToList();
             }
             else
             {
@@ -728,7 +730,7 @@ namespace varManager
                 GenerateItems();
             }
         }
-        private string curVarName;
+        private string curVarName = "", curEntryName = "";
         private JSONClass jsonLoadScene;
 
         private void listView_ItemActivate(object sender, EventArgs e)
@@ -741,13 +743,14 @@ namespace varManager
                 var item = listView.Items[index];
                 if (item != null)
                 {
+                    curVarName = item.SubItems[1].Text;
+                    curEntryName = item.SubItems[2].Text;
                     string varname = "";
-                    if (!string.IsNullOrEmpty(item.SubItems[1].Text))
+                    if (!string.IsNullOrEmpty(curVarName) && curVarName != "(save).")
                     {
-                        curVarName = item.SubItems[1].Text;
-                        varname = item.SubItems[1].Text+ ":/";
+                        varname = item.SubItems[1].Text + ":/";
                     }
-                    jsonLoadScene=new JSONClass();
+                    jsonLoadScene = new JSONClass();
                     jsonLoadScene.Add("rescan", item.SubItems[7].Text == "not Installed" ? "true" : "false");
 
                     jsonLoadScene.Add("resources", new JSONArray());
@@ -755,15 +758,15 @@ namespace varManager
                     resources.Add(new JSONClass());
                     JSONClass resource = (JSONClass)resources[resources.Count - 1];
                     resource.Add("type", item.SubItems[6].Text);
-                    resource.Add("saveName", varname + item.SubItems[2].Text.Replace('\\', '/'));
-
+                    resource.Add("saveName", varname + curEntryName.Replace('\\', '/'));
+                    UpdateButtonClearCache();
                     if (!string.IsNullOrEmpty(item.SubItems[3].Text))
                     {
                         labelPreviewVarName.Text = item.Text;
                         checkBoxMerge.Checked = false;
                         buttonLoadscene.Text = "Load " + item.SubItems[6].Text;
                         pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
-                       
+
                         panelImage.Visible = true;
                         radioButtonPersonOrder1.Checked = true;
                         if (item.SubItems[6].Text.ToLower() == "scenes" || item.SubItems[6].Text.ToLower() == "looks")
@@ -774,17 +777,17 @@ namespace varManager
                         {
                             buttonAnalysis.Visible = false;
                         }
-                        if ( item.SubItems[6].Text.ToLower() == "looks"|| item.SubItems[6].Text.ToLower() == "clothing" ||                           
-                            item.SubItems[6].Text.ToLower() == "morphs" || item.SubItems[6].Text.ToLower() == "hairstyle"||
-                            item.SubItems[6].Text.ToLower() == "skin" || item.SubItems[6].Text.ToLower() == "pose" )               
+                        if (item.SubItems[6].Text.ToLower() == "looks" || item.SubItems[6].Text.ToLower() == "clothing" ||
+                            item.SubItems[6].Text.ToLower() == "morphs" || item.SubItems[6].Text.ToLower() == "hairstyle" ||
+                            item.SubItems[6].Text.ToLower() == "skin" || item.SubItems[6].Text.ToLower() == "pose")
                         {
                             groupBoxPersonOrder.Visible = true;
-                            checkBoxFutaAsFemale.Visible = true;
+                            checkBoxIgnoreGender.Visible = true;
                         }
                         else
                         {
                             groupBoxPersonOrder.Visible = false;
-                            checkBoxFutaAsFemale.Visible = false;
+                            checkBoxIgnoreGender.Visible = false;
                         }
                         if (item.SubItems[6].Text.ToLower() == "morphs" ||
                            item.SubItems[6].Text.ToLower() == "skin" ||
@@ -801,7 +804,20 @@ namespace varManager
             }
         }
 
-        
+        private void UpdateButtonClearCache()
+        {
+            string sceneCacheFolderName = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                                       Comm.ValidFileName(curVarName == "(save)." ? "save" : curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
+            if (Directory.Exists(sceneCacheFolderName))
+            {
+                buttonClearCache.Visible = true;
+            }
+            else
+            {
+                buttonClearCache.Visible = false;
+            }
+        }
+
         private void toolStripComboBoxHideFav_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterVars(9);
@@ -884,12 +900,10 @@ namespace varManager
 
         private void buttonLoadscene_Click(object sender, EventArgs e)
         {
-            panelImage.Visible = false;
-            Cursor = Cursors.WaitCursor;
             bool merge = false;
             if (checkBoxMerge.Checked) merge = true;
-            bool futaasfemale=false;
-            if(checkBoxFutaAsFemale.Checked) futaasfemale = true;
+            bool ignoreGender = false;
+            if(checkBoxIgnoreGender.Checked) ignoreGender = true;
             string characterGender = "unknown";
             if (checkBoxForMale.Visible)
             {
@@ -905,6 +919,9 @@ namespace varManager
                     break;
                 }
             }
+            panelImage.Visible = false;
+            Cursor = Cursors.WaitCursor;
+            
             JSONArray resources = jsonLoadScene["resources"].AsArray;
             string saveName = "";
 
@@ -913,11 +930,10 @@ namespace varManager
                 JSONClass resource = (JSONClass)resources[0];
                 saveName = resource["saveName"].Value;
             }
-            string varName = "";
-            List<string> varNames = null;
-            form1.ReadSaveName(saveName, ref varName, ref varNames, ref characterGender);
-            form1.GenLoadscenetxt(jsonLoadScene, merge, varNames, characterGender, futaasfemale, personOrder);
+            
+            form1.LoadScene(jsonLoadScene, merge, ignoreGender, characterGender, personOrder);
             Cursor = Cursors.Arrow;
+            UpdateButtonClearCache();
         }
 
         private void chklistLocation_SelectedIndexChanged(object sender, EventArgs e)
@@ -953,13 +969,17 @@ namespace varManager
 
         private void buttonLocate_Click(object sender, EventArgs e)
         {
+            
             JSONArray resources = jsonLoadScene["resources"].AsArray;
             JSONClass resource = (JSONClass)resources[resources.Count - 1];
             string varName = resource["saveName"];
+            
             if (varName.IndexOf(":/") > 0)
             {
                 varName = varName.Substring(0, varName.IndexOf(":/"));
                 form1.LocateVar(varName);
+                form1.SelectVarInList(varName);
+                form1.Activate();
             }
             else
             {
@@ -1104,6 +1124,7 @@ namespace varManager
         private void buttonAnalysis_Click(object sender, EventArgs e)
         {
             form1.Analysisscene(jsonLoadScene);
+            UpdateButtonClearCache();
         }
 
         private void buttonResetFilter_Click(object sender, EventArgs e)
@@ -1111,6 +1132,18 @@ namespace varManager
             textBoxFilter.Text = "";
             comboBoxCreator.SelectedItem = "____ALL";
             comboBoxOrderBy.SelectedItem = "New To Old";
+        }
+
+        private void buttonClearCache_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("The cache can improve the speed of secondary analysis, normally you don't need to clear it, unless you modify the scene file. This operation only clears the cache of the current scene, if you need to clear all the cache, please delete the cache directory manually.", "Clear Cache", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                          Comm.ValidFileName(curVarName == "(save)." ? "save" : curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
+                try { Directory.Delete(sceneFoldername, true); }
+                catch { }
+                UpdateButtonClearCache();
+            }
         }
 
         private void buttonFilterByCreator_Click(object sender, EventArgs e)

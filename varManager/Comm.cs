@@ -22,7 +22,12 @@ namespace varManager
 
             System.Diagnostics.Process.Start("explorer.exe", argument);
         }
-
+        public static string ValidFileName(string filename)
+        {
+            foreach (char c in Path.GetInvalidFileNameChars())
+                filename = filename.Replace(System.Char.ToString(c), "");
+            return filename;
+        }
         public static void DirectoryMoveAll(string sourceDir, string destDir)
         {
             if (Directory.Exists(destDir))

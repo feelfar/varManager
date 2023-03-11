@@ -324,11 +324,16 @@ namespace varManager
                     dependentName = dependentName.Substring(1);
                     string destsavedfile = Path.Combine(Settings.Default.vampath, dependentName);
                     Comm.LocateFile(destsavedfile);
+
                 }
                 else
                 {
                     if (Form1.ComplyVarName(dependentName))
+                    {
                         form1.LocateVar(dependentName);
+                        form1.SelectVarInList(dependentName);
+                        form1.Activate();
+                    }
                 }
 
             }
@@ -340,6 +345,9 @@ namespace varManager
             {
                 string varName = varsDataGridView.Rows[e.RowIndex].Cells["dataGridViewTextBoxColumnvarName"].Value.ToString();
                 form1.LocateVar(varName);
+                form1.SelectVarInList(varName);
+               
+                form1.Activate();
             }
         }
     }

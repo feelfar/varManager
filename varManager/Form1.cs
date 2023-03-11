@@ -487,6 +487,16 @@ namespace varManager
                 }
             }
         }
+        public string getVarFilePath(string varname)
+        {
+            string varfilepath = "";
+            var varRow = varManagerDataSet.vars.FindByvarName(varname);
+            if (varRow != null)
+            {
+                varfilepath = Path.Combine(Settings.Default.varspath, varRow.varPath, varRow.varName + ".var");
+            }
+            return varfilepath;
+        }
 
         private void DeleteVars(List<string> varnames)
         {
@@ -810,9 +820,23 @@ namespace varManager
                 var varsrow = varManagerDataSet.vars.FindByvarName(basename);
                 if (varsrow == null)
                 {
+                    ZipFile varzipfile;
+                    try
+                    {
+                        varzipfile = new ZipFile(destvarfilename);
+                    }
+                    catch (Exception)
+                    {
+                        string notComplRulefilename = Path.Combine(Settings.Default.varspath, notComplyRuleDirName, Path.GetFileName(destvarfilename));
+                        string errlog = $"{basename}, Invalid var package structure, move into {notComplyRuleDirName} directory";
+                        //string errorMessage = destvarfilename + " is invalid,please check";
+                        this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.WARNING });
+                        File.Move(destvarfilename, notComplRulefilename);
+                        return;
+                    }
                     varsrow = varManagerDataSet.vars.NewvarsRow();
                     varsrow.varName = basename;
-                    varManagerDataSet.vars.AddvarsRow(varsrow);
+                    
                     string[] varnamepart = basename.Split('.');
                     if (varnamepart.Length == 3)
                     {
@@ -827,9 +851,8 @@ namespace varManager
                             version = 1;
                         varsrow.version = version;
                         varsrow.varPath = curpath;
-                        ZipFile zipFile = new ZipFile(destvarfilename);
-                        
-                        ZipFile varzipfile = new ZipFile(destvarfilename);
+                        //ZipFile zipFile = new ZipFile(destvarfilename);
+
 
                         var metajson = varzipfile.GetEntry("meta.json");
 
@@ -838,7 +861,7 @@ namespace varManager
                             string notComplRulefilename = Path.Combine(Settings.Default.varspath, notComplyRuleDirName, Path.GetFileName(destvarfilename));
                             string errlog = $"{basename}, Invalid var package structure, move into {notComplyRuleDirName} directory";
                             //string errorMessage = destvarfilename + " is invalid,please check";
-                            this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.WARNING});
+                            this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.WARNING });
                             //varzipfile.Dispose();
                             varzipfile.Close();
                             File.Move(destvarfilename, notComplRulefilename);
@@ -863,7 +886,7 @@ namespace varManager
                                 if (Regex.IsMatch(zfile.Name, @"saves/person/appearance/.*?\x2e(?:json|vac)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
                                 {
                                     typename = "looks";
-                                    isPreset =  zfile.Name.EndsWith(".json");
+                                    isPreset = zfile.Name.EndsWith(".json");
                                     countlook++;
                                 }
                                 if (Regex.IsMatch(zfile.Name, @"custom/atom/person/(?:general|appearance)/.*?\x2e(?:json|vap)", RegexOptions.IgnoreCase | RegexOptions.Singleline))
@@ -1016,13 +1039,14 @@ namespace varManager
                         else
                             varsrow.plugins = countplugincs;
                         varsrow.assets = countasset;
+                        varManagerDataSet.vars.AddvarsRow(varsrow);
                         varsTableAdapter.Update(varManagerDataSet.vars);
                         varManagerDataSet.vars.AcceptChanges();
 
 
                         List<string> dependencies = new List<string>();
 
-                        var metajsonsteam = new StreamReader( varzipfile.GetInputStream(metajson));
+                        var metajsonsteam = new StreamReader(varzipfile.GetInputStream(metajson));
                         string jsonstring = metajsonsteam.ReadToEnd();
                         try
                         {
@@ -1298,6 +1322,10 @@ namespace varManager
             {
                 AllMissingDepends();
             }
+            if ((string)e.Argument == "FilteredMissingDepends")
+            {
+                FilteredMissingDepends();
+            }
             if ((string)e.Argument == "StaleVars")
             {
                 StaleVars();
@@ -1329,7 +1357,7 @@ namespace varManager
                 backgroundWorkerInstall.RunWorkerAsync("MissingDepends");
             }
         }
-
+        
         private void MissingDepends()
         {
             this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
@@ -1352,6 +1380,49 @@ namespace varManager
                 if (varexistname != "missing")
                 {
                     VarInstall(varexistname);
+                    //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" ,LogLevel.ERROR});
+                }
+                else
+                {
+                    missingvars.Add(varname);
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing", LogLevel.INFO });
+                }
+            }
+            if (missingvars.Count > 0)
+            {
+                InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
+                this.BeginInvoke(showformMissingVars, missingvars);
+            }
+
+        }
+
+        private void FilteredMissingDepends()
+        {
+            this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
+            List<string> dependencies = new List<string>();
+            System.Collections.IList listDatarow = varsViewBindingSource.List;
+            
+            foreach (DataRowView varrowview in listDatarow)
+            {
+                dependencies.AddRange(varManagerDataSet.dependencies.Where(q => q.varName == varrowview.Row.Field<string>("varName")).Select(q => q.dependency));
+                //dependencies.Add(varrowview.Row.Field<string>("varName"));
+                //dependencies.AddRange(varManagerDataSet.dependencies.Where(q => q.varName == varrow.varName).Select(q => q.dependency));
+            }
+            
+            dependencies = dependencies.Distinct().ToList();
+            List<string> missingvars = new List<string>();
+            foreach (string varname in dependencies)
+            {
+                string varexistname = VarExistName(varname);
+                if (varexistname.EndsWith("$"))
+                {
+                    varexistname = varexistname.Substring(0, varexistname.Length - 1);
+                    missingvars.Add(varname+"$");
+                    this.BeginInvoke(addlog, new Object[] { varname + " missing version", LogLevel.INFO });
+                }
+                if (varexistname != "missing")
+                {
+                    //VarInstall(varexistname);
                     //this.BeginInvoke(addlog, new Object[] { varexistname + " installed" ,LogLevel.ERROR});
                 }
                 else
@@ -2407,18 +2478,22 @@ namespace varManager
         {
             tableLayoutPanelPreview.Visible = false;
         }
-        //private string loadscenetxt = "";
+        private string curVarName = "",curEntryName="";
         private JSONClass jsonLoadScene;
         private void listViewPreviewPics_Click(object sender, EventArgs e)
         {
             if (listViewPreviewPics.SelectedIndices.Count >= 1)
             {
+                tableLayoutPanelPreview.Dock = DockStyle.Fill;
+                tableLayoutPanelPreview.Visible = true;
                 int index = listViewPreviewPics.SelectedIndices[0];
                 toolStripLabelPreviewItemIndex.Text = index.ToString();
                 var item = listViewPreviewPics.Items[index];
                 if (item != null)
                 {
-                    labelPreviewVarName.Text = item.SubItems[1].Text;
+                    curVarName = item.SubItems[1].Text;
+                    curEntryName = item.SubItems[5].Text;
+                    labelPreviewVarName.Text = curVarName;
                     if (string.IsNullOrEmpty(item.SubItems[2].Text))
                         pictureBoxPreview.Image = pictureBoxPreview.Image = Image.FromFile("vam.png");
                     else
@@ -2445,6 +2520,7 @@ namespace varManager
                         string rescan = "false";
                         if (item.SubItems[3].Text.ToLower() == "false")
                             rescan = "true";
+
                         jsonLoadScene = new JSONClass();
                         jsonLoadScene.Add("rescan", rescan);
 
@@ -2453,10 +2529,10 @@ namespace varManager
                         resources.Add(new JSONClass());
                         JSONClass resource = (JSONClass)resources[resources.Count - 1];
                         resource.Add("type", item.SubItems[4].Text.ToLower());
-                        resource.Add("saveName", item.SubItems[1].Text + ":/" + item.SubItems[5].Text);
+                        resource.Add("saveName", curVarName + ":/" + curEntryName.Replace('\\', '/'));
+                        UpdateButtonClearCache();
 
-                        //loadscenetxt = rescan ++ "\r\n" + item.SubItems[1].Text + ":/" + item.SubItems[5].Text;
-                        if(item.SubItems[4].Text.ToLower() == "scenes"|| item.SubItems[4].Text.ToLower() == "looks")
+                        if (item.SubItems[4].Text.ToLower() == "scenes" || item.SubItems[4].Text.ToLower() == "looks")
                         {
                             buttonAnalysis.Visible = true;
                         }
@@ -2469,12 +2545,12 @@ namespace varManager
                            item.SubItems[4].Text.ToLower() == "skin" || item.SubItems[4].Text.ToLower() == "pose")
                         {
                             groupBoxPersonOrder.Visible = true;
-                            checkBoxFutaAsFemale.Visible = true;
+                            checkBoxIgnoreGender.Visible = true;
                         }
                         else
                         {
                             groupBoxPersonOrder.Visible = false;
-                            checkBoxFutaAsFemale.Visible = false;
+                            checkBoxIgnoreGender.Visible = false;
                         }
                         if (item.SubItems[4].Text.ToLower() == "morphs" ||
                            item.SubItems[4].Text.ToLower() == "skin" ||
@@ -2493,10 +2569,21 @@ namespace varManager
                         checkBoxMerge.Visible = false;
                         buttonAnalysis.Visible = false;
                     }
-
-                    tableLayoutPanelPreview.Dock = DockStyle.Fill;
-                    tableLayoutPanelPreview.Visible = true;
                 }
+            }
+        }
+
+        private void UpdateButtonClearCache()
+        {
+            string sceneCacheFolderName = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+               Comm.ValidFileName(curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
+            if (Directory.Exists(sceneCacheFolderName))
+            {
+                buttonClearCache.Visible = true;
+            }
+            else
+            {
+                buttonClearCache.Visible = false;
             }
         }
 
@@ -2861,15 +2948,26 @@ namespace varManager
                 }
             }
         }
-
+        private (string,string) SaveNameSplit(string saveName)
+        {
+            string varname = "save", entryname = saveName;
+            if (saveName.IndexOf(":/") > 1)
+            {
+                string[] savenamesplit = saveName.Split(new string[] { ":/" }, StringSplitOptions.RemoveEmptyEntries);
+                if (savenamesplit.Length >= 2)
+                {
+                    varname = savenamesplit[0];
+                    entryname = savenamesplit[1];
+                }
+            }
+            return (varname, entryname);
+        }
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-            tableLayoutPanelPreview.Visible = false;
-            Cursor = Cursors.WaitCursor;
             bool merge = false;
             if (checkBoxMerge.Checked) merge = true;
-            bool futaasfemale = false;
-            if (checkBoxFutaAsFemale.Checked) futaasfemale = true;
+            bool ignoreGender = false;
+            if (checkBoxIgnoreGender.Checked) ignoreGender = true;
             string characterGender = "unknown";
             if (checkBoxForMale.Visible)
             {
@@ -2885,19 +2983,44 @@ namespace varManager
                     break;
                 }
             }
-            JSONArray resources = jsonLoadScene["resources"].AsArray;
+            tableLayoutPanelPreview.Visible = false;
+            Cursor = Cursors.WaitCursor;
+            LoadScene(jsonLoadScene, merge, ignoreGender, characterGender, personOrder);
+            Cursor = Cursors.Arrow;
+            UpdateButtonClearCache();
+        }
+
+        public void LoadScene(JSONClass jc,bool merge, bool ignoreGender, string characterGender, int personOrder)
+        {
+            JSONArray resources = jc["resources"].AsArray;
             string saveName = "";
 
             if (resources.Count > 0)
             {
                 JSONClass resource = (JSONClass)resources[0];
                 saveName = resource["saveName"].Value;
+                (string varName, string entryName) = SaveNameSplit(saveName);
+                string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                     Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+                string dependfFilename = Path.Combine(sceneFolder, "depend.txt");
+                if (!File.Exists(dependfFilename))
+                {
+                    ReadSaveName(saveName, characterGender);
+                }
+                List<string> depends = new List<string>();
+                using (StreamReader sr = new StreamReader(dependfFilename))
+                {
+                    string depend;
+                    while ((depend = sr.ReadLine()) != null)
+                    {
+                        depends.Add(depend);
+                    }
+                }
+                string genderFilename = Path.Combine(sceneFolder, "gender.txt");
+                using (StreamReader srgender = new StreamReader(genderFilename))
+                    characterGender= srgender.ReadLine();
+                GenLoadscenetxt(jc, merge, depends, characterGender, ignoreGender, personOrder);
             }
-            string varName = "";
-            List<string> varNames = null;
-            ReadSaveName(saveName, ref varName, ref varNames,ref characterGender);
-            GenLoadscenetxt(jsonLoadScene, merge, varNames, characterGender,futaasfemale, personOrder);
-            Cursor = Cursors.Arrow;
         }
 
         public bool FindByvarName(string varName)
@@ -2911,7 +3034,7 @@ namespace varManager
             }
             return inRepository;
         }
-        public void GenLoadscenetxt(JSONClass jsonLS,bool merge, List<string> varNames,string characterGender="female", bool futaasfemale=false,int personOrder=1 )
+        public void GenLoadscenetxt(JSONClass jsonLS,bool merge, List<string> dependVars,string characterGender="female", bool ignoreGender = false,int personOrder=1 )
         {
             JSONClass jsonls = (JSONClass)JSONNode.Parse(jsonLS.ToString());
             List<string> deletetempfiles = new List<string>();
@@ -2931,18 +3054,18 @@ namespace varManager
             // if (jsonls["rescan"].AsBool)
             //{
             //List<string> varnames = new List<string>();
-            if (varNames == null)
+            if (dependVars == null)
             {
-                varNames = new List<string>();
+                dependVars = new List<string>();
                 foreach (JSONClass resource in resources)
                 {
                     string saveName = resource["saveName"].Value;
-                    varNames.Add(saveName.Substring(0, saveName.IndexOf(":/")));
+                    dependVars.Add(saveName.Substring(0, saveName.IndexOf(":/")));
                 }
             }
             bool rescan = false;
-            var installtemplist = InstallTemp(varNames.ToArray(), ref rescan);
-            jsonls["rescan"].Value = rescan.ToString();
+            var installtemplist = InstallTemp(dependVars.ToArray(), ref rescan);
+            jsonls["rescan"] = rescan.ToString();
             foreach (var installtemp in installtemplist)
                 deletetempfiles.Remove(installtemp.ToLower() + ".var");
             // }
@@ -2954,12 +3077,12 @@ namespace varManager
                 jsonls["merge"] = merge.ToString().ToLower();
             if (!jsonls.HasKey("characterGender"))
                 jsonls["characterGender"] = characterGender;
-            if (!jsonls.HasKey("futaAsFemale"))
-                jsonls["futaAsFemale"] = futaasfemale.ToString().ToLower();
+            if (!jsonls.HasKey("ignoreGender"))
+                jsonls["ignoreGender"] = ignoreGender.ToString().ToLower();
             if (!jsonls.HasKey("personOrder"))
                 jsonls["personOrder"] = personOrder.ToString();
 
-            string strLS = jsonls.ToString();
+            string strLS = jsonls.ToString("\t");
             using (FileStream fileStream = File.OpenWrite(loadscenefile))
             {
                 fileStream.SetLength(0);
@@ -2972,7 +3095,6 @@ namespace varManager
             //sw.Close();
             if (deletetempfiles.Count > 0)
             {
-                Thread.Sleep(2000);
                 Thread thread = new Thread(DeleteTempThread);
                 thread.Start(deletetempfiles);
             }
@@ -2980,7 +3102,6 @@ namespace varManager
 
         public static List<string> AddDeleteTemp()
         {
-
             DirectoryInfo templinkdirinfo = Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName));
 
             List<string> tempfiles = new List<string>();
@@ -3010,9 +3131,12 @@ namespace varManager
                     Thread.Sleep(20000);
                     foreach (string tempf in tempfiles)
                     {
-                        FileInfo fi = new FileInfo(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName, tempf));
-                        if (fi.Exists)
-                            fi.Delete();
+                        try
+                        {
+                            if (File.Exists(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName, tempf)))
+                                File.Delete(Path.Combine(Settings.Default.vampath, "AddonPackages", tempVarLinkDirName, tempf));
+                        }
+                        catch { }
                     }
                     break;
                 }
@@ -3034,11 +3158,12 @@ namespace varManager
                 if (rows.Count() > 0)
                 {
                     if (!rows.First().Installed)
-                        if (VarInstall(varname, true) == 1) rescan = true;
+                        if (VarInstall(varname, true) == 1) 
+                            rescan = true;
                 }
                 else
                 {
-                    this.BeginInvoke(addlog, new Object[] { string.Format("missing var:{ 0},install failed", varname), LogLevel.INFO });
+                    this.BeginInvoke(addlog, new Object[] { string.Format("missing var:{0},install failed", varname), LogLevel.INFO });
                 }
             }
             return varnames;
@@ -3111,6 +3236,7 @@ namespace varManager
         private void buttonAnalysis_Click(object sender, EventArgs e)
         {
             Analysisscene(jsonLoadScene);
+            UpdateButtonClearCache();
         }
 
         public void Analysisscene(JSONClass jsonLS)
@@ -3118,54 +3244,86 @@ namespace varManager
             JSONClass jsonls = (JSONClass)JSONNode.Parse(jsonLS.ToString());
             JSONArray resources = jsonls["resources"].AsArray;
             string saveName = "";
-
             if (resources.Count > 0)
             {
                 JSONClass resource = (JSONClass)resources[0];
                 saveName = resource["saveName"].Value;
-            }
-            string varName = "";
-            List<string> varNames = null;
-            string unuse="female";
-            string jsonscene = ReadSaveName(saveName, ref varName,ref varNames,ref unuse);
-            if (jsonscene != "")
-            {
+                (string varName, string entryName) = SaveNameSplit(saveName);
+                string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                    Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+                string atomsFoldername = Path.Combine(sceneFolder, "atoms");
+
+                if (!Directory.Exists(atomsFoldername))
+                {
+                    ReadSaveName(saveName, "female",true);
+                }
+                
                 FormAnalysis formAnalysis = new FormAnalysis();
+                formAnalysis.form1 = this;
                 formAnalysis.VarName = varName;
-                formAnalysis.SceneName = saveName;
-                formAnalysis.Jsonscene = jsonscene;
+                formAnalysis.EntryName = entryName;
                 if (formAnalysis.ShowDialog() == DialogResult.OK)
                 {
-                    for (; resources.Count > 0;)
-                        resources.Remove(0);
-                    foreach (JSONClass jc in formAnalysis.saveNames)
-                    {
-                        resources.Add(jc);
-
-                    }
-                    jsonls["characterGender"] = formAnalysis.CharacterGender.ToLower();
-                    jsonls["futaAsFemale"] = formAnalysis.FutaAsFemale.ToString().ToLower();
-                    jsonls["personOrder"] = (formAnalysis.PersonOrder + 1).ToString();
-                    this.GenLoadscenetxt(jsonls, false, varNames);
+                    
                 }
             }
+            
 
         }
-
-        public string ReadSaveName(string saveName, ref string varName, ref List<string> varNames, ref string characterGender)
+        public static string GetCharacterGender(string character)
         {
-            string jsonscene = "";
-            varNames=new List<string>();
-            if (saveName.IndexOf(":/") > 1)
+            string isMale = "Female";
+            character = character.ToLower();
+            // If the peson atom is not "On", then we cant determine their gender it seems as GetComponentInChildren<DAZCharacter> just returns null
+            if (character.StartsWith("male") ||
+                    character.StartsWith("lee") ||
+                    character.StartsWith("jarlee") ||
+                    character.StartsWith("julian") ||
+                    character.StartsWith("jarjulian"))
             {
-                varName = saveName.Substring(0, saveName.IndexOf(":/"));
-                varNames.Add(varName);
-                string entryname = saveName.Substring(saveName.IndexOf(":/") + 2).Trim();
+                isMale = "Male";
+            }
+            if (character.StartsWith("futa"))
+            {
+                isMale = "Futa";
+            }
+            return (isMale);
+        }
+
+        private static string GetAtomID(JSONNode atomitem,bool isPerson=false)
+        {
+            if (isPerson)
+            {
+                string charGender = "unknown";
+                JSONArray storablesArray = atomitem["storables"].AsArray;
+                foreach (JSONNode storablesitem in storablesArray)
+                {
+                    if (storablesitem["id"].Value == "geometry")
+                    {
+                        charGender = GetCharacterGender(storablesitem["character"].Value);
+                        break;
+                    }
+                }
+                return string.Format("({1}){0}", atomitem["id"], charGender);
+            }
+            else
+                return atomitem["id"].Value;
+        }
+
+        public bool ReadSaveName(string saveName,string characterGender,bool analysis=false)
+        {
+            UseWaitCursor = true;
+            string jsonscene = "";
+            List<string> depends = new List<string>();
+            (string varName, string entryName) = SaveNameSplit(saveName);
+            if (varName!="save")
+            {
+                depends.Add(varName);
                 var varsrow = varManagerDataSet.vars.FindByvarName(varName);
                 string destvarfile = Path.Combine(Settings.Default.varspath, varsrow.varPath, varsrow.varName + ".var");
                 using (ZipFile varzipfile = new ZipFile(destvarfile))
                 {
-                    var entry = varzipfile.GetEntry(entryname);
+                    var entry = varzipfile.GetEntry(entryName);
                     var entryStream = new StreamReader(varzipfile.GetInputStream(entry));
                     jsonscene = entryStream.ReadToEnd();
                 }
@@ -3181,6 +3339,7 @@ namespace varManager
                     }
                 }
             }
+
             if (characterGender == "unknown")
             {
                 characterGender = "male";
@@ -3190,8 +3349,143 @@ namespace varManager
                     characterGender = "female";
                 }
             }
-            varNames.AddRange(Getdependencies(jsonscene));
-            return jsonscene;
+
+            depends.AddRange(Getdependencies(jsonscene));
+            string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+            Directory.CreateDirectory(sceneFolder);
+            string dependFilename = Path.Combine(sceneFolder, "depend.txt");
+            using (StreamWriter swdepend = new StreamWriter(dependFilename))
+                depends.ForEach(x => swdepend.WriteLine(x));
+
+            string genderFilename = Path.Combine(sceneFolder, "gender.txt");
+            using (StreamWriter swgender = new StreamWriter(genderFilename))
+                swgender.WriteLine(characterGender);
+
+            if (analysis)
+            {
+                jsonscene = jsonscene.Replace("\"SELF:/", "\"" + varName + ":/");
+                AnalysisAtoms(jsonscene, sceneFolder,true);
+            }
+            UseWaitCursor = false;
+            return true;
+        }
+        private static string[] sceneBaseAtoms = { "CoreControl", "PlayerNavigationPanel", "VRController", "WindowCamera" };
+
+        private static void AnalysisAtoms(string jsonscene, string sceneFolder,bool isperson)
+        {
+            JSONClass jsonnode =(JSONClass) JSON.Parse(jsonscene);
+            if (!jsonnode.HasKey("atoms")) 
+            {
+                if (isperson)
+                {
+                    string atomID = GetAtomID(jsonnode, true);
+                    string atomtypefolder = Path.Combine(sceneFolder, "atoms", "Person");
+                    Directory.CreateDirectory(atomtypefolder);
+                    string atomfilename = Path.Combine(sceneFolder, "atoms", "Person", Comm.ValidFileName(atomID + ".bin"));
+                    jsonnode.SaveToFile(atomfilename);
+                    /*using (StreamWriter sw = new StreamWriter(atomfilename))
+                    {
+                        jsonnode.SaveToStream(sw.BaseStream);
+                        //sw.Write(jsonnode.ToString());
+                    }*/
+                }
+                else
+                {
+                    string atomID = GetAtomID(jsonnode, false);
+                    string atomfilename = Path.Combine(sceneFolder, Comm.ValidFileName(atomID + ".bin"));
+                    jsonnode.SaveToFile(atomfilename);
+                    /* using (StreamWriter sw = new StreamWriter(atomfilename))
+                     {
+                         jsonnode.SaveToStream(sw.BaseStream);
+                         //sw.Write(jsonnode.ToString());
+                     }*/
+                }
+                return;
+            }
+            JSONClass posinfo = new JSONClass();
+            foreach (KeyValuePair<string, JSONNode> keyvaluejson in jsonnode as JSONClass)
+            {
+                if (keyvaluejson.Key != "atoms")
+                {
+                    posinfo.Add(keyvaluejson.Key, keyvaluejson.Value);
+                }
+            }
+
+            string posinfoFilename = Path.Combine(sceneFolder, "posinfo.bin");
+            posinfo.SaveToFile(posinfoFilename);
+            /*using (StreamWriter sw = new StreamWriter(posinfoFilename))
+            {
+                sw.Write(posinfo.ToString());
+            }*/
+
+            List<string> ListAtomtype = new List<string>();
+            JSONArray atomArray = jsonnode["atoms"].AsArray;
+           
+            Dictionary<string, List<string>> parentAtoms=new Dictionary<string, List<string>>();
+            if (atomArray.Count > 0)
+            {
+                foreach (JSONClass atomitem in atomArray)
+                {
+                    string atomtype = atomitem["type"];
+                    if (sceneBaseAtoms.Contains(atomtype))
+                    {
+                        atomtype = "(base)" + atomtype;
+                    }
+                    if (atomtype != "")
+                    {
+                        if (!ListAtomtype.Contains(atomtype))
+                        {
+                            ListAtomtype.Add(atomtype);
+                            string atomtypefolder = Path.Combine(sceneFolder, "atoms", atomtype);
+                            Directory.CreateDirectory(atomtypefolder);
+                        }
+                        if (atomtype == "SubScene")
+                        {
+                            string subscenefolder = Path.Combine(sceneFolder, "atoms", atomtype);
+                            AnalysisAtoms(atomitem.ToString(), subscenefolder, false);
+                        }
+                        else
+                        {
+                            string atomID = GetAtomID(atomitem, atomtype == "Person");
+                            if (atomitem.HasKey("parentAtom"))
+                            {
+                                if (!string.IsNullOrEmpty(atomitem["parentAtom"]))
+                                {
+                                    string parentAtom = Comm.ValidFileName(atomitem["parentAtom"]);
+                                    if (parentAtoms.ContainsKey(parentAtom))
+                                    {
+                                        parentAtoms[parentAtom].Add(Comm.ValidFileName(atomID));
+                                    }
+                                    else
+                                    {
+                                        parentAtoms.Add(parentAtom, new List<string> { Comm.ValidFileName(atomID) });
+                                    }
+                                }
+                            }
+                            string atomfilename = Path.Combine(sceneFolder, "atoms", atomtype, Comm.ValidFileName(atomID + ".bin"));
+                            atomitem.SaveToFile(atomfilename);
+                            /*using (StreamWriter sw = new StreamWriter(atomfilename))
+                            {
+                                sw.Write(atomitem.ToString());
+                            }*/
+                        }
+                    }
+                }
+                if(parentAtoms.Count > 0)
+                {
+                    string parentAtomFilename = Path.Combine(sceneFolder, "parentAtom.txt");
+                    using(StreamWriter sw= new StreamWriter(parentAtomFilename))
+                    {
+                        foreach(var pa in parentAtoms)
+                        {
+                            sw.WriteLine(pa.Key + "\t" + string.Join(",", pa.Value));
+                        }
+                        
+                    }
+                }
+                
+            }
         }
 
         private void buttonResetFilter_Click(object sender, EventArgs e)
@@ -3254,6 +3548,43 @@ namespace varManager
             if (varsViewDataGridView.SelectedRows.Count > 0)
             {
                 varsViewDataGridView.FirstDisplayedScrollingRowIndex = firstindex;
+            }
+            this.WindowState = FormWindowState.Normal;
+            //this.Activate();
+        }
+
+        private void prepareFormSavesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PrepareSaves prepareSaves = new PrepareSaves();
+            prepareSaves.form1 = this;
+            prepareSaves.ShowDialog();
+        }
+
+        private void buttonFilteredMissingDepends_Click(object sender, EventArgs e)
+        {
+            int varscount= varsViewDataGridView.Rows.Count;
+            string message =String.Format( "Analyzing dependencies from {0} vars on the leftside of form, a processing window will be opened.",varscount);
+
+            const string caption = "FilteredMissingDepends";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question,
+                                         MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+            {
+                backgroundWorkerInstall.RunWorkerAsync("FilteredMissingDepends");
+            }
+        }
+
+        private void buttonClearCache_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("The cache can improve the speed of secondary analysis, normally you don't need to clear it, unless you modify the scene file. This operation only clears the cache of the current scene, if you need to clear all the cache, please delete the cache directory manually.", "Clear Cache", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                           Comm.ValidFileName(curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
+                try { Directory.Delete(sceneFoldername, true); }
+                catch { }
+                UpdateButtonClearCache();
             }
         }
     }

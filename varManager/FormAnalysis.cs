@@ -16,26 +16,31 @@ namespace varManager
     public partial class FormAnalysis : Form
     {
         private string varName;
-        private string sceneName;
-        private string jsonscene;
-        private List<JSONNode> listJsonAtom;
+        private string entryName;
+        private List<JSONClass> listJsonPerson;
+       JSONClass jsonCoreControl;
         
         private int personOrder = 0;
-        private bool futaAsFemale=false;
+        private bool ignoreGender = false;
         private string characterGender;
+        public Form1 form1;
         public string VarName { get => varName; set => varName = value; }
-        public string SceneName { get => sceneName; set => sceneName = value; }
-        public string Jsonscene { get => jsonscene; set => jsonscene = value; }
-        public bool FutaAsFemale { get => futaAsFemale; set => futaAsFemale = value; }
+        public string EntryName { get => entryName; set => entryName = value; }
+        public bool IgnoreGender { get => ignoreGender; set => ignoreGender = value; }
         public int PersonOrder { get => personOrder; set => personOrder = value; }
         public string CharacterGender { get => characterGender; set => characterGender = value; }
 
         public List<JSONClass> saveNames;
-
+        private List<TreeNode> atomnodes;
+        private string[] poseControlIDs = { "hipControl", "pelvisControl", "chestControl", "headControl", "rHandControl", "lHandControl", "rFootControl", "lFootControl", "neckControl", "eyeTargetControl", "rNippleControl", "lNippleControl", "rElbowControl", "lElbowControl", "rKneeControl", "lKneeControl", "rToeControl", "lToeControl", "abdomenControl", "abdomen2Control", "rThighControl", "lThighControl", "rArmControl", "lArmControl", "rShoulderControl", "lShoulderControl" };
+        private string[] poseObjectIDs = { "hip", "pelvis", "rThigh", "rShin", "rFoot", "rToe", "lThigh", "lShin", "lFoot", "lToe", "LGlute", "RGlute", "abdomen", "abdomen2", "chest", "lPectoral", "rPectoral", "rCollar", "rShldr", "rForeArm", "rHand", "lCollar", "lShldr", "lForeArm", "lHand", "neck", "head"};
+        private Dictionary<string, List<string>> parentAtoms;
+        private readonly string[] sceneBaseAtoms = { "CoreControl", "PlayerNavigationPanel", "VRController", "WindowCamera" };
         public FormAnalysis()
         {
             InitializeComponent();
-            listJsonAtom = new List<JSONNode>();
+            listJsonPerson = new List<JSONClass>();
+            parentAtoms = new Dictionary<string, List<string>>();
         }
         public static string GetCharacterGender(string character)
         {
@@ -59,40 +64,136 @@ namespace varManager
 
         private void FormAnalysis_Load(object sender, EventArgs e)
         {
-            labelSceneName.Text = SceneName;
+            labelSceneName.Text = varName + ":/" + entryName;
             AnalsisJson();
-            if(listBoxAtom.Items.Count > 0)
+            if (listBoxAtom.Items.Count > 0)
             {
                 listBoxAtom.SelectedIndex = 0;
             }
             PersonOrder = 0;
             listBoxPerson.SelectedIndex = 0;
+            triStateTreeViewAtoms.ExpandAll();
+            //foreach (TreeNode tn in triStateTreeViewAtoms.Nodes)
+            //{
+            //    tn.Expand();
+            //}
+        }
+        /*private void DisplayTreeView(JSONClass root, string rootName)
+        {
+            treeView1.BeginUpdate();
+            try
+            {
+                treeView1.Nodes.Clear();
+                var tNode = treeView1.Nodes[treeView1.Nodes.Add(new TreeNode(rootName))];
+                tNode.Tag = root;
+
+                AddNode(root, tNode);
+
+                treeView1.ExpandAll();
+            }
+            finally
+            {
+                treeView1.EndUpdate();
+            }
         }
 
-        private void AnalsisJson()
+        private void AddNode(JSONClass token, TreeNode inTreeNode)
         {
-            JSONNode jsonnode = JSON.Parse(jsonscene);
-            JSONArray atomArray = jsonnode["atoms"].AsArray;
-            if (atomArray.Count > 0)
+            if (token == null)
+                return;
+            if (token is jso)
             {
-                foreach (JSONNode atomitem in atomArray)
+                var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
+                childNode.Tag = token;
+            }
+            else if (token is JObject)
+            {
+                var obj = (JObject)token;
+                foreach (var property in obj.Properties())
                 {
-                    string atomtype = atomitem["type"];
-                    if (atomtype == "Person")
-                    {
-                        listJsonAtom.Add(atomitem);
-                    }
+                    var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
+                    childNode.Tag = property;
+                    AddNode(property.Value, childNode);
+                }
+            }
+            else if (token is JArray)
+            {
+                var array = (JArray)token;
+                for (int i = 0; i < array.Count; i++)
+                {
+                    var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
+                    childNode.Tag = array[i];
+                    AddNode(array[i], childNode);
                 }
             }
             else
             {
-                listJsonAtom.Add(jsonnode);
+                Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
-            foreach(JSONNode atomitem in listJsonAtom)
+        }*/
+        private void AnalsisJson()
+        {
+            triStateTreeViewAtoms.Nodes.Clear();
+            TreeNode treenodeCur = triStateTreeViewAtoms.Nodes.Add(varName + ":/" + entryName);
+            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                        Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+            jsonCoreControl = new JSONClass();
+            atomnodes = new List<TreeNode>();
+            GetAtoms(sceneFoldername, treenodeCur);
+            string parentAtomFilename = Path.Combine(sceneFoldername, "parentAtom.txt");
+            if (File.Exists(parentAtomFilename))
             {
-                listBoxAtom.Items.Add(GetAtomID(atomitem));
+                using (StreamReader sr = new StreamReader(parentAtomFilename))
+                {
+                    while (!sr.EndOfStream) { 
+                       string strParent= sr.ReadLine();
+                       string[] splitParent= strParent.Split('\t');
+                        if(splitParent.Length == 2)
+                        {
+                            List<string> childs= splitParent[1].Split(',').ToList();
+                            childs = childs.Select(child => child += ".bin").ToList();
+                            parentAtoms.Add(splitParent[0]+".bin",childs);
+                        }
+                    }
+                   
+                }
+            }
+            if (!entryName.ToLower().Contains("/scene/"))
+            {
+                tabControl1.TabPages.RemoveAt(tabControl1.TabPages.Count - 1);
             }
 
+        }
+        private void GetAtoms(string sceneFoldername,TreeNode treenodeCur )
+        {
+            if (Directory.Exists(Path.Combine(sceneFoldername, "atoms")))
+            {
+                foreach (string atomfolder in Directory.GetDirectories(Path.Combine(sceneFoldername, "atoms"), "*", SearchOption.TopDirectoryOnly).OrderBy(x=>Path.GetFileName(x)))
+                {
+                    string atomtype = atomfolder.Substring(atomfolder.LastIndexOf("\\") + 1);
+                    TreeNode subtreenode = treenodeCur.Nodes.Add(atomtype);
+                    if (atomtype == "SubScene")
+                    {
+                        GetAtoms(atomfolder, subtreenode);
+                    }
+                   
+                    foreach (string atomjson in Directory.GetFiles(atomfolder, "*.bin", SearchOption.TopDirectoryOnly))
+                    {
+
+                        atomnodes.Add(subtreenode.Nodes.Add(Path.GetFileName(atomjson)));
+                        if (atomtype == "(base)CoreControl")
+                        {
+                            jsonCoreControl=(JSONClass)JSONNode.LoadFromFile(atomjson);
+                        }
+                        if (atomtype == "Person")
+                        {
+                            JSONClass atomitem = (JSONClass)JSONNode.LoadFromFile(atomjson);
+                            listJsonPerson.Add(atomitem);
+                            listBoxAtom.Items.Add(Path.GetFileNameWithoutExtension(atomjson));
+                        }
+                    }
+                }
+            }
         }
 
         private static string GetAtomID(JSONNode atomitem)
@@ -120,16 +221,44 @@ namespace varManager
                 {
                     checkBoxGlute.Visible  = true;
                     checkBoxBreast.Visible = true;
-                    checkBoxFutaAsFemale.Enabled = true;
+                    checkBoxIgnoreGender.Enabled = true;
                 }
                 else
                 {
                     checkBoxGlute.Visible = false;
                     checkBoxBreast.Visible = false;
-                    if (listBoxAtom.SelectedItem.ToString().Contains("(Futa)"))
-                        checkBoxFutaAsFemale.Enabled = true;
-                    else
-                        checkBoxFutaAsFemale.Enabled = false;
+                    //if (listBoxAtom.SelectedItem.ToString().Contains("(Futa)"))
+                        checkBoxIgnoreGender.Enabled = true;
+                    //else
+                    //    checkBoxIgnoreGender.Enabled = false;
+                }
+                JSONArray storablesArray = listJsonPerson[listBoxAtom.SelectedIndex]["storables"].AsArray;
+                buttonLoadPose.Enabled = false;
+                if ( entryName.EndsWith(".json"))
+                    buttonLoadPose.Enabled = true ;
+                buttonLoadPlugin.Enabled = false;
+                buttonLoadAnimation.Enabled = false;
+
+                bool foundAnime=false,foundPlugin=false;
+                foreach (JSONClass storablesitem in storablesArray)
+                {
+                    if (foundAnime && foundPlugin) break;
+                    if (storablesitem["id"].Value.EndsWith ( "Animation") )
+                    {
+                        buttonLoadAnimation.Enabled = true;
+                        foundAnime = true;
+                    }
+                    if (storablesitem["id"].Value== "PluginManager")
+                    {
+                        foundPlugin=true;
+                        if (storablesitem.HasKey("plugins"))
+                        {
+                            if (((JSONClass)storablesitem["plugins"]).Count > 0)
+                            {
+                                buttonLoadPlugin.Enabled = true;
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -140,24 +269,37 @@ namespace varManager
 
         private void buttonLoadLook_Click(object sender, EventArgs e)
         {
-            if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonAtom.Count)
+            if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
             {
                 if (checkBoxMorphs.Checked || checkBoxHair.Checked ||
                     checkBoxClothing.Checked || checkBoxSkin.Checked ||
                     checkBoxBreast.Checked || checkBoxGlute.Checked)
+
                 {
-                    JSONClass atomitem = (JSONClass)listJsonAtom[listBoxAtom.SelectedIndex];
-                    SavePreset(atomitem, checkBoxMorphs.Checked, checkBoxHair.Checked,
-                        checkBoxClothing.Checked, checkBoxSkin.Checked,
-                        checkBoxBreast.Checked, checkBoxGlute.Checked);
+                    /*using (StreamReader sr = new StreamReader(listJsonPerson[listBoxAtom.SelectedIndex]))
+                    {
+                        string json = sr.ReadToEnd();
+                        JSONClass atomitem = (JSONClass)JSON.Parse(json);
+                        SavePreset(atomitem, checkBoxMorphs.Checked, checkBoxHair.Checked,
+                           checkBoxClothing.Checked, checkBoxSkin.Checked,
+                           checkBoxBreast.Checked, checkBoxGlute.Checked);
+                    }*/
+                    //JSONClass atomitem =(JSONClass) JSONNode.LoadFromFile(listJsonPerson[listBoxAtom.SelectedIndex]);
+                    saveNames = new List<JSONClass>();
+                    SavePreset(listJsonPerson[listBoxAtom.SelectedIndex], checkBoxMorphs.Checked, checkBoxHair.Checked,
+                           checkBoxClothing.Checked, checkBoxSkin.Checked,
+                           checkBoxBreast.Checked, checkBoxGlute.Checked);
+
                     PersonOrder = 0;
                     if (listBoxPerson.SelectedIndex > 0)
                         PersonOrder = listBoxPerson.SelectedIndex;
-                    FutaAsFemale = false;
-                    if (checkBoxFutaAsFemale.Enabled && checkBoxFutaAsFemale.Checked)
-                        FutaAsFemale = true;
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                    ignoreGender = false;
+                    if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
+                        ignoreGender = true;
+                    labelMessage.Text = "Load Look Preset completed!";
+                    labelMessage.Visible = true;
+                    timer1.Enabled = true;
+                    GenLoadscenetxt();
                 }
                 else
                 {
@@ -173,7 +315,112 @@ namespace varManager
                 return;
             }
         }
+        private void SavePluginPreset(JSONClass atomitem)
+        {
+            JSONClass jsonPlugin = new JSONClass();
+            jsonPlugin.Add("setUnlistedParamsToDefault", "true");
+            jsonPlugin.Add("storables", new JSONArray());
+            List<string> pluginid = new List<string>();
+            JSONArray storablesArray = atomitem["storables"].AsArray;
+            foreach (JSONClass storablesitem in storablesArray)
+            {
+                if (storablesitem["id"].Value == "PluginManager")
+                {
+                    JSONArray jsonPluginStorablesArray = jsonPlugin["storables"].AsArray;
+                    jsonPluginStorablesArray.Add(storablesitem);
+                    if (storablesitem.HasKey("plugins"))
+                    {
+                        pluginid.AddRange(((JSONClass)storablesitem["plugins"]).Keys);
+                    }
+                }
+            }
+            foreach (JSONClass storablesitem in storablesArray)
+            {
+                foreach (string tempid in pluginid)
+                {
+                    if (storablesitem["id"].Value.StartsWith(tempid))
+                    {
+                        jsonPlugin["storables"].Add(storablesitem);
+                    }
+                }
+            }
+            SavePluginPresetFile(jsonPlugin);
+        }
+        private void SavePosePreset(JSONClass atomitem)
+        {
+            JSONClass jsonPose = new JSONClass();
+            jsonPose.Add("setUnlistedParamsToDefault", "true");
+            jsonPose.Add("storables", new JSONArray());
+            JSONArray storablesArray = atomitem["storables"].AsArray;
+           
+            foreach (JSONClass storablesitem in storablesArray)
+            {
+                if (storablesitem["id"].Value == "geometry")
+                {
+                    JSONClass jsonMorphsGeometry= new JSONClass();
+                    jsonMorphsGeometry.Add("id", "geometry");
+                    jsonMorphsGeometry.Add("morphs", storablesitem["morphs"]);
+                    jsonPose["storables"].Add(jsonMorphsGeometry);
 
+                }
+                if (poseControlIDs.Contains( storablesitem["id"].Value) || poseObjectIDs.Contains(storablesitem["id"].Value))
+                {
+                    jsonPose["storables"].Add(storablesitem);
+                }
+            }
+            
+            SavePosePresetFile(jsonPose);
+        }
+        private string animationStorableIdToControlId(string id)
+        {
+            switch (id)
+            {
+                case "eyeTargetControlAnimation":
+                case "lNippleControlAnimation":
+                case "rNippleControlAnimation":
+                    return id.Replace("Animation", "");
+
+                default:
+                    return id.Replace("Animation", "Control");
+            }
+        }
+        private JSONClass FindMotionAnimationMasterData()
+        {
+            foreach (JSONNode storable in jsonCoreControl["storables"].AsArray)
+            {
+                if (string.Equals(storable["id"], "MotionAnimationMaster"))
+                {
+                    return storable.AsObject;
+                }
+            }
+            throw new Exception("Selected mocap file does not contain MotionAnimationMaster data!");
+        }
+
+        private void SaveAnimationPreset(JSONClass atomitem)
+        {
+            JSONClass jsonAnimation = new JSONClass();
+            jsonAnimation.Add("setUnlistedParamsToDefault", "true");
+            jsonAnimation.Add("storables", new JSONArray());
+            JSONArray storablesArray = atomitem["storables"].AsArray;
+            List<string> animationControlIds = new List<string>();
+            foreach (JSONClass storablesitem in storablesArray)
+            {
+                if (storablesitem["id"].Value.EndsWith("Animation") )
+                {
+                    jsonAnimation["storables"].Add(storablesitem);
+                    animationControlIds.Add(animationStorableIdToControlId(storablesitem["id"].Value));
+                }
+            }
+            foreach (JSONClass storablesitem in storablesArray)
+            {
+                if (animationControlIds.Contains(storablesitem["id"].Value))
+                {
+                    jsonAnimation["storables"].Add(storablesitem);
+                }
+            }
+            jsonAnimation.Add("motionAnimationMaster", FindMotionAnimationMasterData());
+            SaveAnimationPresetFile(jsonAnimation);
+        }
         private void SavePreset(JSONClass atomitem,
             bool morphs = false,bool hair = false,  
             bool clothing = false, bool skin = false,
@@ -186,6 +433,7 @@ namespace varManager
             JSONClass jsonSkin = new JSONClass();
             JSONClass jsonHair = new JSONClass();
             JSONClass jsonClothing = new JSONClass();
+            
 
             jsonPreset.Add("setUnlistedParamsToDefault", "false");
             jsonMorphs.Add("setUnlistedParamsToDefault", "true");
@@ -194,6 +442,7 @@ namespace varManager
             jsonSkin.Add("setUnlistedParamsToDefault", "true");
             jsonHair.Add("setUnlistedParamsToDefault", "true");
             jsonClothing.Add("setUnlistedParamsToDefault", "true");
+            
 
             jsonPreset.Add("storables", new JSONArray());
             jsonMorphs.Add("storables", new JSONArray());
@@ -202,6 +451,7 @@ namespace varManager
             jsonSkin.Add("storables", new JSONArray());
             jsonHair.Add("storables", new JSONArray());
             jsonClothing.Add("storables", new JSONArray());
+            
 
             JSONArray storablesArray = atomitem["storables"].AsArray;
             string[] skinid = { "skin", "textures", "teeth", "tongue", "mouth", "FemaleEyelashes", "MaleEyelashes", "lacrimals" , "sclera" , "irises" };
@@ -209,6 +459,8 @@ namespace varManager
             string[] gluteid = { "GluteControl", "LowerPhysicsMesh" };
             List<string> hairid=new List<string>();
             List<string> clothingid=new List<string>();
+           
+
             foreach (JSONClass storablesitem in storablesArray)
             {
                 if (storablesitem["id"].Value == "geometry")
@@ -252,10 +504,16 @@ namespace varManager
                     jsonSkinGeometry.Add("character", storablesitem["character"]);
                    
                     jsonMorphsGeometry.Add("morphs",storablesitem["morphs"]);
-                    if (clothing) jsonPresetGeometry.Add("clothing",storablesitem["clothing"]);
-                    jsonClothingGeometry.Add("clothing", storablesitem["clothing"]);
-                    if (hair) jsonPresetGeometry.Add("hair",storablesitem["hair"]);
-                    jsonHairGeometry.Add("hair", storablesitem["hair"]);
+                    if (clothing)
+                    {
+                        jsonPresetGeometry.Add("clothing", storablesitem["clothing"]);
+                        jsonClothingGeometry.Add("clothing", storablesitem["clothing"]);
+                    }
+                    if (hair)
+                    {
+                        jsonPresetGeometry.Add("hair", storablesitem["hair"]);
+                        jsonHairGeometry.Add("hair", storablesitem["hair"]);
+                    }
                     if (storablesitem.HasKey("useAuxBreastColliders"))
                         jsonBreastGeometry.Add("useAuxBreastColliders", storablesitem["useAuxBreastColliders"]);
 
@@ -370,17 +628,20 @@ namespace varManager
                     jsonGlute["storables"].Add(storablesitem);
                 }
                 // }
-            }
-            saveNames = new List<JSONClass>();
-            if (skin) SaveDefaultEyeColorFile();
 
+            }
+            
+            if (skin) SaveDefaultEyeColorFile();
+            if (clothing) SaveClothNakedFile();
+            if (hair) SaveHairBaldFile();
             if (morphs) SaveMorphPresetFile(jsonMorphs);
             if (breast) SaveBreastPresetFile(jsonBreast);
             if (glute) SaveGlutePresetFile(jsonGlute);
             //if (clothing) SaveClothingPresetFile(jsonClothing);
             //if (hair) SaveHairPresetFile(jsonHair);
             //if (skin) SaveSkinPresetFile(jsonSkin);
-            SaveAppearancePresetFile(jsonPreset);
+           
+            if (clothing|| hair|| skin) SaveAppearancePresetFile(jsonPreset);
 
 
         }
@@ -398,7 +659,44 @@ namespace varManager
                 sw.Close();
             }
             JSONClass jc = new JSONClass();
+            
             jc["type"] = "looks";
+            jc["saveName"] = saveName.Replace('\\', '/'); ;
+            saveNames.Add(jc);
+        }
+        private void SaveClothNakedFile()
+        {
+            string colthNakedDefault = "{ \"setUnlistedParamsToDefault\" : \"true\", \"storables\" : [ { \"id\" : \"geometry\", \"clothing\" : [ ] } ] }";
+            string saveName = "Custom\\Atom\\Person\\Clothing\\Preset_ClothNaked.vap";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
+            using (FileStream fileStream = File.OpenWrite(aFileName))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(colthNakedDefault);
+                sw.Close();
+            }
+            JSONClass jc = new JSONClass();
+            jc["type"] = "clothing";
+            jc["saveName"] = saveName.Replace('\\', '/'); ;
+            saveNames.Add(jc);
+        }
+        private void SaveHairBaldFile()
+        {
+            string hairBaldDefault = "{ \"setUnlistedParamsToDefault\" : \"true\", \"storables\" : [ { \"id\" : \"geometry\", \"hair\" : [ ] } ] }";
+            string saveName = "Custom\\Atom\\Person\\Hair\\Preset_HairBald.vap";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
+            using (FileStream fileStream = File.OpenWrite(aFileName))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(hairBaldDefault);
+                sw.Close();
+            }
+            JSONClass jc = new JSONClass();
+            jc["type"] = "hairstyle";
             jc["saveName"] = saveName.Replace('\\', '/'); ;
             saveNames.Add(jc);
         }
@@ -537,9 +835,304 @@ namespace varManager
             jc["saveName"] = saveName.Replace('\\', '/');
             saveNames.Add(jc);
         }
+        private void SavePluginPresetFile(JSONClass jsonPreset)
+        {
+            string strJns = jsonPreset.ToString();
+            strJns = strJns.Replace("\"SELF:/", "\"" + varName + ":/");
+            string saveName = "Custom\\Atom\\Person\\Plugins\\Preset_temp.vap";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
+            using (FileStream fileStream = File.OpenWrite(aFileName))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(strJns);
+                sw.Close();
+            }
+            JSONClass jc = new JSONClass();
+            jc["type"] = "plugin";
+            jc["saveName"] = saveName.Replace('\\', '/');
+            saveNames.Add(jc);
+        }
+        private void SavePosePresetFile(JSONClass jsonPreset)
+        {
+            string strJns = jsonPreset.ToString();
+            strJns = strJns.Replace("\"SELF:/", "\"" + varName + ":/");
+            string saveName = "Custom\\Atom\\Person\\Pose\\Preset_temp.vap";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
+            using (FileStream fileStream = File.OpenWrite(aFileName))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(strJns);
+                sw.Close();
+            }
+            JSONClass jc = new JSONClass();
+            jc["type"] = "pose";
+            jc["saveName"] = saveName.Replace('\\', '/');
+            saveNames.Add(jc);
+        }
+        private void SaveAnimationPresetFile(JSONClass jsonPreset)
+        {
+            string saveName = "Custom\\Atom\\Person\\AnimationPresets\\Preset_temp.bin";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
+            jsonPreset.SaveToFile(aFileName);
+            
+            JSONClass jc = new JSONClass();
+            jc["type"] = "animation";
+            jc["saveName"] = saveName.Replace('\\', '/');
+            saveNames.Add(jc);
+        }
         private void FormAnalysis_FormClosed(object sender, FormClosedEventArgs e)
         {
             Settings.Default.Save();
         }
+
+        private void buttonLoadScene_Click(object sender, EventArgs e)
+        {
+            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                           Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+           
+            JSONClass jsonScene = (JSONClass)JSONNode.LoadFromFile(Path.Combine(sceneFoldername, "posinfo.bin"));
+            JSONArray jsonAtoms=new JSONArray();
+
+            foreach (TreeNode tn in atomnodes)
+            {
+                string atomtype = tn.Parent.Text;
+                if (atomtype.StartsWith("(base)")) atomtype = atomtype.Substring(6);
+                if (sceneBaseAtoms.Contains(atomtype))
+                    tn.Checked = true;
+            }
+            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, jsonAtoms, sceneFoldername);
+
+            jsonScene.Add("atoms", jsonAtoms);
+            string saveName = "Saves\\scene\\loadscene_temp.json";
+            string aFileName = Path.Combine(Settings.Default.vampath, saveName);
+            //jsonScene.SaveToFile(aFileName);
+            using(StreamWriter sw = new StreamWriter(aFileName, false))
+            {
+                sw.Write(jsonScene.ToString("\t"));
+            }
+            saveNames = new List<JSONClass>();
+            JSONClass jc = new JSONClass();
+            jc["type"] = "scenes";
+            jc["saveName"] = saveName.Replace('\\', '/'); ;
+            saveNames.Add(jc);
+            labelMessage.Text = "Load Scene completed!";
+            labelMessage.Visible = true;
+            timer1.Enabled = true;
+            GenLoadscenetxt();
+        }
+
+        public void GenLoadscenetxt()
+        {
+            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                           Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+            string dependfFilename = Path.Combine(sceneFoldername, "depend.txt");
+            List<string> depends = new List<string>();
+            using (StreamReader sr = new StreamReader(dependfFilename))
+            {
+                string depend;
+                while ((depend = sr.ReadLine()) != null)
+                {
+                    depends.Add(depend);
+                }
+            }
+
+            JSONClass jsonls =new JSONClass();
+            jsonls["resources"] = new JSONArray();
+            foreach (JSONClass jc in saveNames)
+            {
+                jsonls["resources"].Add(jc);
+            }
+            if (string.IsNullOrEmpty(CharacterGender))
+                CharacterGender = "unknown";
+            jsonls["characterGender"] = CharacterGender.ToLower();
+            jsonls["ignoreGender"] = IgnoreGender.ToString().ToLower();
+            jsonls["personOrder"] = (PersonOrder + 1).ToString();
+            form1.GenLoadscenetxt(jsonls, false, depends);
+        }
+
+        public void CheckedTreeViewNodes(TreeNodeCollection node, JSONArray jsonAtoms,string sceneFoldername)
+        {
+            foreach (TreeNode n in node)
+            {
+                if (n.Checked)
+                {
+                    if (n.Nodes.Count==0)
+                    {
+                        string path = n.FullPath;
+                        path=path.Substring(path.IndexOf('\\') + 1);
+                        path=Path.Combine(sceneFoldername,"atoms", path);
+                        jsonAtoms.Add(JSONNode.LoadFromFile(path));
+                    }
+                }
+                CheckedTreeViewNodes(n.Nodes,jsonAtoms, sceneFoldername);
+            }
+        }
+        public void CheckedTreeViewNodes(TreeNodeCollection node, string sceneFoldername,bool atomSubscene=false)
+        {
+            string pathPlugindata = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar");
+            
+            Directory.CreateDirectory(pathPlugindata);
+            foreach (TreeNode n in node)
+            {
+                if (n.Checked)
+                {
+                    if (n.Nodes.Count == 0)
+                    {
+                        string path = n.FullPath;
+                        path = path.Substring(path.IndexOf('\\') + 1);
+                        path = Path.Combine(sceneFoldername, "atoms", path);
+                        
+                        string pathPlugindataAtom = Path.Combine(pathPlugindata, n.Text);
+                        File.Copy(path, pathPlugindataAtom, true);
+                        JSONClass jc = new JSONClass();
+                        jc["type"] = atomSubscene ? "atomSubscene" : "atom";
+                        jc["saveName"] = pathPlugindataAtom.Replace('\\', '/'); ;
+                        saveNames.Add(jc);
+                    }
+                }
+                CheckedTreeViewNodes(n.Nodes, sceneFoldername, atomSubscene);
+            }
+        }
+        private void buttonClearCache_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void buttonLoadPlugin_Click(object sender, EventArgs e)
+        {
+            if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
+            {
+                saveNames = new List<JSONClass>();
+                SavePluginPreset(listJsonPerson[listBoxAtom.SelectedIndex]);
+                PersonOrder = 0;
+                if (listBoxPerson.SelectedIndex > 0)
+                    PersonOrder = listBoxPerson.SelectedIndex;
+                ignoreGender = false;
+                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
+                    ignoreGender = true;
+                labelMessage.Text = "Load Plugin completed!";
+                labelMessage.Visible = true;
+                timer1.Enabled = true;
+                GenLoadscenetxt();
+            }
+            else
+            {
+                MessageBox.Show("Please select a character");
+                listBoxAtom.Select();
+                return;
+            }
+        } 
+        private void buttonLoadPose_Click(object sender, EventArgs e)
+        {
+            if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
+            {
+                saveNames = new List<JSONClass>();
+                SavePosePreset(listJsonPerson[listBoxAtom.SelectedIndex]);
+                PersonOrder = 0;
+                if (listBoxPerson.SelectedIndex > 0)
+                    PersonOrder = listBoxPerson.SelectedIndex;
+                ignoreGender = false;
+                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
+                    ignoreGender = true;
+                labelMessage.Text = "Load Pose completed!";
+                labelMessage.Visible = true;
+                timer1.Enabled = true;
+                GenLoadscenetxt();
+            }
+            else
+            {
+                MessageBox.Show("Please select a character");
+                listBoxAtom.Select();
+                return;
+            }
+        }
+        private void buttonLoadAnimation_Click(object sender, EventArgs e)
+        {
+            if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
+            {
+                saveNames = new List<JSONClass>();
+                SavePosePreset(listJsonPerson[listBoxAtom.SelectedIndex]);
+                SaveAnimationPreset(listJsonPerson[listBoxAtom.SelectedIndex]);
+                PersonOrder = 0;
+                if (listBoxPerson.SelectedIndex > 0)
+                    PersonOrder = listBoxPerson.SelectedIndex;
+                ignoreGender = false;
+                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
+                    ignoreGender = true;
+                labelMessage.Text = "Load Animation completed!";
+                labelMessage.Visible = true;
+                timer1.Enabled = true;
+                GenLoadscenetxt();
+            }
+            else
+            {
+                MessageBox.Show("Please select a character");
+                listBoxAtom.Select();
+                return;
+            }
+
+        }
+
+        private void triStateTreeViewAtoms_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+           
+        }
+
+        private void triStateTreeViewAtoms_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Checked)
+            {
+                if (parentAtoms.ContainsKey(e.Node.Text))
+                {
+                    foreach (string child in parentAtoms[e.Node.Text])
+                    {
+                        var tn = atomnodes.Where(x => x.Text == child).First();
+                        if (!tn.Checked)
+                            tn.Checked = true;
+                    }
+
+                }
+            }
+
+        }
+
+        private void buttonAddToScene_Click(object sender, EventArgs e)
+        {
+            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                           Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+            saveNames = new List<JSONClass>();
+            string pathPlugindata = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar");
+            Directory.Delete(pathPlugindata, true);
+            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, sceneFoldername);
+            labelMessage.Text = "Add Selected Atoms to Scene completed!";
+            labelMessage.Visible = true;
+            timer1.Enabled = true;
+            GenLoadscenetxt();
+        }
+
+        private void buttonAddAsSubscene_Click(object sender, EventArgs e)
+        {
+            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                          Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
+            saveNames = new List<JSONClass>();
+            string pathPlugindata = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar");
+            Directory.Delete(pathPlugindata, true);
+            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, sceneFoldername,true);
+            labelMessage.Text = "Add Selected Atoms to Scene completed!";
+            labelMessage.Visible = true;
+            timer1.Enabled = true;
+            GenLoadscenetxt();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            labelMessage.Visible = false;
+            timer1.Enabled = false;
+        }
     }
+    
 }

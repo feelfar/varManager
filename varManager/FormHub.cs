@@ -759,11 +759,14 @@ namespace varManager
                                 if (filename.EndsWith(".var"))
                                     filename = filename.Substring(0, filename.Length - 4);
                                 hubItem.PackageName = filename;
-                                int splitindex = filename.LastIndexOf('.');
-                                if (splitindex >= 0)
+                                //int splitindex = filename.LastIndexOf('.');
+                                string[] filenameparts = filename.Split(('.'));
+                                if (filenameparts.Length >= 2)
                                 {
-                                    string hubpackageName = filename.Substring(0, splitindex);
-                                    int hubversion = int.Parse(filename.Substring(splitindex + 1));
+                                    string hubpackageName = filenameparts[0] + "." + filenameparts[1];
+                                    int hubversion = 1;
+                                    if (filenameparts.Length >= 3)
+                                        int.TryParse(filenameparts[2], out hubversion); 
                                     string varlastname = form1.VarExistName(hubpackageName + ".latest");
                                     if (varlastname != "missing")
                                     {
@@ -783,7 +786,6 @@ namespace varManager
                                                 inRepository = $"{lastversion} Upgrade to {hubversion}";
                                                 inrepons = 1;
                                             }
-                                            
                                         }
 
                                     }
