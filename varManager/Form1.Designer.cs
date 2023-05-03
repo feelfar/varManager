@@ -30,7 +30,7 @@ namespace varManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonSetting = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -123,6 +123,7 @@ namespace varManager
             this.radioButtonPersonOrder2 = new System.Windows.Forms.RadioButton();
             this.radioButtonPersonOrder1 = new System.Windows.Forms.RadioButton();
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
+            this.buttonClearCache = new System.Windows.Forms.Button();
             this.buttonAnalysis = new System.Windows.Forms.Button();
             this.buttonpreviewinstall = new System.Windows.Forms.Button();
             this.listViewPreviewPics = new System.Windows.Forms.ListView();
@@ -155,7 +156,6 @@ namespace varManager
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
             this.varsViewTableAdapter = new varManager.varManagerDataSetTableAdapters.varsViewTableAdapter();
             this.savedepensTableAdapter = new varManager.varManagerDataSetTableAdapters.savedepensTableAdapter();
-            this.buttonClearCache = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBoxSwitch.SuspendLayout();
@@ -582,9 +582,9 @@ namespace varManager
             // fsize
             // 
             this.fsize.DataPropertyName = "fsize";
-            dataGridViewCellStyle2.Format = "N2";
-            dataGridViewCellStyle2.NullValue = null;
-            this.fsize.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.fsize.DefaultCellStyle = dataGridViewCellStyle1;
             this.fsize.HeaderText = "fsize(MB)";
             this.fsize.MinimumWidth = 6;
             this.fsize.Name = "fsize";
@@ -1053,7 +1053,7 @@ namespace varManager
             this.tableLayoutPanelPreview.ColumnCount = 3;
             this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 126F));
+            this.tableLayoutPanelPreview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
             this.tableLayoutPanelPreview.Controls.Add(this.pictureBoxPreview, 0, 0);
             this.tableLayoutPanelPreview.Controls.Add(this.labelPreviewVarName, 1, 1);
             this.tableLayoutPanelPreview.Controls.Add(this.buttonLocate, 0, 1);
@@ -1089,7 +1089,7 @@ namespace varManager
             this.labelPreviewVarName.ForeColor = System.Drawing.SystemColors.ControlText;
             this.labelPreviewVarName.Location = new System.Drawing.Point(87, 112);
             this.labelPreviewVarName.Name = "labelPreviewVarName";
-            this.labelPreviewVarName.Size = new System.Drawing.Size(320, 37);
+            this.labelPreviewVarName.Size = new System.Drawing.Size(316, 37);
             this.labelPreviewVarName.TabIndex = 2;
             this.labelPreviewVarName.Text = "a.a.1";
             this.labelPreviewVarName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1275,6 +1275,18 @@ namespace varManager
             this.toolTip1.SetToolTip(this.checkBoxMerge, "Merge Load");
             this.checkBoxMerge.UseVisualStyleBackColor = true;
             // 
+            // buttonClearCache
+            // 
+            this.buttonClearCache.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonClearCache.ForeColor = System.Drawing.Color.Red;
+            this.buttonClearCache.Location = new System.Drawing.Point(92, 34);
+            this.buttonClearCache.Name = "buttonClearCache";
+            this.buttonClearCache.Size = new System.Drawing.Size(102, 40);
+            this.buttonClearCache.TabIndex = 0;
+            this.buttonClearCache.Text = "Clear Cache";
+            this.buttonClearCache.UseVisualStyleBackColor = true;
+            this.buttonClearCache.Click += new System.EventHandler(this.buttonClearCache_Click);
+            // 
             // buttonAnalysis
             // 
             this.buttonAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1293,9 +1305,9 @@ namespace varManager
             // 
             this.buttonpreviewinstall.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonpreviewinstall.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonpreviewinstall.Location = new System.Drawing.Point(415, 115);
+            this.buttonpreviewinstall.Location = new System.Drawing.Point(411, 115);
             this.buttonpreviewinstall.Name = "buttonpreviewinstall";
-            this.buttonpreviewinstall.Size = new System.Drawing.Size(120, 31);
+            this.buttonpreviewinstall.Size = new System.Drawing.Size(124, 31);
             this.buttonpreviewinstall.TabIndex = 0;
             this.buttonpreviewinstall.Text = "Install";
             this.toolTip1.SetToolTip(this.buttonpreviewinstall, "Install var and Dependencies ");
@@ -1307,10 +1319,10 @@ namespace varManager
             this.listViewPreviewPics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewPreviewPics.HideSelection = false;
             this.listViewPreviewPics.LargeImageList = this.imageListPreviewPics;
-            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 31);
+            this.listViewPreviewPics.Location = new System.Drawing.Point(0, 29);
             this.listViewPreviewPics.MultiSelect = false;
             this.listViewPreviewPics.Name = "listViewPreviewPics";
-            this.listViewPreviewPics.Size = new System.Drawing.Size(535, 521);
+            this.listViewPreviewPics.Size = new System.Drawing.Size(535, 523);
             this.listViewPreviewPics.TabIndex = 0;
             this.toolTip1.SetToolTip(this.listViewPreviewPics, "Preview of selected vars,click to display a larger image");
             this.listViewPreviewPics.UseCompatibleStateImageBehavior = false;
@@ -1336,7 +1348,7 @@ namespace varManager
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(535, 31);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(535, 29);
             this.flowLayoutPanel3.TabIndex = 10;
             // 
             // toolStripPreview
@@ -1412,7 +1424,7 @@ namespace varManager
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(194, 7);
+            this.label4.Location = new System.Drawing.Point(194, 6);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 17);
             this.label4.TabIndex = 1;
@@ -1446,7 +1458,7 @@ namespace varManager
             this.checkBoxPreviewTypeLoadable.AutoSize = true;
             this.checkBoxPreviewTypeLoadable.Checked = true;
             this.checkBoxPreviewTypeLoadable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(362, 5);
+            this.checkBoxPreviewTypeLoadable.Location = new System.Drawing.Point(362, 4);
             this.checkBoxPreviewTypeLoadable.Name = "checkBoxPreviewTypeLoadable";
             this.checkBoxPreviewTypeLoadable.Size = new System.Drawing.Size(87, 21);
             this.checkBoxPreviewTypeLoadable.TabIndex = 3;
@@ -1531,18 +1543,6 @@ namespace varManager
             // savedepensTableAdapter
             // 
             this.savedepensTableAdapter.ClearBeforeFill = true;
-            // 
-            // buttonClearCache
-            // 
-            this.buttonClearCache.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonClearCache.ForeColor = System.Drawing.Color.Red;
-            this.buttonClearCache.Location = new System.Drawing.Point(92, 34);
-            this.buttonClearCache.Name = "buttonClearCache";
-            this.buttonClearCache.Size = new System.Drawing.Size(102, 40);
-            this.buttonClearCache.TabIndex = 0;
-            this.buttonClearCache.Text = "Clear Cache";
-            this.buttonClearCache.UseVisualStyleBackColor = true;
-            this.buttonClearCache.Click += new System.EventHandler(this.buttonClearCache_Click);
             // 
             // Form1
             // 

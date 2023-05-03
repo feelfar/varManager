@@ -3041,6 +3041,14 @@ namespace varManager
             JSONArray resources = jsonls["resources"].AsArray;
             foreach (JSONClass resource in resources)
             {
+                if (!resource.HasKey("merge"))
+                    resource["merge"] = merge.ToString().ToLower();
+                if (!resource.HasKey("characterGender"))
+                    resource["characterGender"] = characterGender;
+                if (!resource.HasKey("ignoreGender"))
+                    resource["ignoreGender"] = ignoreGender.ToString().ToLower();
+                if (!resource.HasKey("personOrder"))
+                    resource["personOrder"] = personOrder.ToString();
                 if (resource.HasKey("type"))
                 {
                     if (resource["type"].Value == "scenes")
@@ -3073,14 +3081,7 @@ namespace varManager
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
             //StreamWriter sw = new StreamWriter(loadscenefile);
-            if (!jsonls.HasKey("merge"))
-                jsonls["merge"] = merge.ToString().ToLower();
-            if (!jsonls.HasKey("characterGender"))
-                jsonls["characterGender"] = characterGender;
-            if (!jsonls.HasKey("ignoreGender"))
-                jsonls["ignoreGender"] = ignoreGender.ToString().ToLower();
-            if (!jsonls.HasKey("personOrder"))
-                jsonls["personOrder"] = personOrder.ToString();
+            
 
             string strLS = jsonls.ToString("\t");
             using (FileStream fileStream = File.OpenWrite(loadscenefile))

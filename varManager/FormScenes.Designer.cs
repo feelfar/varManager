@@ -88,6 +88,7 @@ namespace varManager
             this.radioButtonPersonOrder2 = new System.Windows.Forms.RadioButton();
             this.radioButtonPersonOrder1 = new System.Windows.Forms.RadioButton();
             this.checkBoxMerge = new System.Windows.Forms.CheckBox();
+            this.buttonClearCache = new System.Windows.Forms.Button();
             this.buttonAnalysis = new System.Windows.Forms.Button();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -100,7 +101,6 @@ namespace varManager
             this.scenesTableAdapter = new varManager.varManagerDataSetTableAdapters.scenesTableAdapter();
             this.installStatusTableAdapter = new varManager.varManagerDataSetTableAdapters.installStatusTableAdapter();
             this.varsTableAdapter = new varManager.varManagerDataSetTableAdapters.varsTableAdapter();
-            this.buttonClearCache = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -131,7 +131,7 @@ namespace varManager
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 230F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 232F));
             this.tableLayoutPanel1.Controls.Add(this.panel5, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel6, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.listViewHide, 0, 1);
@@ -156,7 +156,7 @@ namespace varManager
             this.panel5.Controls.Add(this.buttonRemoveHide);
             this.panel5.Controls.Add(this.buttonAddHide);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(331, 43);
+            this.panel5.Location = new System.Drawing.Point(330, 43);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(49, 590);
             this.panel5.TabIndex = 4;
@@ -190,7 +190,7 @@ namespace varManager
             this.panel6.Controls.Add(this.buttonAddFav);
             this.panel6.Controls.Add(this.buttonRemoveFav);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(713, 43);
+            this.panel6.Location = new System.Drawing.Point(712, 43);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(49, 590);
             this.panel6.TabIndex = 5;
@@ -230,7 +230,7 @@ namespace varManager
             this.listViewHide.LineColor = System.Drawing.Color.Red;
             this.listViewHide.Location = new System.Drawing.Point(3, 43);
             this.listViewHide.Name = "listViewHide";
-            this.listViewHide.Size = new System.Drawing.Size(322, 590);
+            this.listViewHide.Size = new System.Drawing.Size(321, 590);
             this.listViewHide.TabIndex = 7;
             this.toolTip1.SetToolTip(this.listViewHide, "Normal list,Multiple selections available,double click wite");
             this.listViewHide.UseCompatibleStateImageBehavior = false;
@@ -254,7 +254,7 @@ namespace varManager
             this.listViewNormal.HideSelection = false;
             this.listViewNormal.LargeImageList = this.imageListScenes;
             this.listViewNormal.LineColor = System.Drawing.Color.Red;
-            this.listViewNormal.Location = new System.Drawing.Point(386, 43);
+            this.listViewNormal.Location = new System.Drawing.Point(385, 43);
             this.listViewNormal.Name = "listViewNormal";
             this.listViewNormal.Size = new System.Drawing.Size(321, 590);
             this.listViewNormal.TabIndex = 7;
@@ -273,7 +273,7 @@ namespace varManager
             this.listViewFav.HideSelection = false;
             this.listViewFav.LargeImageList = this.imageListScenes;
             this.listViewFav.LineColor = System.Drawing.Color.Red;
-            this.listViewFav.Location = new System.Drawing.Point(768, 43);
+            this.listViewFav.Location = new System.Drawing.Point(767, 43);
             this.listViewFav.Name = "listViewFav";
             this.listViewFav.Size = new System.Drawing.Size(321, 590);
             this.listViewFav.TabIndex = 7;
@@ -288,7 +288,7 @@ namespace varManager
             this.panel3.Controls.Add(this.buttonNormal);
             this.panel3.Controls.Add(this.labelNormal);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(386, 3);
+            this.panel3.Location = new System.Drawing.Point(385, 3);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(321, 34);
             this.panel3.TabIndex = 10;
@@ -319,7 +319,7 @@ namespace varManager
             this.panel4.Controls.Add(this.buttonFav);
             this.panel4.Controls.Add(this.labelFav);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(768, 3);
+            this.panel4.Location = new System.Drawing.Point(767, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(321, 34);
             this.panel4.TabIndex = 10;
@@ -352,7 +352,7 @@ namespace varManager
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(3, 3);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(322, 34);
+            this.panel7.Size = new System.Drawing.Size(321, 34);
             this.panel7.TabIndex = 10;
             // 
             // buttonHide
@@ -385,10 +385,10 @@ namespace varManager
             this.flowLayoutPanel1.Controls.Add(this.groupBox5);
             this.flowLayoutPanel1.Controls.Add(this.groupBox6);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(1095, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(1094, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.tableLayoutPanel1.SetRowSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(226, 630);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(227, 630);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // groupBox3
@@ -821,13 +821,25 @@ namespace varManager
             this.toolTip1.SetToolTip(this.checkBoxMerge, "Merge Load");
             this.checkBoxMerge.UseVisualStyleBackColor = true;
             // 
+            // buttonClearCache
+            // 
+            this.buttonClearCache.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonClearCache.ForeColor = System.Drawing.Color.Red;
+            this.buttonClearCache.Location = new System.Drawing.Point(3, 87);
+            this.buttonClearCache.Name = "buttonClearCache";
+            this.buttonClearCache.Size = new System.Drawing.Size(92, 30);
+            this.buttonClearCache.TabIndex = 1;
+            this.buttonClearCache.Text = "Clear Cache";
+            this.buttonClearCache.UseVisualStyleBackColor = true;
+            this.buttonClearCache.Click += new System.EventHandler(this.buttonClearCache_Click);
+            // 
             // buttonAnalysis
             // 
             this.buttonAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonAnalysis.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.buttonAnalysis.Location = new System.Drawing.Point(3, 89);
+            this.buttonAnalysis.Location = new System.Drawing.Point(3, 43);
             this.buttonAnalysis.Name = "buttonAnalysis";
-            this.buttonAnalysis.Size = new System.Drawing.Size(71, 30);
+            this.buttonAnalysis.Size = new System.Drawing.Size(92, 30);
             this.buttonAnalysis.TabIndex = 1;
             this.buttonAnalysis.Text = "Analysis";
             this.toolTip1.SetToolTip(this.buttonAnalysis, "Analyze the atoms in the scene and load to running VAM,Add loadscene.cs as sessio" +
@@ -910,18 +922,6 @@ namespace varManager
             // varsTableAdapter
             // 
             this.varsTableAdapter.ClearBeforeFill = true;
-            // 
-            // buttonClearCache
-            // 
-            this.buttonClearCache.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonClearCache.ForeColor = System.Drawing.Color.Red;
-            this.buttonClearCache.Location = new System.Drawing.Point(80, 89);
-            this.buttonClearCache.Name = "buttonClearCache";
-            this.buttonClearCache.Size = new System.Drawing.Size(92, 30);
-            this.buttonClearCache.TabIndex = 1;
-            this.buttonClearCache.Text = "Clear Cache";
-            this.buttonClearCache.UseVisualStyleBackColor = true;
-            this.buttonClearCache.Click += new System.EventHandler(this.buttonClearCache_Click);
             // 
             // FormScenes
             // 

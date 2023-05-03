@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgvFilterPopup", "..\DgvFil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragNDrop", "DragNDrop\DragNDrop.csproj", "{C7E21F05-C166-4DCC-8429-EC8A4C1A67B6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMDLoader", "MMDLoader\MMDLoader.csproj", "{60569535-F3F9-4412-82D8-9EB84DA0CFD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadScene", "LoadScene\LoadScene.csproj", "{8D90CE12-F58A-4AD9-81E6-A93B3D6BB2EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{C7E21F05-C166-4DCC-8429-EC8A4C1A67B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7E21F05-C166-4DCC-8429-EC8A4C1A67B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7E21F05-C166-4DCC-8429-EC8A4C1A67B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60569535-F3F9-4412-82D8-9EB84DA0CFD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60569535-F3F9-4412-82D8-9EB84DA0CFD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60569535-F3F9-4412-82D8-9EB84DA0CFD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60569535-F3F9-4412-82D8-9EB84DA0CFD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D90CE12-F58A-4AD9-81E6-A93B3D6BB2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D90CE12-F58A-4AD9-81E6-A93B3D6BB2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D90CE12-F58A-4AD9-81E6-A93B3D6BB2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D90CE12-F58A-4AD9-81E6-A93B3D6BB2EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,106 @@
+﻿<Window x:Class="MMDLoader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MMDLoader"
+        mc:Ignorable="d"
+        Title="MMD Loader" Height="743" Width="983" Loaded="Window_Loaded" Icon="/icon.ico" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,10,0">
+        <Grid.Background>
+            <ImageBrush Stretch="None"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1019*"/>
+            <ColumnDefinition Width="715*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ListBox x:Name="listBoxDir" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,34,10,10" SelectionChanged="listBoxDir_SelectionChanged"/>
+        <Button x:Name="buttonLoadMMD" Content="MMD Dir" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="buttonLoadMMD_Click" Height="19" Width="57"/>
+        <Label x:Name="label" Grid.Column="1" Content="Audio:" HorizontalAlignment="Right" Margin="0,34,236,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBoxPlayAudio" Content="Play" HorizontalAlignment="Right" Margin="0,40,291,0" VerticalAlignment="Top" Click="checkBoxPlayAudio_Checked" IsChecked="True" Grid.Column="1" Height="15" Width="43"/>
+        <ComboBox x:Name="comboBoxAudio" Grid.Column="1" HorizontalAlignment="Right" Margin="0,35,4,0" VerticalAlignment="Top" Width="231" SelectionChanged="comboBoxAudio_SelectionChanged"  Height="21"/>
+        <ComboBox x:Name="comboBoxCamVmd" Grid.Column="1" HorizontalAlignment="Right" Margin="0,99,4,0" VerticalAlignment="Top" Width="231" RenderTransformOrigin="0.157,-0.068"/>
+        <Button x:Name="buttonLoad" Grid.Column="1" Content="Load" HorizontalAlignment="Right" Margin="0,0,0,45" VerticalAlignment="Bottom" Width="72" Height="32" Background="#FF7FFB00" Click="buttonLoad_Click"/>
+        <Button x:Name="buttonExit" Grid.Column="1" Content="Exit" HorizontalAlignment="Right" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="54" Click="buttonExit_Click"/>
+        <Button x:Name="buttonSettings" Grid.Column="1" Content="Settings" HorizontalAlignment="Right" Margin="0,0,61,10" VerticalAlignment="Bottom" Width="76" Click="buttonSettings_Click"/>
+        <Label x:Name="label10" Content="Filter:" HorizontalAlignment="Left" Margin="84,7,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBoxFilter" HorizontalAlignment="Left" Margin="131,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" TextChanged="textBoxFilter_TextChanged"/>
+        <Slider x:Name="slider" Grid.Column="1" HorizontalAlignment="Right" Margin="0,65,97,0" VerticalAlignment="Top" Width="219" Height="21" ValueChanged="slider_ValueChanged" LargeChange="10" SmallChange="1" Maximum="100" Orientation="Horizontal"/>
+        <Label x:Name="labelAudioTime" Grid.Column="1" Content="0:00:00/0:00:00" HorizontalAlignment="Right" Margin="0,63,0,0" VerticalAlignment="Top" Width="99" HorizontalContentAlignment="Left"/>
+        <GroupBox x:Name="groupBox" Grid.Column="1" HorizontalAlignment="Right" Height="442" Header="Person Setup" Margin="0,132,0,0" VerticalAlignment="Top" Width="381">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="151*"/>
+                    <ColumnDefinition Width="174*"/>
+                    <ColumnDefinition Width="44*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="label2" Content="Person vmd:" HorizontalAlignment="Right" Grid.ColumnSpan="1" VerticalAlignment="Center"/>
+                <ComboBox x:Name="comboBoxPerson1vmd" RenderTransformOrigin="0.157,-0.068" Grid.Column="1" VerticalAlignment="Center" Height="21"/>
+                <Label x:Name="label2_Copy" Content="Person vmd2:" Grid.Column="0" HorizontalAlignment="Right" Grid.RowSpan="3" Width="88" VerticalAlignment="Center"/>
+                <ComboBox x:Name="comboBoxPerson1vmd2" RenderTransformOrigin="0.157,-0.068" Grid.Column="1" Grid.RowSpan="3" Margin="0,34,0,34" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <Label x:Name="label6_Copy1" Content="StraightLeg:" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Grid.RowSpan="1" Grid.Row="2" VerticalAlignment="Center"/>
+                <Slider x:Name="sliderStraightLeg" Maximum="1" LargeChange="0.1" SmallChange="0.01" ValueChanged="sliderStraightLeg_ValueChanged" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+                <Label x:Name="labelStraightLeg" Grid.Column="2" Content="0000" HorizontalAlignment="Center" Grid.Row="2" Grid.RowSpan="1" Width="38" VerticalAlignment="Center"/>
+                <Label x:Name="label6_Copy" Content="PosX:" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Grid.RowSpan="1" Grid.Row="4" VerticalAlignment="Center"/>
+                <Slider x:Name="sliderPosX" Maximum="1" LargeChange="0.1" SmallChange="0.01" ValueChanged="sliderPosX_ValueChanged" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
+                <Label x:Name="labelPosX" Grid.Column="2" Content="0000" Grid.RowSpan="1" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <CheckBox x:Name="checkBoxEnableHighHeel" Content="Enable HighHeel" HorizontalAlignment="Right" VerticalAlignment="Center" Click="checkBoxEnableHighHeel_Click" Grid.Row="5" Grid.ColumnSpan="1" Height="15" Margin="0,0,5,0"/>
+                <Button x:Name="buttonHighHeelDefault" Grid.Column="1" Content="Default" HorizontalAlignment="Left" Click="buttonHighHeelDefault_Click" Grid.Row="5" Grid.RowSpan="1" Grid.ColumnSpan="2" Width="80" VerticalAlignment="Center"/>
+                <Label x:Name="label6" HorizontalContentAlignment="Right" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Foot Hold Rotation Max Force:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Label>
+                <Label x:Name="label7" Content="Foot Joint Drive X Angle:" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Grid.Row="7" Grid.RowSpan="1" VerticalAlignment="Center"/>
+                <Label x:Name="label8" Content="Toe Joint Drive X Angle:" HorizontalContentAlignment="Right" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <Slider x:Name="sliderFootHoldForce" Grid.Column="1" VerticalAlignment="Center" Maximum="1000" LargeChange="50" SmallChange="5" ValueChanged="sliderFootHoldForce_ValueChanged" Grid.Row="6" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                <Slider x:Name="sliderFootXAngle" Grid.Column="1" Minimum="-65" Maximum="45" LargeChange="10" SmallChange="1" Value="-45" ValueChanged="sliderFootXAngle_ValueChanged" Grid.Row="7" Grid.RowSpan="1" VerticalAlignment="Center"/>
+                <Slider x:Name="sliderToeXAngle" Grid.Column="1" Minimum="-40" Maximum="75" LargeChange="10" SmallChange="1" Value="35" ValueChanged="sliderToeXAngle_ValueChanged" Grid.Row="8" VerticalAlignment="Center"/>
+                <Label x:Name="labelFootHoldForce" Grid.Column="2" Content="0000" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label x:Name="labelFootXAngle" Grid.Column="2" Content="0000" Grid.Row="7" Grid.RowSpan="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label x:Name="labelToeXAngle" Grid.Column="2" Content="0000" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Image x:Name="imageHighheel" HorizontalAlignment="Right" Height="74" VerticalAlignment="Top" Width="94" Source="/ImageHighHeel.png" Opacity="0.8" Grid.Row="9" Margin="0,6,52,0"/>
+                <Rectangle x:Name="rectToe" HorizontalAlignment="Right" Height="15" Margin="0,16,118,0" VerticalAlignment="Top" Width="26" RadiusX="12" RadiusY="12" Stroke="Black" Grid.Row="9"/>
+                <Rectangle x:Name="rectFoot" HorizontalAlignment="Right" Height="16" Margin="0,16,65,0" VerticalAlignment="Top" Width="60" RadiusX="6" RadiusY="6" RenderTransformOrigin="0.5,0.5" Stroke="Black" Grid.Row="9"/>
+                <Rectangle HorizontalAlignment="Right" Height="17" Margin="0,14,58,0" VerticalAlignment="Top" Width="20" Stroke="Black" RenderTransformOrigin="0.5,0.5" Grid.Row="9">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="23.721"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle x:Name="rectHeel" HorizontalAlignment="Right" Height="20" VerticalAlignment="Top" Width="6" Stroke="Black" Grid.Row="9" Margin="0,21,66,0"/>
+                <Button x:Name="buttonTestHighHeel" Grid.Column="1" Content="Test HighHeel" HorizontalAlignment="Right" VerticalAlignment="Top" Click="buttonTestHighHeel_Click" Grid.Row="9" Grid.ColumnSpan="2" Margin="0,16,11,0" Width="110"/>
+                <Button x:Name="buttonVmdTest" Grid.Column="1" Content=" Test VMD" HorizontalAlignment="Right" VerticalAlignment="Top" Click="buttonVmdTest_Click" Grid.Row="9" Grid.ColumnSpan="2" Margin="0,69,11,0" Width="80"/>
+                <Label x:Name="label6_Copy2" Content="StraightLeg WorkAngle:" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Grid.Row="3" VerticalAlignment="Center"/>
+                <Label x:Name="labelStraightLegWorkAngle" Grid.Column="2" Content="0000" HorizontalAlignment="Center" Grid.Row="3" Width="38" VerticalAlignment="Center"/>
+                <Slider x:Name="sliderStraightLegWorkAngle" Maximum="170" LargeChange="10" SmallChange="1" ValueChanged="sliderStraightLegWorkAngle_ValueChanged" Grid.ColumnSpan="1" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Minimum="60" Value="140"/>
+                <Label x:Name="label3" Content="Rate:" HorizontalAlignment="Right" Grid.Row="9" VerticalAlignment="Top" Grid.Column="1" Margin="0,66,118,0"/>
+                <ComboBox x:Name="comboBoxSampleSpeed" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="61,69,0,0" Grid.Row="9" VerticalAlignment="Top" Width="61">
+                    <ComboBoxItem Content="×0.5"/>
+                    <ComboBoxItem Content="×1" />
+                    <ComboBoxItem Content="×2" IsSelected="True"/>
+                    <ComboBoxItem Content="×3"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+        <CheckBox x:Name="checkBoxLoadCamera" Content="Camera vmd:" HorizontalAlignment="Right" Margin="0,105,240,0" VerticalAlignment="Top" IsChecked="True" Grid.Column="1" Height="15" Width="96" Click="checkBoxLoadCamera_Click"/>
+    </Grid>
+</Window>

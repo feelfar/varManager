@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SimpleJSON;
@@ -285,17 +286,13 @@ namespace varManager
                            checkBoxBreast.Checked, checkBoxGlute.Checked);
                     }*/
                     //JSONClass atomitem =(JSONClass) JSONNode.LoadFromFile(listJsonPerson[listBoxAtom.SelectedIndex]);
+                    GetPersonOrder();
                     saveNames = new List<JSONClass>();
                     SavePreset(listJsonPerson[listBoxAtom.SelectedIndex], checkBoxMorphs.Checked, checkBoxHair.Checked,
                            checkBoxClothing.Checked, checkBoxSkin.Checked,
                            checkBoxBreast.Checked, checkBoxGlute.Checked);
 
-                    PersonOrder = 0;
-                    if (listBoxPerson.SelectedIndex > 0)
-                        PersonOrder = listBoxPerson.SelectedIndex;
-                    ignoreGender = false;
-                    if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
-                        ignoreGender = true;
+                    
                     labelMessage.Text = "Load Look Preset completed!";
                     labelMessage.Visible = true;
                     timer1.Enabled = true;
@@ -315,6 +312,17 @@ namespace varManager
                 return;
             }
         }
+
+        private void GetPersonOrder()
+        {
+            PersonOrder = 0;
+            if (listBoxPerson.SelectedIndex > 0)
+                PersonOrder = listBoxPerson.SelectedIndex;
+            ignoreGender = false;
+            if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
+                ignoreGender = true;
+        }
+
         private void SavePluginPreset(JSONClass atomitem)
         {
             JSONClass jsonPlugin = new JSONClass();
@@ -658,12 +666,23 @@ namespace varManager
                 sw.Write(eyecolorDefault);
                 sw.Close();
             }
+            string type = "looks";
+            AddPresetResouce(type, saveName);
+        }
+
+        private void AddPresetResouce(string type,string saveName )
+        {
             JSONClass jc = new JSONClass();
-            
-            jc["type"] = "looks";
-            jc["saveName"] = saveName.Replace('\\', '/'); ;
+            jc["type"] = type;
+            jc["saveName"] = saveName.Replace('\\', '/');
+            if (string.IsNullOrEmpty(CharacterGender))
+                CharacterGender = "unknown";
+            jc["characterGender"] = CharacterGender.ToLower();
+            jc["ignoreGender"] = IgnoreGender.ToString().ToLower();
+            jc["personOrder"] = (PersonOrder + 1).ToString();
             saveNames.Add(jc);
         }
+
         private void SaveClothNakedFile()
         {
             string colthNakedDefault = "{ \"setUnlistedParamsToDefault\" : \"true\", \"storables\" : [ { \"id\" : \"geometry\", \"clothing\" : [ ] } ] }";
@@ -677,10 +696,7 @@ namespace varManager
                 sw.Write(colthNakedDefault);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "clothing";
-            jc["saveName"] = saveName.Replace('\\', '/'); ;
-            saveNames.Add(jc);
+            AddPresetResouce("clothing", saveName.Replace('\\', '/'));
         }
         private void SaveHairBaldFile()
         {
@@ -695,10 +711,7 @@ namespace varManager
                 sw.Write(hairBaldDefault);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "hairstyle";
-            jc["saveName"] = saveName.Replace('\\', '/'); ;
-            saveNames.Add(jc);
+            AddPresetResouce("hairstyle", saveName.Replace('\\', '/'));
         }
         private void SaveAppearancePresetFile(JSONClass jsonPreset)
         {
@@ -714,10 +727,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "looks";
-            jc["saveName"] = saveName.Replace('\\', '/'); ;
-            saveNames.Add(jc);
+            AddPresetResouce("looks", saveName.Replace('\\', '/'));
         }
         private void SaveMorphPresetFile(JSONClass jsonPreset)
         {
@@ -733,10 +743,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "morphs";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("morphs", saveName.Replace('\\', '/'));
         }
         private void SaveClothingPresetFile(JSONClass jsonPreset)
         {
@@ -752,10 +759,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "clothing";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("clothing", saveName.Replace('\\', '/'));
         }
         private void SaveHairPresetFile(JSONClass jsonPreset)
         {
@@ -771,10 +775,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "hairstyle";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("hairstyle", saveName.Replace('\\', '/'));
         }
         private void SaveSkinPresetFile(JSONClass jsonPreset)
         {
@@ -790,10 +791,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "skin";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("skin", saveName.Replace('\\', '/'));
         }
 
         private void SaveBreastPresetFile(JSONClass jsonPreset)
@@ -810,10 +808,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "breast";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("breast", saveName.Replace('\\', '/'));
         }
 
         private void SaveGlutePresetFile(JSONClass jsonPreset)
@@ -830,10 +825,8 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "glute";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            
+            AddPresetResouce("glute", saveName.Replace('\\', '/'));
         }
         private void SavePluginPresetFile(JSONClass jsonPreset)
         {
@@ -849,10 +842,8 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "plugin";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+
+            AddPresetResouce("plugin", saveName.Replace('\\', '/'));
         }
         private void SavePosePresetFile(JSONClass jsonPreset)
         {
@@ -868,10 +859,7 @@ namespace varManager
                 sw.Write(strJns);
                 sw.Close();
             }
-            JSONClass jc = new JSONClass();
-            jc["type"] = "pose";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("pose", saveName.Replace('\\', '/'));
         }
         private void SaveAnimationPresetFile(JSONClass jsonPreset)
         {
@@ -879,11 +867,7 @@ namespace varManager
             string aFileName = Path.Combine(Settings.Default.vampath, saveName);
             Directory.CreateDirectory(new FileInfo(aFileName).Directory.FullName);
             jsonPreset.SaveToFile(aFileName);
-            
-            JSONClass jc = new JSONClass();
-            jc["type"] = "animation";
-            jc["saveName"] = saveName.Replace('\\', '/');
-            saveNames.Add(jc);
+            AddPresetResouce("animation", saveName.Replace('\\', '/'));
         }
         private void FormAnalysis_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -892,6 +876,7 @@ namespace varManager
 
         private void buttonLoadScene_Click(object sender, EventArgs e)
         {
+            /*
             string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
                            Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
            
@@ -903,9 +888,20 @@ namespace varManager
                 string atomtype = tn.Parent.Text;
                 if (atomtype.StartsWith("(base)")) atomtype = atomtype.Substring(6);
                 if (sceneBaseAtoms.Contains(atomtype))
+                {
+                    if (tn.Nodes.Count == 0)
+                    {
+                        string path = tn.FullPath;
+                        path = path.Substring(path.IndexOf('\\') + 1);
+                        path = Path.Combine(sceneFoldername, "atoms", path);
+                        jsonAtoms.Add(JSONNode.LoadFromFile(path));
+                    }
+
                     tn.Checked = true;
+                }
+                   
             }
-            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, jsonAtoms, sceneFoldername);
+            //CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, jsonAtoms, sceneFoldername);
 
             jsonScene.Add("atoms", jsonAtoms);
             string saveName = "Saves\\scene\\loadscene_temp.json";
@@ -915,15 +911,26 @@ namespace varManager
             {
                 sw.Write(jsonScene.ToString("\t"));
             }
+            */
+            foreach (TreeNode tn in atomnodes)
+            {
+                string atomtype = tn.Parent.Text;
+                if (atomtype.StartsWith("(base)")) atomtype = atomtype.Substring(6);
+                if (sceneBaseAtoms.Contains(atomtype))
+                {
+                    tn.Checked = true;
+                }
+            }
             saveNames = new List<JSONClass>();
-            JSONClass jc = new JSONClass();
-            jc["type"] = "scenes";
-            jc["saveName"] = saveName.Replace('\\', '/'); ;
-            saveNames.Add(jc);
+            AddPresetResouce("emptyscene", "");
+            //AddPresetResouce("scenes", saveName.Replace('\\', '/'));
+            //GenLoadscenetxt();
+            //Thread.Sleep(2000);
+            //saveNames = new List<JSONClass>();
+            AddToScene();
             labelMessage.Text = "Load Scene completed!";
             labelMessage.Visible = true;
             timer1.Enabled = true;
-            GenLoadscenetxt();
         }
 
         public void GenLoadscenetxt()
@@ -947,11 +954,7 @@ namespace varManager
             {
                 jsonls["resources"].Add(jc);
             }
-            if (string.IsNullOrEmpty(CharacterGender))
-                CharacterGender = "unknown";
-            jsonls["characterGender"] = CharacterGender.ToLower();
-            jsonls["ignoreGender"] = IgnoreGender.ToString().ToLower();
-            jsonls["personOrder"] = (PersonOrder + 1).ToString();
+            
             form1.GenLoadscenetxt(jsonls, false, depends);
         }
 
@@ -989,10 +992,9 @@ namespace varManager
                         
                         string pathPlugindataAtom = Path.Combine(pathPlugindata, n.Text);
                         File.Copy(path, pathPlugindataAtom, true);
-                        JSONClass jc = new JSONClass();
-                        jc["type"] = atomSubscene ? "atomSubscene" : "atom";
-                        jc["saveName"] = pathPlugindataAtom.Replace('\\', '/'); ;
-                        saveNames.Add(jc);
+                        string type = atomSubscene ? "atomSubscene" : "atom";
+                        string saveName = pathPlugindataAtom.Replace('\\', '/');
+                        AddPresetResouce(type, saveName);
                     }
                 }
                 CheckedTreeViewNodes(n.Nodes, sceneFoldername, atomSubscene);
@@ -1006,14 +1008,9 @@ namespace varManager
         {
             if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
             {
+                GetPersonOrder();
                 saveNames = new List<JSONClass>();
                 SavePluginPreset(listJsonPerson[listBoxAtom.SelectedIndex]);
-                PersonOrder = 0;
-                if (listBoxPerson.SelectedIndex > 0)
-                    PersonOrder = listBoxPerson.SelectedIndex;
-                ignoreGender = false;
-                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
-                    ignoreGender = true;
                 labelMessage.Text = "Load Plugin completed!";
                 labelMessage.Visible = true;
                 timer1.Enabled = true;
@@ -1030,14 +1027,9 @@ namespace varManager
         {
             if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
             {
+                GetPersonOrder();
                 saveNames = new List<JSONClass>();
                 SavePosePreset(listJsonPerson[listBoxAtom.SelectedIndex]);
-                PersonOrder = 0;
-                if (listBoxPerson.SelectedIndex > 0)
-                    PersonOrder = listBoxPerson.SelectedIndex;
-                ignoreGender = false;
-                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
-                    ignoreGender = true;
                 labelMessage.Text = "Load Pose completed!";
                 labelMessage.Visible = true;
                 timer1.Enabled = true;
@@ -1054,15 +1046,11 @@ namespace varManager
         {
             if (listBoxAtom.SelectedIndex >= 0 && listBoxAtom.SelectedIndex < listJsonPerson.Count)
             {
+                GetPersonOrder();
                 saveNames = new List<JSONClass>();
                 SavePosePreset(listJsonPerson[listBoxAtom.SelectedIndex]);
                 SaveAnimationPreset(listJsonPerson[listBoxAtom.SelectedIndex]);
-                PersonOrder = 0;
-                if (listBoxPerson.SelectedIndex > 0)
-                    PersonOrder = listBoxPerson.SelectedIndex;
-                ignoreGender = false;
-                if (checkBoxIgnoreGender.Enabled && checkBoxIgnoreGender.Checked)
-                    ignoreGender = true;
+
                 labelMessage.Text = "Load Animation completed!";
                 labelMessage.Visible = true;
                 timer1.Enabled = true;
@@ -1102,12 +1090,18 @@ namespace varManager
 
         private void buttonAddToScene_Click(object sender, EventArgs e)
         {
+            saveNames = new List<JSONClass>();
+            AddToScene();
+        }
+
+        private void AddToScene(bool asSubScene=false)
+        {
             string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
                            Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
-            saveNames = new List<JSONClass>();
+            
             string pathPlugindata = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar");
             Directory.Delete(pathPlugindata, true);
-            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, sceneFoldername);
+            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, sceneFoldername, asSubScene);
             labelMessage.Text = "Add Selected Atoms to Scene completed!";
             labelMessage.Visible = true;
             timer1.Enabled = true;
@@ -1116,16 +1110,8 @@ namespace varManager
 
         private void buttonAddAsSubscene_Click(object sender, EventArgs e)
         {
-            string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
-                          Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
             saveNames = new List<JSONClass>();
-            string pathPlugindata = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar");
-            Directory.Delete(pathPlugindata, true);
-            CheckedTreeViewNodes(triStateTreeViewAtoms.Nodes, sceneFoldername,true);
-            labelMessage.Text = "Add Selected Atoms to Scene completed!";
-            labelMessage.Visible = true;
-            timer1.Enabled = true;
-            GenLoadscenetxt();
+            AddToScene(true);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
