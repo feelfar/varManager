@@ -13,7 +13,7 @@ namespace LibMMD.Motion
 		public List<KeyValuePair<int, CameraKeyframe>> KeyFrames { get; set; }
 
 		// Token: 0x060000D2 RID: 210 RVA: 0x00007160 File Offset: 0x00005360
-		private CameraPose GetCameraPoseByFrame(float frame)
+		public CameraPose GetCameraPoseByFrame(int frame)
 		{
 			if (this.KeyFrames.Count == 0)
 			{
@@ -96,11 +96,12 @@ namespace LibMMD.Motion
 		}
 
 		// Token: 0x060000D4 RID: 212 RVA: 0x000074FA File Offset: 0x000056FA
+		/*
 		public CameraPose GetCameraPose(double time)
 		{
 			return this.GetCameraPoseByFrame((float)(time * 30.0));
 		}
-
+		*/
 		// Token: 0x060000D5 RID: 213 RVA: 0x0000750E File Offset: 0x0000570E
 		private static float CalculBezierPointByTwo(float t, Vector3 p1, Vector3 p2)
 		{

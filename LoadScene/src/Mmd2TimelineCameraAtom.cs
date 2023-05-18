@@ -4,6 +4,7 @@ using MVR.FileManagementSecure;
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -134,6 +135,137 @@ namespace mmd2timeline
             timelineControlJson.Controller = "control";
             timelineClipJson.Controllers.Add(timelineControlJson);
             timelineClipJson.FloatParams = new List<FloatParamsJson>();
+            FloatParamsJson floatParamsJsonFOV = new FloatParamsJson();
+            floatParamsJsonFOV.Storable = "CameraControl";
+            floatParamsJsonFOV.Name = "FOV";
+            floatParamsJsonFOV.Min = "10";
+            floatParamsJsonFOV.Max = "100";
+            timelineClipJson.FloatParams.Add(floatParamsJsonFOV);
+            List<KeyValuePair<int, CameraKeyframe>> keyFrames = this.m_MmdCamera._cameraMotion.KeyFrames;
+            float startTimeval = this.startTime.val;
+            float endTimeval = this.endTime.val;
+            int startFrame = 0;
+            int maxFrame = keyFrames[keyFrames.Count - 1].Key;
+            int endFrame = maxFrame;
+            for (int i = 0; i < keyFrames.Count; i++)
+            {
+                int key2 = keyFrames[i].Key;
+                if ((float)key2 / 30f >= startTimeval)
+                {
+                    startFrame = key2;
+                    break;
+                }
+            }
+            for (int j = keyFrames.Count - 1; j >= 0; j--)
+            {
+                int key3 = keyFrames[j].Key;
+                if ((float)key3 / 30f <= endTimeval)
+                {
+                    endFrame = key3;
+                    break;
+                }
+            }
+            Debug.Log("maxFrame " + maxFrame.ToString());
+            Debug.Log("startFrame " + startFrame.ToString());
+            Debug.Log("endFrame " + endFrame.ToString());
+            HashSet<int> hashsetFrames = new HashSet<int>();
+            foreach (KeyValuePair<int, CameraKeyframe> keyValuePair in this.m_MmdCamera._cameraMotion.KeyFrames)
+            {
+                if (keyValuePair.Key >= startFrame && keyValuePair.Key <= endFrame)
+                {
+                    hashsetFrames.Add(keyValuePair.Key);
+                }
+            }
+            for (int curKeyFrame=startFrame;curKeyFrame<endFrame;curKeyFrame++)
+            {
+                CameraPose cameraPose = this.m_MmdCamera._cameraMotion.GetCameraPoseByFrame(curKeyFrame);
+                float num3 = (float)curKeyFrame / 30f;
+                float time = num3 - startTimeval;
+                if (cameraPose != null)
+                {
+                    TimelineFrameJson timelineFrameJsonFOV = new TimelineFrameJson();
+                    timelineFrameJsonFOV.t = time.ToString();
+                    timelineFrameJsonFOV.v = cameraPose.Fov.ToString();
+                    timelineFrameJsonFOV.c = "3";
+                    timelineFrameJsonFOV.i = timelineFrameJsonFOV.v;
+                    timelineFrameJsonFOV.o = timelineFrameJsonFOV.v;
+                    floatParamsJsonFOV.Value.Add(timelineFrameJsonFOV);
+                    this.m_MmdCamera.transform.localPosition = cameraPose.Position;
+                    this.m_MmdCamera.transform.localRotation = Quaternion.Euler(-57.2957764f * cameraPose.Rotation);
+                    this.m_MmdCamera.m_CameraTf.transform.localPosition = new Vector3(0f, 0f, cameraPose.FocalLength);
+                    this.m_MmdCamera.m_Control.transform.SetPositionAndRotation(this.m_MmdCamera.m_CameraTf.position, this.m_MmdCamera.m_CameraTf.rotation);
+                    if (curKeyFrame < maxFrame)
+                    {
+                        int num4 = maxFrame;
+                        string curveType = "3";
+                        if (hashsetFrames.Contains(curKeyFrame) && hashsetFrames.Contains(curKeyFrame + 1))
+                            curveType = "8";
+                        if (hashsetFrames.Contains(curKeyFrame) && !hashsetFrames.Contains(curKeyFrame + 1) && hashsetFrames.Contains(curKeyFrame - 1))
+                            curveType = "10";
+                        timelineFrameJsonFOV.c = curveType;
+                        this.RecordController(time, this.m_MmdCamera.m_Control, timelineControlJson, curveType);
+                       
+                        /*
+                        if (text != "3")
+                        {
+                            for (int l = k; l < num4; l += 5)
+                            {
+                                num3 = (float)l / 30f;
+                                cameraPose = this.m_MmdCamera._cameraMotion.GetCameraPoseByFrame(k);
+                                time = num3 - startTimeval;
+                                this.m_MmdCamera.transform.localPosition = cameraPose.Position;
+                                this.m_MmdCamera.transform.localRotation = Quaternion.Euler(-57.2957764f * cameraPose.Rotation);
+                                this.m_MmdCamera.m_CameraTf.transform.localPosition = new Vector3(0f, 0f, cameraPose.FocalLength);
+                                this.m_MmdCamera.m_Control.transform.SetPositionAndRotation(this.m_MmdCamera.m_CameraTf.position, this.m_MmdCamera.m_CameraTf.rotation);
+                                this.RecordController(time, this.m_MmdCamera.m_Control, timelineControlJson, "3");
+                            }
+                        }
+                        */
+                    }
+                    else
+                    {
+                        string text = "2";
+                        this.RecordController(time, this.m_MmdCamera.m_Control, timelineControlJson, text);
+                    }
+
+                }
+            }
+            string strCamenaMmd2Timeline = "{\"setUnlistedParamsToDefault\":\"true\",\"storables\":[{\"id\":\"PhysicsMaterialControl\",\"dynamicFriction\":\"0.6\",\"staticFriction\":\"0.6\",\"bounciness\":\"0\",\"frictionCombine\":\"Average\",\"bounceCombine\":\"Average\"},{\"id\":\"CollisionTrigger\",\"triggerEnabled\":\"false\",\"invertAtomFilter\":\"false\",\"useRelativeVelocityFilter\":\"false\",\"invertRelativeVelocityFilter\":\"false\",\"relativeVelocityFilter\":\"1\",\"trigger\":{\"startActions\":[],\"transitionActions\":[],\"endActions\":[]}},{\"id\":\"scale\",\"scale\":\"1\"},{\"id\":\"CameraControl\",\"cameraOn\":\"false\",\"useAudioListener\":\"false\",\"useAsMainCamera\":\"false\",\"showHUDView\":\"false\",\"FOV\":\"40\",\"maskSelection\":\"mask1\"},{\"id\":\"PluginManager\",\"plugins\":{\"plugin#0\":\"AcidBubbles.Timeline.latest:/Custom/Scripts/AcidBubbles/Timeline/VamTimeline.AtomAnimation.cslist\",\"plugin#1\":\"AcidBubbles.Embody.latest:/Custom/Scripts/AcidBubbles/Embody/Embody.cslist\"}},{\"id\":\"plugin#0_VamTimeline.AtomPlugin\",\"enabled\":\"true\",\"pluginLabel\":\"\",\"Animation\":{\"Speed\":\"1\",\"Weight\":\"1\",\"Master\":\"0\",\"SyncWithPeers\":\"1\",\"SyncSubsceneOnly\":\"0\",\"TimeMode\":\"2\",\"LiveParenting\":\"1\",\"ForceBlendTime\":\"0\",\"Clips\":$$$clips$$$},\"Options\":{\"AutoKeyframeAllControllers\":\"0\",\"Snap\":\"0.1\",\"Locked\":\"0\",\"ShowPaths\":\"1\"}},{\"id\":\"plugin#1_Embody\",\"enabled\":\"true\",\"ActivateOnLoad\":\"false\",\"pluginLabel\":\"\",\"ReturnToSpawnPoint\":\"\",\"Version\":\"3\",\"Diagnostics\":{},\"Automation\":{\"ToggleKey\":\"None\"},\"WorldScale\":{},\"Passenger\":{\"PositionOffset\":{\"x\":\"0\",\"y\":\"0\",\"z\":\"0\"},\"RotationOffset\":{\"x\":\"0\",\"y\":\"0\",\"z\":\"0\"}},\"Triggers\":{\"startActions\":[],\"transitionActions\":[],\"endActions\":[]}}]}";
+            JSONClass jc = this.json.ToJsonClass();
+            JSONArray ja = jc["Clips"] as JSONArray;
+            StringBuilder stringBuilder = new StringBuilder(100000);
+            ja.ToString(string.Empty, stringBuilder);
+            strCamenaMmd2Timeline = strCamenaMmd2Timeline.Replace("$$$clips$$$", stringBuilder.ToString());
+            //return (JSONClass)JSON.Parse(strCamenaMmd2Timeline);
+            string pathCameraPreset = "Custom/Atom/WindowCamera";
+            if (!FileManagerSecure.DirectoryExists(pathCameraPreset, false))
+            {
+                FileManagerSecure.CreateDirectory(pathCameraPreset);
+            }
+            string CameraPresetFullName = pathCameraPreset + "/Preset_mmdloader.vap";
+            if (FileManagerSecure.FileExists(CameraPresetFullName, false))
+            {
+                FileManagerSecure.DeleteFile(CameraPresetFullName);
+            }
+            FileManagerSecure.WriteAllText(CameraPresetFullName, strCamenaMmd2Timeline);
+
+
+
+            /*
+            this.json = new TimelineJson();
+            this.json.AtomType = "WindowCamera";
+            this.json.Clips = new List<TimelineClipJson>();
+            TimelineClipJson timelineClipJson = new TimelineClipJson();
+            this.json.Clips.Add(timelineClipJson);
+            timelineClipJson.AnimationName = "camera motion";
+            timelineClipJson.AnimationLength = (this.endTime.val - this.startTime.val).ToString();
+            if (!string.IsNullOrEmpty(audioSource))
+                timelineClipJson.AudioSourceControl = audioSource;
+            timelineClipJson.Controllers = new List<TimelineControlJson>();
+            TimelineControlJson timelineControlJson = new TimelineControlJson();
+            timelineControlJson.Controller = "control";
+            timelineClipJson.Controllers.Add(timelineControlJson);
+            timelineClipJson.FloatParams = new List<FloatParamsJson>();
             FloatParamsJson floatParamsJson = new FloatParamsJson();
             floatParamsJson.Storable = "CameraControl";
             floatParamsJson.Name = "FOV";
@@ -250,7 +382,7 @@ namespace mmd2timeline
                 FileManagerSecure.DeleteFile(CameraPresetFullName);
             }
             FileManagerSecure.WriteAllText(CameraPresetFullName, strCamenaMmd2Timeline);
-            /*
+            
 			FileBrowser fileBrowserUI = SuperController.singleton.fileBrowserUI;
 			fileBrowserUI.SetTitle("Export animation");
 			fileBrowserUI.fileRemovePrefix = null;
@@ -270,15 +402,15 @@ namespace mmd2timeline
         // Token: 0x06000208 RID: 520 RVA: 0x0000B960 File Offset: 0x00009B60
         private string GuessType(List<KeyValuePair<int, CameraKeyframe>> list, int currentFrame, ref int nextFrame)
         {
-            int key = list[list.Count - 1].Key;
+            int maxFrame = list[list.Count - 1].Key;
             string result = "3";
-            nextFrame = key;
-            int num = 0;
+            nextFrame = maxFrame;
+            int prevFrame = 0;
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                if (list[i].Key < num)
+                if (list[i].Key < currentFrame)
                 {
-                    num = list[i].Key;
+                    prevFrame = list[i].Key;
                     break;
                 }
             }
@@ -294,7 +426,7 @@ namespace mmd2timeline
             {
                 result = "8";
             }
-            else if (num == currentFrame - 1 && nextFrame > currentFrame + 1)
+            else if (prevFrame == currentFrame - 1 && nextFrame > currentFrame + 1)
             {
                 result = "10";
             }

@@ -4,14 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMDLoader"
+        xmlns:userctls="clr-namespace:MMDLoader.UserCtls"
         mc:Ignorable="d"
-        Title="WindowSettings" Height="400" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="Settings" Height="400" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,0,0">
         <Label x:Name="label" Content="VAM Path:" HorizontalAlignment="Left" Margin="19,23,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBoxVAMPath" HorizontalAlignment="Left" Margin="95,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="593" Height="22"/>
         <Button x:Name="buttonVAMPath" Content=".." HorizontalAlignment="Left" Margin="689,27,0,0" VerticalAlignment="Top" Width="27" RenderTransformOrigin="0.052,-0.324" Height="22" Click="buttonVAMPath_Click"/>
         <Button x:Name="buttonOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,112,10" VerticalAlignment="Bottom" Width="79" IsDefault="True" Click="buttonOK_Click"/>
         <Button x:Name="buttonOKCancle" Content="Cancle" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="78" IsCancel="True" Click="buttonOKCancle_Click"/>
-
+        
     </Grid>
 </Window>

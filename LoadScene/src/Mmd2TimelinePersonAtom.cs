@@ -36,7 +36,7 @@ namespace mmd2timeline
 			this.holdRotationMaxForceAdjust = new JSONStorableFloat("Foot Hold Rotation Max Force", 0f, 0f, 1000f, true, true);
 			this.footJointDriveXTargetAdjust = new JSONStorableFloat("Foot Joint Drive X Angle", -45f, new JSONStorableFloat.SetFloatCallback(this.SetJointDriveXAngle), -65f, 40f, true, true);
 			this.toeJointDriveXTargetAdjust = new JSONStorableFloat("Toe Joint Drive X Angle", 35f, new JSONStorableFloat.SetFloatCallback(this.SetJointDriveXAngle), -40f, 75f, true, true);
-			this.posY = new JSONStorableFloat("PosY", 0f, new JSONStorableFloat.SetFloatCallback(this.SetPosY), 0f, 1f, true, true);
+			this.pos = new JSONStorableVector3("PosY", new Vector3(0, 0, 0), new JSONStorableVector3.SetVector3Callback(this.SetPos), new Vector3(-1,-1,-1), new Vector3(1, 1, 1), true, true);
 			this.startTime = new JSONStorableFloat("Start Time", 0f, new JSONStorableFloat.SetFloatCallback(this.SetStartTime), 0f, 10f, true, true);
 			this.endTime = new JSONStorableFloat("End Time", 0f, new JSONStorableFloat.SetFloatCallback(this.SetEndTime), 0f, 10f, true, true);
 			this.motionScale = new JSONStorableFloat("Motion Scale", 1f, new JSONStorableFloat.SetFloatCallback(this.SetMotionScale), 0.1f, 2f, true, true);
@@ -105,12 +105,15 @@ namespace mmd2timeline
 			}
 			this.m_MmdPersonGameObject.SetMotionPos(this.m_MmdPersonGameObject._playTime, true);
 		}
-
+		public void IgnoreFace(bool val)
+		{
+			Settings.s_IgnoreFace = val;
+		}
 		// Token: 0x06000214 RID: 532 RVA: 0x0000BE68 File Offset: 0x0000A068
-		private void SetPosY(float y)
+		private void SetPos(Vector3 pos)
 		{
 			Vector3 localPosition = this.m_PersonAtom.mainController.transform.localPosition;
-			this.m_PersonAtom.mainController.transform.localPosition = new Vector3(localPosition.x, y, localPosition.z);
+			this.m_PersonAtom.mainController.transform.localPosition = pos;
 			this.SetTransform();
 		}
 		
@@ -303,7 +306,7 @@ namespace mmd2timeline
 				this.CoLoad();
 				this.m_PersonAtom.tempFreezePhysics = false;
 				this.m_ChoosePerson = null;
-				this.posY.SetValToDefault();
+				this.pos.SetValToDefault();
 				//this.m_ChoosePerson = SuperController.singleton.StartCoroutine(this.CoChoosePerson());
 			}
 			catch (Exception ex)
@@ -347,13 +350,17 @@ namespace mmd2timeline
 			Utility.ResetHandControl(storableByID2 as HandControl);
 			GenerateDAZMorphsControlUI morphsControlUI = (this.m_PersonAtom.GetStorableByID("geometry") as DAZCharacterSelector).morphsControlUI;
 			this.m_FaceMorphs.Clear();
-			foreach (DAZMorph dazmorph in morphsControlUI.GetMorphs())
+			if (!Settings.s_IgnoreFace)
 			{
-				if (dazmorph.region == "Face" || dazmorph.region == "Head" || dazmorph.region == "Eyes")
+				foreach (DAZMorph dazmorph in morphsControlUI.GetMorphs())
 				{
-					this.m_FaceMorphs.Add(dazmorph.uid, dazmorph);
+					if (dazmorph.region == "Face" || dazmorph.region == "Head" || dazmorph.region == "Eyes")
+					{
+						this.m_FaceMorphs.Add(dazmorph.uid, dazmorph);
+					}
 				}
 			}
+			LogUtil.Log("FaceMorphs_Count:" + m_FaceMorphs.Count); 
 			this.controllerLookup = new Dictionary<Transform, FreeControllerV3>();
 			this.controllerNameLookup = new Dictionary<string, FreeControllerV3>();
 			foreach (FreeControllerV3 freeControllerV in this.m_PersonAtom.freeControllers)
@@ -443,8 +450,7 @@ namespace mmd2timeline
 			this.m_MmdPersonGameObject.OnUpdate = delegate(MmdGameObject mmd)
 			{
 				List<GameObject> listFingerGameObject = new List<GameObject>();
-				if (!Settings.s_OnlyFace)
-				{
+				
 					GameObject[] bones = mmd._bones;
 					
 					new List<GameObject>();
@@ -526,13 +532,16 @@ namespace mmd2timeline
 							}
 						}
 					}
-				}
+				
 				float relativeTime = this.GetRelativeTime();
-				foreach (KeyValuePair<string, float> keyValuePair in mmd.GetUpdatedMorph(relativeTime))
+				if (!Settings.s_IgnoreFace)
 				{
-					if (this.m_FaceMorphs.ContainsKey(keyValuePair.Key))
+					foreach (KeyValuePair<string, float> keyValuePair in mmd.GetUpdatedMorph(relativeTime))
 					{
-						this.m_FaceMorphs[keyValuePair.Key].morphValue = keyValuePair.Value;
+						if (this.m_FaceMorphs.ContainsKey(keyValuePair.Key))
+						{
+							this.m_FaceMorphs[keyValuePair.Key].morphValue = keyValuePair.Value;
+						}
 					}
 				}
 				if (Settings.s_SmoothArm > 0f)
@@ -1091,9 +1100,14 @@ namespace mmd2timeline
 			if (!string.IsNullOrEmpty(audioSource))
 				timelineClipJson.AudioSourceControl = audioSource;
 			this.m_PersonAniJson.Clips.Add(timelineClipJson);
-			List<FloatParamsJson> morphKeyFrames = this.m_MmdPersonGameObject.GetMorphKeyFrames(beginTime, endTime);
-			LogUtil.Log("List<FloatParamsJson> morphKeyFrames:" +morphKeyFrames.Count.ToString());
-			timelineClipJson.FloatParams = morphKeyFrames;
+			if (!Settings.s_IgnoreFace)
+			{
+				List<FloatParamsJson> morphKeyFrames = this.m_MmdPersonGameObject.GetMorphKeyFrames(beginTime, endTime);
+				LogUtil.Log("List<FloatParamsJson> morphKeyFrames:" + morphKeyFrames.Count.ToString());
+				timelineClipJson.FloatParams = morphKeyFrames;
+			}
+			else
+				timelineClipJson.FloatParams = new List<FloatParamsJson>();
 			this.m_RightFingerMotions = new Dictionary<string, FloatParamsJson>();
 			this.m_LeftFingerMotions = new Dictionary<string, FloatParamsJson>();
 			for (int i = 0; i < 2; i++)
@@ -1136,20 +1150,31 @@ namespace mmd2timeline
 			if (this.m_SampleCo != null)
 			{
 				SuperController.singleton.StopCoroutine(this.m_SampleCo);
-				this.m_SampleCo = null;
+                this.m_SampleCo = null;
+            }
+            //if(istest)
+            this.m_SampleCo = SuperController.singleton.StartCoroutine(this.CoStepPlay(beginTime, endTime, istest));
+			
+			this.m_MmdPersonGameObject.ResetMotion();
+			if (this.m_MmdAssetGameObject != null)
+			{
+				this.m_MmdAssetGameObject.ResetMotion();
 			}
-			//if(istest)
-				this.m_SampleCo = SuperController.singleton.StartCoroutine(this.CoStepPlay(beginTime, endTime,istest));
+			
+			this.IsSampling = false;
+			this.IsPausing = false;
+			this.CurFrame = 0;
+			//this.m_SampleCo = null;
 			//else
 			//	this.CoStepPlay1(beginTime, endTime);
-		
+
 
 		}
 
-		// Token: 0x170000A0 RID: 160
-		// (get) Token: 0x06000239 RID: 569 RVA: 0x0000E0B0 File Offset: 0x0000C2B0
-		// (set) Token: 0x0600023A RID: 570 RVA: 0x0000E0B8 File Offset: 0x0000C2B8
-		private bool IsPausing { get; set; }
+        // Token: 0x170000A0 RID: 160
+        // (get) Token: 0x06000239 RID: 569 RVA: 0x0000E0B0 File Offset: 0x0000C2B0
+        // (set) Token: 0x0600023A RID: 570 RVA: 0x0000E0B8 File Offset: 0x0000C2B8
+        private bool IsPausing { get; set; }
 
 		// Token: 0x170000A1 RID: 161
 		// (get) Token: 0x0600023B RID: 571 RVA: 0x0000E0C1 File Offset: 0x0000C2C1
@@ -1281,13 +1306,11 @@ namespace mmd2timeline
 				}
 				num3 = i;
 			}
-			this.IsSampling = false;
-			this.IsPausing = false;
-			this.CurFrame = 0;
-			this.m_SampleCo = null;
+			
+			
 			yield break;
 		}        // Token: 0x0600023D RID: 573 RVA: 0x0000E0D2 File Offset: 0x0000C2D2
-    	public void SavePluginPreset()
+    	public void SavePluginPreset(string presetFileName)
 		{
 			try
 			{
@@ -1298,7 +1321,7 @@ namespace mmd2timeline
 				ja.ToString(string.Empty, stringBuilder);
 				strPersonMmd2Timeline = strPersonMmd2Timeline.Replace("$$$clips$$$", stringBuilder.ToString());
 				string dirPluginPreset = "Custom/Atom/Person/Plugins/";
-				string pluginPresetFullName = dirPluginPreset + "Preset_mmdloader.vap";
+				string pluginPresetFullName = dirPluginPreset + presetFileName;
 				if (!FileManagerSecure.DirectoryExists(dirPluginPreset, false))
 				{
 					FileManagerSecure.CreateDirectory(dirPluginPreset);
@@ -1360,7 +1383,7 @@ namespace mmd2timeline
         public JSONStorableFloat motionScale;
 
         // Token: 0x040000F2 RID: 242
-        public JSONStorableFloat posY;
+        public JSONStorableVector3 pos;
 
         // Token: 0x040000F3 RID: 243
         public JSONStorableFloat startTime;

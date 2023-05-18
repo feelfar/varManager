@@ -70,7 +70,7 @@ namespace LibMMD.Unity3D
 			{
 				return;
 			}
-			CameraPose cameraPose = this._cameraMotion.GetCameraPose(this._playTime);
+			CameraPose cameraPose = this._cameraMotion.GetCameraPoseByFrame((int)(this._playTime*30f));
 			if (cameraPose == null)
 			{
 				return;

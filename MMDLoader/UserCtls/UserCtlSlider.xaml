@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="MMDLoader.UserCtls.UserCtlSlider"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MMDLoader.UserCtls"
+             mc:Ignorable="d" 
+             d:DesignHeight="32.412" d:DesignWidth="194.075" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="64*"/>
+        </Grid.ColumnDefinitions>
+        <Slider x:Name="sliderValue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="5" ValueChanged="sliderValue_ValueChanged" Minimum="{Binding MinValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}" Maximum="{Binding MaxValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}" SmallChange="{Binding SmallChange, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}" LargeChange="{Binding LargeChange, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}" TickFrequency="{Binding LargeChange, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}" Value="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlSlider}}}"/>
+        <Button x:Name="buttonDefault" Grid.Column="3" Content="Default" Grid.Row="1" VerticalAlignment="Stretch" Foreground="#FF3B9326" Click="buttonDefault_Click" FontSize="7" Height="11" Margin="1,1,1,1"/>
+        <Button x:Name="buttonSubSmall" Grid.Column="2" Content="{Binding SmallChange, ElementName=sliderValue}" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,1,1,1" Click="buttonSubSmall_Click" FontSize="7"/>
+        <Button x:Name="buttonAddSmall" Grid.Column="4" Content="{Binding SmallChange, ElementName=sliderValue, StringFormat=+\{0:F\}}" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,1,1,1" Click="buttonAddSmall_Click" FontSize="7"/>
+        <Button x:Name="buttonSubLarge" Content="{Binding LargeChange, ElementName=sliderValue, StringFormat=\{0:\\-0.0\}}" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Grid.Column="1" Margin="1,1,1,1" Click="buttonSubLarge_Click" FontSize="7"/>
+        <Button x:Name="buttonAddLarge" Grid.Column="5" Content="{Binding LargeChange, ElementName=sliderValue, StringFormat=+\{0:F\}}" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,1,1,1" Click="buttonAddLarge_Click" FontSize="7"/>
+        <Button x:Name="buttonMin" Content="Min" Grid.Row="1" Margin="1,1,0,1" HorizontalAlignment="Stretch" Click="buttonMin_Click" FontSize="7"/>
+        <Button x:Name="buttonMax" Content="Max" Grid.Row="1" Margin="1,1,1,1" Grid.Column="6" Click="buttonMax_Click" FontSize="7"/>
+        <TextBox x:Name="textBoxValue" Grid.Column="5" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="{Binding Value, ElementName=sliderValue}" VerticalAlignment="Stretch" TextAlignment="Left" LostFocus="textBoxValue_LostFocus" FontSize="8" TextChanged="textBoxValue_TextChanged"/>
+
+    </Grid>
+</UserControl>

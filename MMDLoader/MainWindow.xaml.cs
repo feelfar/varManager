@@ -1,7 +1,9 @@
 ﻿using MMDLoader.Properties;
+using MMDLoader.UserCtls;
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -51,7 +53,7 @@ namespace MMDLoader
         TimeSpan timespanAudio;
 
         //Dictionary<string, string> dictMmdDir = new Dictionary<string, string>();
-        Dictionary<string, (List<string>, List<string>)> dictMmd = new Dictionary<string, (List<string>, List<string>)>();
+        Dictionary<string, (string,List<string>, List<string>)> dictMmd = new Dictionary<string, (string,List<string>, List<string>)>();
         private void buttonLoadMMD_Click(object sender, RoutedEventArgs e)
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
@@ -96,7 +98,7 @@ namespace MMDLoader
                         } 
                         if (topvmds.Count()>0 || topaudios.Count() > 0)
                         {
-                            dictMmd[dirname] = (topvmds, topaudios);
+                            dictMmd[dirname] = (dir,topvmds, topaudios);
                         }
                     }
                    
@@ -121,33 +123,49 @@ namespace MMDLoader
             FilllistBoxDir();
         }
         Dictionary<string, string> dictAudio=new Dictionary<string, string>();
-        Dictionary<string, string> dictCamVmd = new Dictionary<string, string>();
-        Dictionary<string, string> dictPerson1Vmd = new Dictionary<string, string>();
-        Dictionary<string, string> dictPerson1Vmd2 = new Dictionary<string, string>();
+        Dictionary<string, string> dictVmd = new Dictionary<string, string>();
+        //Dictionary<string, string> dictPerson1Vmd = new Dictionary<string, string>();
+        //Dictionary<string, string> dictPerson1Vmd2 = new Dictionary<string, string>();
 
 
         private void listBoxDir_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listBoxDir.SelectedItem != null)
             {
-                (List<string> vmds, List<string> audios) = dictMmd[listBoxDir.SelectedItem.ToString()];
-                vmds = vmds.OrderByDescending(f => new FileInfo(f).Length).ToList();
-                audios = audios.OrderByDescending(f => new FileInfo(f).Length).ToList();
+                //RemoveAllPersonCtl();
+                (string _,List<string> vmds, List<string> audios) = dictMmd[listBoxDir.SelectedItem.ToString()];
+                GenDictAudio(audios);
                 GenAudioComboBox(audios);
+
+                GenDictVmd(vmds);
                 GeCamVmdComboBox(vmds);
                 GePersonVmdComboBox(vmds);
             }
         }
-        private void GenAudioComboBox(List<string> audios)
+        private void GenDictAudio(List<string> audios)
         {
             dictAudio.Clear();
-            comboBoxAudio.Items.Clear();
-            comboBoxAudio.Items.Add("None");
             foreach (string audio in audios)
             {
                 string name = System.IO.Path.GetFileName(audio);
-                dictAudio[name] = audio;
-                comboBoxAudio.Items.Add(name);
+                string name2 = name;
+                int i = 1;
+                while (dictAudio.ContainsKey(name2))
+                {
+                    i++;
+                    name2 = name + "_" + i.ToString();
+                }
+                dictAudio[name2] = audio;
+            }
+        }
+        private void GenAudioComboBox(List<string> audios)
+        {
+            var vmdAudio = dictAudio.OrderByDescending(f => new FileInfo(f.Value).Length).Select(f => f.Key).ToList();
+            comboBoxAudio.Items.Clear();
+            comboBoxAudio.Items.Add("None");
+            foreach (string audio in vmdAudio)
+            {
+                comboBoxAudio.Items.Add(audio);
             }
             if (comboBoxAudio.Items.Count > 1)
             {
@@ -158,32 +176,43 @@ namespace MMDLoader
                 comboBoxAudio.SelectedIndex = 0;
             }
         }
-
-        private void GeCamVmdComboBox(List<string> vmds)
+        private void GenDictVmd(List<string> vmds)
         {
-            dictCamVmd.Clear();
-            comboBoxCamVmd.Items.Clear();
-            comboBoxCamVmd.Items.Add("None");
-            string camvmd = "";
+            dictVmd.Clear();
             foreach (string vmd in vmds)
             {
                 string name = System.IO.Path.GetFileName(vmd);
-                dictCamVmd[name] = vmd;
-                comboBoxCamVmd.Items.Add(name);
+                string name2 = name;
+                int i = 1;
+                while (dictVmd.ContainsKey(name2))
+                {
+                    i++;
+                    name2 = name + "_" + i.ToString();
+                }
+                dictVmd[name2] = vmd;
+            }
+        }
+        private void GeCamVmdComboBox(List<string> vmds)
+        {
+            var vmdOrder = dictVmd.OrderByDescending(f => new FileInfo(f.Value).Length).Select(f=>f.Key).ToList();
+            comboBoxCamVmd.Items.Clear();
+            comboBoxCamVmd.Items.Add("None");
+            string camvmd = "";
+            foreach (string vmd in vmdOrder)
+            {
+                comboBoxCamVmd.Items.Add(vmd);
                 if (string.IsNullOrEmpty(camvmd))
                 {
                     bool foundMatch = false;
                     try
                     {
-                        foundMatch = Regex.IsMatch(name, @"\bcam\b|camera|镜头|カメラ|카메라", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                        if (foundMatch) camvmd = name;
+                        foundMatch = Regex.IsMatch(vmd, @"\bcam\b|camera|镜头|カメラ|카메라", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                        if (foundMatch) camvmd = vmd;
                     }
                     catch (ArgumentException ex)
                     {
                         // Syntax error in the regular expression
                     }
-
-                   
                 }
             }
             if (!string.IsNullOrEmpty(camvmd))
@@ -197,48 +226,12 @@ namespace MMDLoader
         }
         private void GePersonVmdComboBox(List<string> vmds)
         {
-            dictPerson1Vmd.Clear();
-            dictPerson1Vmd2.Clear();
-
-            comboBoxPerson1vmd.Items.Clear();
-            comboBoxPerson1vmd.Items.Add("None");
-
-            comboBoxPerson1vmd2.Items.Clear();
-            comboBoxPerson1vmd2.Items.Add("None");
-
-            string personvmd = "";
-            foreach (string vmd in vmds)
+            var vmdOrder = dictVmd.OrderByDescending(f => new FileInfo(f.Value).Length).Select(f => f.Key).ToList();
+            person1VMD.Vmds= vmdOrder;
+            foreach(var personVMD in personVmdCtls)
             {
-                string name = System.IO.Path.GetFileName(vmd);
-                dictPerson1Vmd[name] = vmd;
-                dictPerson1Vmd2[name] = vmd;
-
-                comboBoxPerson1vmd.Items.Add(name);
-                comboBoxPerson1vmd2.Items.Add(name);
-
-                if (string.IsNullOrEmpty(personvmd))
-                {
-                    bool foundMatch = false;
-                    try
-                    {
-                        foundMatch = Regex.IsMatch(name, @"\bcam\b|\bcamera\b|镜头|カメラ|카메라", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                        if (!foundMatch) personvmd = name;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        // Syntax error in the regular expression
-                    }
-                }
+                personVMD.Vmds = vmdOrder;
             }
-            if (!string.IsNullOrEmpty(personvmd))
-            {
-                comboBoxPerson1vmd.SelectedItem = personvmd;
-            }
-            else
-            {
-                comboBoxPerson1vmd.SelectedIndex = 0;
-            }
-            comboBoxPerson1vmd2.SelectedIndex = 0;
         }
         MediaPlayer mediaPlayer ;
         private void comboBoxAudio_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -254,7 +247,7 @@ namespace MMDLoader
                 if (dictAudio.Keys.Contains(comboBoxAudio.SelectedItem.ToString()))
                 {
                     mediaPlayer.Open(new Uri(dictAudio[comboBoxAudio.SelectedItem.ToString()]));
-                    if (checkBoxPlayAudio.IsChecked.Value)
+                    if (checkBoxPlayAudio.IsChecked??false)
                     {
                         mediaPlayer.Play();
                         slider.Minimum = 0;
@@ -287,22 +280,7 @@ namespace MMDLoader
 
         private void LoadMMD(bool isTest=false)
         {
-            if (comboBoxPerson1vmd.SelectedItem == null)
-            {
-                MessageBox.Show("Person vmd Is empty!");
-                comboBoxPerson1vmd.Focus();
-                return;
-            }
-            if (comboBoxPerson1vmd.SelectedItem.ToString() == "None")
-            {
-                MessageBox.Show("Person vmd Is empty!");
-                comboBoxPerson1vmd.Focus();
-                return;
-            }
-            string strMMDLinkPath = System.IO.Path.Combine(Settings.Default.vampath, MMD_FOLDER);
-            if (Directory.Exists(strMMDLinkPath))
-                Directory.Delete(strMMDLinkPath, true);
-            Directory.CreateDirectory(strMMDLinkPath);
+            string strMMDLinkPath = ResetMMDFolder();
             JSONClass jsonLoadMMD = new JSONClass();
 
             jsonLoadMMD.Add("rescan", "false");
@@ -310,8 +288,8 @@ namespace MMDLoader
             JSONArray resources = jsonLoadMMD["resources"].AsArray;
 
             bool audioloaded = false;
-            
-            if (!isTest&&comboBoxAudio.SelectedItem != null)
+
+            if (!isTest && comboBoxAudio.SelectedItem != null)
             {
                 string key = comboBoxAudio.SelectedItem.ToString();
                 if (dictAudio.ContainsKey(key))
@@ -319,11 +297,10 @@ namespace MMDLoader
                     string strSrcfile = dictAudio[key];
                     if (File.Exists(strSrcfile))
                     {
-                        string strExt = Path.GetExtension(strSrcfile);
-                        string strDestfile = Path.Combine(strMMDLinkPath, "audio" + strExt);
+                        string strDestfile = Path.Combine(strMMDLinkPath, key);
                         File.Copy(strSrcfile, strDestfile, true);
                         audioloaded = true;
-                        resources.Add(JsonResouce("audio", Path.Combine(MMD_FOLDER, "audio" + strExt), 0));
+                        resources.Add(JsonResouce("audio", Path.Combine(MMD_FOLDER, key), 0));
                     }
                 }
             }
@@ -332,18 +309,17 @@ namespace MMDLoader
                 resources.Add(JsonResouce("audio", "", 0));
             }
             bool camVmdloaded = false;
-            if (!isTest && checkBoxLoadCamera.IsChecked.Value && comboBoxCamVmd.SelectedItem != null)
+            if (!isTest && (checkBoxLoadCamera.IsChecked ?? false) && comboBoxCamVmd.SelectedItem != null)
             {
                 string key = comboBoxCamVmd.SelectedItem.ToString();
-                if (dictCamVmd.ContainsKey(key))
+                if (dictVmd.ContainsKey(key))
                 {
-                    string strSrcfile = dictCamVmd[key];
+                    string strSrcfile = dictVmd[key];
                     if (File.Exists(strSrcfile))
                     {
-                        string strExt = Path.GetExtension(strSrcfile);
-                        string strDestfile = Path.Combine(strMMDLinkPath, "cameravmd" + strExt);
+                        string strDestfile = Path.Combine(strMMDLinkPath, key);
                         File.Copy(strSrcfile, strDestfile, true);
-                        JSONClass jsonResouce = (JSONClass)JsonResouce("cameravmd", Path.Combine(MMD_FOLDER, "cameravmd" + strExt), 0);
+                        JSONClass jsonResouce = (JSONClass)JsonResouce("cameravmd", Path.Combine(MMD_FOLDER, key), 0);
                         if (audioloaded)
                         {
                             jsonResouce.Add("AudioSourceControl", new JSONData(true));
@@ -357,84 +333,47 @@ namespace MMDLoader
             {
                 resources.Add(JsonResouce("cameravmd", "", 0));
             }
-            if (comboBoxPerson1vmd.SelectedItem != null)
+            
+            if (person1VMD.Motion1 > 0)
             {
-                string key = comboBoxPerson1vmd.SelectedItem.ToString();
-                if (dictPerson1Vmd.ContainsKey(key))
+                JSONClass jsonResouce = person1VMD.GetPersonvmdJson();
+                if (audioloaded)
                 {
-                    string strSrcfile = dictPerson1Vmd[key];
-                    if (File.Exists(strSrcfile))
+                    jsonResouce.Add("AudioSourceControl", new JSONData(true));
+                }
+                GetSaveName(strMMDLinkPath, person1VMD, jsonResouce);
+
+                resources.Add(jsonResouce);
+            }
+            foreach (UserCtlPersonVMD personVMD in personVmdCtls)
+            {
+                if (personVMD.Motion1 > 0)
+                {
+                    JSONClass jsonResouce = personVMD.GetPersonvmdJson();
+                    if (audioloaded)
                     {
-                        string strExt = Path.GetExtension(strSrcfile);
-                        string strDestfile = Path.Combine(strMMDLinkPath, "person1vmd" + strExt);
-                        File.Copy(strSrcfile, strDestfile, true);
-                        JSONClass jsonResouce = (JSONClass)JsonResouce("personvmd", Path.Combine(MMD_FOLDER, "person1vmd" + strExt), 1);
-
-                        if (comboBoxPerson1vmd2.SelectedItem != null)
-                        {
-                            string key2 = comboBoxPerson1vmd2.SelectedItem.ToString();
-                            if (dictPerson1Vmd2.ContainsKey(key2))
-                            {
-                                string strSrcfile2 = dictPerson1Vmd2[key2];
-                                if (File.Exists(strSrcfile2))
-                                {
-                                    string strExt2 = Path.GetExtension(strSrcfile2);
-                                    string strDestfile2 = Path.Combine(strMMDLinkPath, "person1vmd2" + strExt2);
-                                    File.Copy(strSrcfile2, strDestfile2, true);
-                                    jsonResouce.Add("personvmd2", Path.Combine(MMD_FOLDER, "person1vmd2" + strExt).Replace('\\', '/'));
-
-                                }
-                            }
-                        }
-                        jsonResouce.Add("enableHeel", new JSONData(checkBoxEnableHighHeel.IsChecked.Value));
-                        jsonResouce.Add("footJointDriveXTargetAdjust", new JSONData(sliderFootXAngle.Value));
-                        jsonResouce.Add("toeJointDriveXTargetAdjust", new JSONData(sliderToeXAngle.Value));
-                        jsonResouce.Add("holdRotationMaxForceAdjust", new JSONData(sliderFootHoldForce.Value));
-                        double straightLeg = sliderStraightLeg.Value;
-                        jsonResouce.Add("straightLeg", new JSONData(straightLeg));
-                        double straightLegWorkAngle = sliderStraightLegWorkAngle.Value;
-                        jsonResouce.Add("straightLegWorkAngle", new JSONData(straightLegWorkAngle));
-                        double posY = sliderPosX.Value;
-                        if (checkBoxEnableHighHeel.IsChecked.Value)
-                        {
-                            double angle = Math.PI * sliderFootXAngle.Value / 180.0;
-                            posY += (-Math.Sin(angle)) * 0.1;
-                        }
-                        jsonResouce.Add("posY", new JSONData(posY));
-                        
-                        if (audioloaded)
-                        {
-                            jsonResouce.Add("AudioSourceControl", new JSONData(true));
-                        }
-                        double sampleSpeed = 1;
-                        if(isTest)
-                        {
-                            switch (comboBoxSampleSpeed.SelectedIndex)
-                            {
-                                case 0: sampleSpeed = 0.5; break;
-                                case 1: sampleSpeed = 1; break;
-                                case 2: sampleSpeed = 2; break;
-                                case 3: sampleSpeed = 3; break;
-                                default: sampleSpeed = 1; break;
-                            }
-                            
-                            jsonResouce.Add("isTest", new JSONData(true));
-                            
-
-                        }
-                        jsonResouce.Add("sampleSpeed", new JSONData(sampleSpeed));
-                        resources.Add(jsonResouce);
+                        jsonResouce.Add("AudioSourceControl", new JSONData(true));
                     }
+                    GetSaveName(strMMDLinkPath, personVMD, jsonResouce);
+                    resources.Add(jsonResouce);
                 }
             }
-
+            
             mediaPlayer.Stop();
-            string CameraPresetFullName = Path.Combine(Settings.Default.vampath, "Custom/Atom/WindowCamera/Preset_mmdloader.vap");
-            if (File.Exists(CameraPresetFullName))
-                File.Delete(CameraPresetFullName);
-            string PersonPluginPresetName = Path.Combine(Settings.Default.vampath, "Custom/Atom/Person/Plugins/Preset_mmdloader.vap");
-            if (File.Exists(PersonPluginPresetName))
-                File.Delete(PersonPluginPresetName);
+           
+            string cameraPresetPath = Path.Combine(Settings.Default.vampath, "Custom\\Atom\\WindowCamera\\");
+
+           foreach(string f in Directory.GetFiles(cameraPresetPath, "Preset_mmdloader*.vap"))
+            {
+                File.Delete(f);
+            }
+            string personPluginPresetPath = Path.Combine(Settings.Default.vampath, "Custom\\Atom\\Person\\Plugins\\");
+
+            foreach (string f in Directory.GetFiles(personPluginPresetPath, "Preset_mmdloader*.vap"))
+            {
+                File.Delete(f);
+            }
+           
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
@@ -452,6 +391,15 @@ namespace MMDLoader
             else
                 MessageBox.Show("Load MMD : Generate loadscene file successfully！");
 
+        }
+
+        private static string ResetMMDFolder()
+        {
+            string strMMDLinkPath = System.IO.Path.Combine(Settings.Default.vampath, MMD_FOLDER);
+            if (Directory.Exists(strMMDLinkPath))
+                Directory.Delete(strMMDLinkPath, true);
+            Directory.CreateDirectory(strMMDLinkPath);
+            return strMMDLinkPath;
         }
 
         private void buttonSettings_Click(object sender, RoutedEventArgs e)
@@ -480,7 +428,6 @@ namespace MMDLoader
             mediaPlayer = new MediaPlayer();
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
             timer.Start();
-            DrawFoot();
         }
 
         private void MediaPlayer_MediaOpened(object? sender, EventArgs e)
@@ -492,79 +439,6 @@ namespace MMDLoader
             labelAudioTime.Content = timespanAudio.ToString(@"h\:mm\:ss");
         }
 
-        private void sliderFootXAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (rectFoot != null)
-            {
-                DrawFoot();
-            }
-        }
-
-        private void DrawFoot()
-        {
-            labelFootHoldForce.Content = ((int)(sliderFootHoldForce.Value)).ToString();
-            labelFootXAngle.Content = ((int)(sliderFootXAngle.Value)).ToString();
-            labelToeXAngle.Content = ((int)(sliderToeXAngle.Value)).ToString();
-            if (checkBoxEnableHighHeel.IsChecked.Value)
-            {
-                imageHighheel.Source = new BitmapImage(new Uri(@"Resources/ImageHighHeel.png", UriKind.Relative));
-                RotateTransform rotateTransformFoot =
-                        new RotateTransform(sliderFootXAngle.Value, rectFoot.Width * 0.45, 0);
-                rectFoot.RenderTransform = rotateTransformFoot;
-                RotateTransform rotateTransformToe1 =
-                       new RotateTransform(sliderFootXAngle.Value, rectFoot.Width + 9, rectToe.Height / 2);
-                RotateTransform rotateTransformToe2 =
-                       new RotateTransform(sliderToeXAngle.Value, 20, rectToe.Height / 2);
-                TransformGroup rotateGroup = new TransformGroup();
-
-                rotateGroup.Children.Add(rotateTransformToe2);
-                rotateGroup.Children.Add(rotateTransformToe1);
-                rectToe.RenderTransform = rotateGroup;
-                double angle = Math.PI * sliderFootXAngle.Value / 180.0;
-                double height = (-Math.Sin(angle) * (rectFoot.Width)-5) + (Math.Cos(angle) * rectFoot.Height / 2);
-                if (height < 0) height = 0;
-                rectHeel.Height = height;
-            }
-            else
-            {
-                imageHighheel.Source = new BitmapImage(new Uri(@"Resources/ImageFlats.png", UriKind.Relative));
-                rectFoot.RenderTransform = null;
-                rectToe.RenderTransform = null;
-                rectHeel.Height = 9;
-            }
-        }
-
-        private void sliderToeXAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (rectFoot != null)
-            {
-                DrawFoot();
-            }
-        }
-
-        private void buttonHighHeelDefault_Click(object sender, RoutedEventArgs e)
-        {
-            sliderPosX.Value = 0;
-            sliderFootHoldForce.Value = 0;
-            sliderFootXAngle.Value = -45;
-            sliderToeXAngle.Value = 35;
-        }
-
-        private void checkBoxEnableHighHeel_Click(object sender, RoutedEventArgs e)
-        {
-            if (rectFoot != null)
-            {
-                DrawFoot();
-            }
-        }
-
-        private void sliderFootHoldForce_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (rectFoot != null)
-            {
-                DrawFoot();
-            }
-        }
 
         private void buttonTestHighHeel_Click(object sender, RoutedEventArgs e)
         {
@@ -574,21 +448,7 @@ namespace MMDLoader
             jsonLoadMMD.Add("resources", new JSONArray());
             JSONArray resources = jsonLoadMMD["resources"].AsArray;
             JSONClass jsonResouce = (JSONClass)JsonResouce("highheel", "", 1);
-            jsonResouce.Add("enableHeel", new JSONData(checkBoxEnableHighHeel.IsChecked.Value));
-            jsonResouce.Add("footJointDriveXTargetAdjust", new JSONData(sliderFootXAngle.Value));
-            jsonResouce.Add("toeJointDriveXTargetAdjust", new JSONData(sliderToeXAngle.Value));
-            jsonResouce.Add("holdRotationMaxForceAdjust", new JSONData(sliderFootHoldForce.Value));
-            double straightLeg = sliderStraightLeg.Value;
-            jsonResouce.Add("straightLeg", new JSONData(straightLeg));
-            double straightLegWorkAngle = sliderStraightLegWorkAngle.Value;
-            jsonResouce.Add("straightLegWorkAngle", new JSONData(straightLegWorkAngle));
-            double posY = sliderPosX.Value;
-            if (checkBoxEnableHighHeel.IsChecked.Value)
-            {
-                double angle = Math.PI * sliderFootXAngle.Value / 180.0;
-                posY += (-Math.Sin(angle)) * 0.1;
-            }
-            jsonResouce.Add("posY", new JSONData(posY));
+            
             
             resources.Add(jsonResouce);
             string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
@@ -606,29 +466,138 @@ namespace MMDLoader
             MessageBox.Show("Test HighHeel : Generate loadscene file successfully！");
         }
 
-        private void sliderPosX_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelPosX.Content = ((float)(sliderPosX.Value)).ToString();
-        }
-
-        private void sliderStraightLeg_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelStraightLeg.Content = ((float)(sliderStraightLeg.Value)).ToString();
-        }
-
-        private void buttonVmdTest_Click(object sender, RoutedEventArgs e)
-        {
-            LoadMMD(true);
-        }
-
-        private void sliderStraightLegWorkAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelStraightLegWorkAngle.Content = ((int)(sliderStraightLegWorkAngle.Value)).ToString();
-        }
-      
         private void checkBoxLoadCamera_Click(object sender, RoutedEventArgs e)
         {
-            comboBoxCamVmd.IsEnabled = checkBoxLoadCamera.IsChecked.Value;
+            comboBoxCamVmd.IsEnabled = checkBoxLoadCamera.IsChecked??false;
+        }
+        List<UserCtlPersonVMD> personVmdCtls = new List<UserCtlPersonVMD>();
+        private void buttonAddPerson_Click(object sender, RoutedEventArgs e)
+        {
+            if(personVmdCtls.Count < 5)
+            {
+                var userCtlPersonVMD = new UserCtlPersonVMD();
+
+                userCtlPersonVMD.PersonOrder = personVmdCtls.Count + 2;
+                userCtlPersonVMD.Vmds = person1VMD.Vmds;
+                userCtlPersonVMD.Motion1 = person1VMD.Motion1;
+                userCtlPersonVMD.Motion2 = person1VMD.Motion2;
+                userCtlPersonVMD.IgnoreFace = person1VMD.IgnoreFace;
+                userCtlPersonVMD.StraightLeg = person1VMD.StraightLeg;
+                userCtlPersonVMD.StraightLegWorkAngle = person1VMD.StraightLegWorkAngle;
+                switch (personVmdCtls.Count)
+                {
+                    case 0: userCtlPersonVMD.PosX = person1VMD.PosX - 0.6; break;
+                    case 1: userCtlPersonVMD.PosX = person1VMD.PosX + 0.6; break;
+                    case 2: userCtlPersonVMD.PosX = person1VMD.PosX - 1.2; break;
+                    case 3: userCtlPersonVMD.PosX = person1VMD.PosX + 1.2; break;
+                    default: userCtlPersonVMD.PosX = person1VMD.PosX; break;
+                }
+                
+                userCtlPersonVMD.PosY = person1VMD.PosY;
+                userCtlPersonVMD.PosZ = person1VMD.PosZ;
+                userCtlPersonVMD.EnableHighHeel = person1VMD.EnableHighHeel;
+                userCtlPersonVMD.HighHeelFootXangle = person1VMD.HighHeelFootXangle;
+                userCtlPersonVMD.HighHeelToeXangle = person1VMD.HighHeelToeXangle;
+                userCtlPersonVMD.FootHoldRotMaxForce = person1VMD.FootHoldRotMaxForce;
+                userCtlPersonVMD.JsonGenerated += UserCtlPersonVMD_JsonGenerated;
+                personVmdCtls.Add(userCtlPersonVMD);
+                stackPanelPerson.Children.Add(userCtlPersonVMD);
+            }
+            
+        }
+
+        private void buttonRemovePerson_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveLastPersonCtl();
+        }
+
+        private void RemoveLastPersonCtl()
+        {
+            if (personVmdCtls.Count > 0)
+            {
+                var userCtlPersonVMD = personVmdCtls[personVmdCtls.Count - 1];
+                userCtlPersonVMD.JsonGenerated -= UserCtlPersonVMD_JsonGenerated;
+                stackPanelPerson.Children.Remove(userCtlPersonVMD);
+                personVmdCtls.Remove(userCtlPersonVMD);
+            }
+        } 
+        
+        private void RemoveAllPersonCtl()
+        {
+            while (personVmdCtls.Count > 0)
+            {
+                var userCtlPersonVMD = personVmdCtls[personVmdCtls.Count - 1];
+                userCtlPersonVMD.JsonGenerated -= UserCtlPersonVMD_JsonGenerated;
+                stackPanelPerson.Children.Remove(userCtlPersonVMD);
+                personVmdCtls.Remove(userCtlPersonVMD);
+            }
+        }
+
+        private void UserCtlPersonVMD_JsonGenerated(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Stop();
+            string strMMDLinkPath = ResetMMDFolder();
+            UserCtlPersonVMD personVMD = (UserCtlPersonVMD)sender;
+            JSONClass jsonLoadMMD = new JSONClass();
+
+            jsonLoadMMD.Add("rescan", "false");
+            jsonLoadMMD.Add("resources", new JSONArray());
+            JSONArray resources = jsonLoadMMD["resources"].AsArray;
+            JSONClass jsonResouce = ((JsonResouceMessages)e).jsonResouce;
+            GetSaveName(strMMDLinkPath, personVMD, jsonResouce);
+
+            resources.Add(jsonResouce);
+            string loadscenefile = Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar\\loadscene.json");
+            if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
+            Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
+
+            string strLS = jsonLoadMMD.ToString("\t");
+            using (FileStream fileStream = File.OpenWrite(loadscenefile))
+            {
+                fileStream.SetLength(0);
+                StreamWriter sw = new StreamWriter(fileStream);
+                sw.Write(strLS);
+                sw.Close();
+            }
+            MessageBox.Show("Test HighHeel : Generate loadscene file successfully！");
+        }
+
+        private void GetSaveName(string strMMDLinkPath, UserCtlPersonVMD personVMD, JSONClass jsonResouce)
+        {
+            if (personVMD.Motion1 > 0)
+            {
+                string key = personVMD.Vmds[personVMD.Motion1 - 1];
+                if (dictVmd.ContainsKey(key))
+                {
+                    string strSrcfile = dictVmd[key];
+                    if (File.Exists(strSrcfile))
+                    {
+                        string strDestfile = Path.Combine(strMMDLinkPath, key);
+                        File.Copy(strSrcfile, strDestfile, true);
+                        jsonResouce["saveName"] = strDestfile;
+                    }
+                }
+            }
+            if (personVMD.Motion2 > 0)
+            {
+                string key = personVMD.Vmds[personVMD.Motion2 - 1];
+                if (dictVmd.ContainsKey(key))
+                {
+                    string strSrcfile = dictVmd[key];
+                    if (File.Exists(strSrcfile))
+                    {
+                        string strDestfile = Path.Combine(strMMDLinkPath, key);
+                        File.Copy(strSrcfile, strDestfile, true);
+                        jsonResouce["personvmd2"] = strDestfile;
+                    }
+                }
+            }
+        }
+
+        private void listBoxDir_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            string folder = dictMmd[listBoxDir.SelectedItem.ToString()].Item1;
+            Process.Start(new ProcessStartInfo { FileName = folder, UseShellExecute = true });
         }
     }
 }

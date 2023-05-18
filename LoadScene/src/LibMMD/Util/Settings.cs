@@ -12,7 +12,7 @@ namespace mmd2timeline
 		public static bool s_Debug = false;
 
 		// Token: 0x0400014C RID: 332
-		public static bool s_OnlyFace = false;
+		public static bool s_IgnoreFace = false;
 
 		// Token: 0x0400014D RID: 333
 		public static bool EnableHeelAjust = false;

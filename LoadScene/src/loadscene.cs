@@ -21,15 +21,6 @@ namespace MVRPlugin
 
         //private DateTime dtspan;
         private Atom coreControl;
-        public JSONStorableFloat posY;
-        private void SetPosY(float y)
-        {
-            foreach (var mmdPerson in mmdPersons)
-            {
-                mmdPerson.Value.posY.SetVal(y);
-            }
-        }
-
         public override void Init()
         {
             try
@@ -38,8 +29,7 @@ namespace MVRPlugin
                 SuperController.LogMessage("loadscene Loaded");
                 coreControl = SuperController.singleton.GetAtomByUid("CoreControl");
                 mmdPersons = new Dictionary<int, Mmd2TimelinePersonAtom>();
-                this.posY = new JSONStorableFloat("PosY", 0f, new JSONStorableFloat.SetFloatCallback(this.SetPosY), 0f, 1f, true, true);
-                base.CreateSlider(this.posY, true);
+                
                 // create custom JSON storable params here if you want them to be stored with scene JSON
                 // types are JSONStorableFloat, JSONStorableBool, JSONStorableString, JSONStorableStringChooser
                 // JSONStorableColor
@@ -252,7 +242,7 @@ namespace MVRPlugin
                 }
                 if (atompresets.Count > 0)
                 {
-                    bool findatom = false;
+                   
                     List<Atom> personAtoms = new List<Atom>();
                     foreach (var atom in SuperController.singleton.GetAtoms())
                     {
@@ -289,6 +279,7 @@ namespace MVRPlugin
                         {
                             personOrder = resource["personOrder"].AsInt;
                         }
+                        int personOrder2 = personOrder;
                         while (SuperController.singleton.isLoading)
                         {
                             yield return new WaitForSeconds(1f);
@@ -304,289 +295,336 @@ namespace MVRPlugin
                         {
                             scenefile = resource["saveName"];
                         }
-
-                        foreach (var atom in personAtoms)
+                        bool findatom = false;
+                        Atom atom = null;
+                        foreach (var personatom in personAtoms)
                         {
-                            if (IsMale(atom) == forMale || ignoreGender)
+                            if (IsMale(personatom) == forMale || ignoreGender)
                             {
-                                personOrder--;
-                                if (personOrder > 0)
+                                personOrder2--;
+                                if (personOrder2 > 0)
                                     continue;
                                 findatom = true;
+                                atom = personatom;
                                 SuperController.LogMessage("Find Person " + atom.name);
+                                break;
                                 //atom.SetOn(false);
                                 //atom.hidden = true;
-
-                                if (scenetype == ("hairstyle"))
+                            }
+                        }
+                        if (findatom)
+                        {
+                            if (scenetype == ("hairstyle"))
+                            {
+                                LoadPreset(atom, "HairPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("morphs"))
+                            {
+                                LoadPreset(atom, "MorphPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("skin"))
+                            {
+                                LoadPreset(atom, "SkinPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("clothing"))
+                            {
+                                LoadPreset(atom, "ClothingPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("plugin"))
+                            {
+                                LoadPreset(atom, "PluginPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("breast"))
+                            {
+                                LoadPreset(atom, "FemaleBreastPhysicsPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("glute"))
+                            {
+                                LoadPreset(atom, "FemaleGlutePhysicsPresets", merge, scenefile);
+                            }
+                            if (scenetype == ("pose"))
+                            {
+                                SuperController.singleton.motionAnimationMaster.StopPlayback();
+                                SuperController.singleton.motionAnimationMaster.ResetAnimation();
+                                atom.ResetPhysical();
+                                if (scenefile.EndsWith(".json"))
+                                    LoadLegacyl(atom, "pose", scenefile);
+                                else
+                                    LoadPreset(atom, "PosePresets", merge, scenefile);
+                            }
+                            if (scenetype == ("looks"))
+                            {
+                                if (scenefile.EndsWith(".json"))
                                 {
-                                    LoadPreset(atom, "HairPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("morphs"))
-                                {
-                                    LoadPreset(atom, "MorphPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("skin"))
-                                {
-                                    LoadPreset(atom, "SkinPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("clothing"))
-                                {
-                                    LoadPreset(atom, "ClothingPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("plugin"))
-                                {
-                                    LoadPreset(atom, "PluginPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("breast"))
-                                {
-                                    LoadPreset(atom, "FemaleBreastPhysicsPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("glute"))
-                                {
-                                    LoadPreset(atom, "FemaleGlutePhysicsPresets", merge, scenefile);
-                                }
-                                if (scenetype == ("pose"))
-                                {
-                                    SuperController.singleton.motionAnimationMaster.StopPlayback();
-                                    SuperController.singleton.motionAnimationMaster.ResetAnimation();
-                                    atom.ResetPhysical();
-                                    if (scenefile.EndsWith(".json"))
-                                        LoadLegacyl(atom, "pose", scenefile);
+                                    if (scenefile.IndexOf("/Person/full/") >= 0)
+                                        LoadLegacyl(atom, "full", scenefile);
                                     else
-                                        LoadPreset(atom, "PosePresets", merge, scenefile);
+                                        LoadLegacyl(atom, "appearance", scenefile);
                                 }
-                                if (scenetype == ("looks"))
+                                else
                                 {
-                                    if (scenefile.EndsWith(".json"))
-                                    {
-                                        if (scenefile.IndexOf("/Person/full/") >= 0)
-                                            LoadLegacyl(atom, "full", scenefile);
-                                        else
-                                            LoadLegacyl(atom, "appearance", scenefile);
-                                    }
-                                    else
-                                    {
-                                        LoadPreset(atom, "AppearancePresets", merge, scenefile);
-                                    }
+                                    LoadPreset(atom, "AppearancePresets", merge, scenefile);
                                 }
-                                if (scenetype == ("animation"))
+                            }
+                            if (scenetype == ("animation"))
+                            {
+                                SuperController.singleton.motionAnimationMaster.StopPlayback();
+                                SuperController.singleton.motionAnimationMaster.SeekToBeginning();
+                                SuperController.LogMessage("loaded Storable " + FileManagerSecure.GetFullPath(scenefile));
+                                JSONClass atomitem = (JSONClass)JSONNode.LoadFromFile(FileManagerSecure.GetFullPath(scenefile));
+                                List<string> storids = atom.GetStorableIDs();
+                                JSONClass jcempty = new JSONClass();
+                                foreach (string storid in storids)
                                 {
-                                    SuperController.singleton.motionAnimationMaster.StopPlayback();
-                                    SuperController.singleton.motionAnimationMaster.SeekToBeginning();
-                                    SuperController.LogMessage("loaded Storable " + FileManagerSecure.GetFullPath(scenefile));
-                                    JSONClass atomitem = (JSONClass)JSONNode.LoadFromFile(FileManagerSecure.GetFullPath(scenefile));
-                                    List<string> storids = atom.GetStorableIDs();
-                                    JSONClass jcempty = new JSONClass();
-                                    foreach (string storid in storids)
+                                    if (storid.EndsWith("Animation"))
                                     {
-                                        if (storid.EndsWith("Animation"))
-                                        {
-                                            JSONStorable storable = atom.GetStorableByID(storid);
-                                            storable.RestoreFromJSON(jcempty);
-                                        }
+                                        JSONStorable storable = atom.GetStorableByID(storid);
+                                        storable.RestoreFromJSON(jcempty);
                                     }
-                                    LoadStorableFile(atom, atomitem["storables"].AsArray);
-                                    SuperController.singleton.motionAnimationMaster.RestoreFromJSON((JSONClass)atomitem["motionAnimationMaster"]);
-                                    SuperController.singleton.motionAnimationMaster.StartPlayback();
                                 }
-                                if (scenetype == "highheel")
+                                LoadStorableFile(atom, atomitem["storables"].AsArray);
+                                SuperController.singleton.motionAnimationMaster.RestoreFromJSON((JSONClass)atomitem["motionAnimationMaster"]);
+                                SuperController.singleton.motionAnimationMaster.StartPlayback();
+                            }
+                            if (scenetype == "highheel")
+                            {
+                                atom.ResetPhysical();
+                                atom.SetOn(false);
+                                int atomid = atom.GetInstanceID();
+                                if (!mmdPersons.ContainsKey(atomid))
                                 {
-                                    atom.ResetPhysical();
-                                    int atomid = atom.GetInstanceID();
-                                    if (!mmdPersons.ContainsKey(atomid))
-                                    {
-                                        Mmd2TimelinePersonAtom mmdPerson = new Mmd2TimelinePersonAtom(atom);
-                                        mmdPersons[atomid] = mmdPerson;
-                                    }
-
-                                    string pluginPresetFullName = "Custom/Atom/Person/Plugins/Preset_mmdloader.vap";
-                                    if (FileManagerSecure.FileExists(pluginPresetFullName, false))
-                                    {
-                                        FileManagerSecure.DeleteFile(pluginPresetFullName);
-                                    }
-
-                                    if (resource.HasKey("enableHeel"))
-                                    {
-                                        LogUtil.Log("enableHeel:" + resource["enableHeel"].AsBool.ToString());
-                                        mmdPersons[atomid].enableHeel.SetVal(resource["enableHeel"].AsBool);
-                                    }
-                                    if (resource.HasKey("footJointDriveXTargetAdjust"))
-                                    {
-                                        LogUtil.Log("footJointDriveXTargetAdjust:" + resource["footJointDriveXTargetAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].footJointDriveXTargetAdjust.SetVal(resource["footJointDriveXTargetAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("toeJointDriveXTargetAdjust"))
-                                    {
-                                        LogUtil.Log("toeJointDriveXTargetAdjust:" + resource["toeJointDriveXTargetAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].toeJointDriveXTargetAdjust.SetVal(resource["toeJointDriveXTargetAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("holdRotationMaxForceAdjust"))
-                                    {
-                                        LogUtil.Log("holdRotationMaxForceAdjust:" + resource["holdRotationMaxForceAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].holdRotationMaxForceAdjust.SetVal(resource["holdRotationMaxForceAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("straightLeg"))
-                                    {
-                                        LogUtil.Log("straightLeg:" + resource["straightLeg"].AsFloat.ToString());
-                                        mmdPersons[atomid].StraightLeg(resource["straightLeg"].AsFloat);
-                                    }
-                                    if (resource.HasKey("straightLegWorkAngle"))
-                                    {
-                                        LogUtil.Log("straightLegWorkAngle:" + resource["straightLegWorkAngle"].AsFloat.ToString());
-                                        mmdPersons[atomid].SetStraightLegWorkAngle(resource["straightLegWorkAngle"].AsFloat);
-                                    }
-                                    mmdPersons[atomid].InitAtom();
-                                    if (resource.HasKey("posY"))
-                                    {
-                                        LogUtil.Log("posY:" + resource["posY"].AsFloat.ToString());
-                                        mmdPersons[atomid].posY.SetVal(resource["posY"].AsFloat);
-                                    }
-
+                                    Mmd2TimelinePersonAtom mmdPerson = new Mmd2TimelinePersonAtom(atom);
+                                    mmdPersons[atomid] = mmdPerson;
                                 }
-                                if (scenetype == "personvmd")
+                                /*
+                                string pluginPresetFullName = "Custom/Atom/Person/Plugins/Preset_mmdloader.vap";
+                                if (FileManagerSecure.FileExists(pluginPresetFullName, false))
                                 {
-                                    atom.ResetPhysical();
-                                    int atomid = atom.GetInstanceID();
-                                    if (!mmdPersons.ContainsKey(atomid))
-                                    {
-                                        Mmd2TimelinePersonAtom mmdPerson = new Mmd2TimelinePersonAtom(atom);
-
-                                        mmdPersons[atomid] = mmdPerson;
-                                    }
-
-                                    string pluginPresetFullName = "Custom/Atom/Person/Plugins/Preset_mmdloader.vap";
-                                    if (FileManagerSecure.FileExists(pluginPresetFullName, false))
-                                    {
-                                        FileManagerSecure.DeleteFile(pluginPresetFullName);
-                                    }
-                                    bool bIsTest = false;
-                                    if (resource.HasKey("isTest"))
-                                    {
-                                        LogUtil.Log("isTest:" + resource["isTest"]);
-                                        bIsTest = resource["isTest"].AsBool;
-                                    }
-                                    if (bIsTest)
-                                    {
-                                         foreach (var pmc in atom.presetManagerControls)
-                                        {
-                                            if (pmc.name == "PluginPresets")
-                                            {
-                                                var pm = pmc.GetComponent<PresetManager>();
-                                                JSONClass pluginEmpty = (JSONClass)JSON.Parse("{\"setUnlistedParamsToDefault\":\"true\",\"storables\":[{\"id\":\"PluginManager\",\"plugins\":{}}]}");
-                                                pm.LoadPresetFromJSON(pluginEmpty);
-                                                yield return new WaitForSeconds(0.5f);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (resource.HasKey("enableHeel"))
-                                    {
-                                        LogUtil.Log("enableHeel:" + resource["enableHeel"].AsBool.ToString());
-                                        mmdPersons[atomid].enableHeel.SetVal(resource["enableHeel"].AsBool);
-                                    }
-                                    if (resource.HasKey("footJointDriveXTargetAdjust"))
-                                    {
-                                        LogUtil.Log("footJointDriveXTargetAdjust:" + resource["footJointDriveXTargetAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].footJointDriveXTargetAdjust.SetVal(resource["footJointDriveXTargetAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("toeJointDriveXTargetAdjust"))
-                                    {
-                                        LogUtil.Log("toeJointDriveXTargetAdjust:" + resource["toeJointDriveXTargetAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].toeJointDriveXTargetAdjust.SetVal(resource["toeJointDriveXTargetAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("holdRotationMaxForceAdjust"))
-                                    {
-                                        LogUtil.Log("holdRotationMaxForceAdjust:" + resource["holdRotationMaxForceAdjust"].AsFloat.ToString());
-                                        mmdPersons[atomid].holdRotationMaxForceAdjust.SetVal(resource["holdRotationMaxForceAdjust"].AsFloat);
-                                    }
-                                    if (resource.HasKey("straightLeg"))
-                                    {
-                                        LogUtil.Log("straightLeg:" + resource["straightLeg"].AsFloat.ToString());
-                                        mmdPersons[atomid].StraightLeg(resource["straightLeg"].AsFloat);
-                                    }
-                                    if (resource.HasKey("straightLegWorkAngle"))
-                                    {
-                                        LogUtil.Log("straightLegWorkAngle:" + resource["straightLegWorkAngle"].AsFloat.ToString());
-                                        mmdPersons[atomid].SetStraightLegWorkAngle(resource["straightLegWorkAngle"].AsFloat);
-                                    }
-                                    mmdPersons[atomid].InitAtom();
-
-                                    if (resource.HasKey("posY"))
-                                    {
-                                        LogUtil.Log("posY:" + resource["posY"].AsFloat.ToString());
-                                        mmdPersons[atomid].posY.SetVal(resource["posY"].AsFloat);
-                                    }
-
-                                    mmdPersons[atomid].ImportVmd(scenefile);
-                                    if (resource.HasKey("personvmd2"))
-                                    {
-                                        LogUtil.Log("personvmd2:" + resource["personvmd2"]);
-                                        mmdPersons[atomid].ImportVmd(resource["personvmd2"]);
-                                    }
-
-                                    bool bAudioSourceControl = false;
-                                    if (resource.HasKey("AudioSourceControl"))
-                                    {
-                                        LogUtil.Log("AudioSourceControl:" + resource["AudioSourceControl"]);
-                                        bAudioSourceControl = resource["AudioSourceControl"].AsBool;
-                                    }
-                                    string strAudioSourceControl = "";
-                                    if (bAudioSourceControl)
-                                    {
-                                        foreach (var audioatom in SuperController.singleton.GetAtoms())
-                                        {
-                                            if (audioatom.type == "AudioSource")
-                                            {
-                                                strAudioSourceControl = audioatom.uid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    
-                                    float sampleSpeed = 1;
-                                    if (resource.HasKey("sampleSpeed"))
-                                    {
-                                        LogUtil.Log("sampleSpeed:" + resource["sampleSpeed"]);
-                                        sampleSpeed = resource["sampleSpeed"].AsFloat;
-                                    } 
-                                    mmdPersons[atomid].sampleSpeed.SetVal(sampleSpeed);
-                                    var anijson = mmdPersons[atomid].StartPlay(strAudioSourceControl, bIsTest);
-                                    if (!bIsTest)
-                                    {
-                                        mmdPersons[atomid].SavePluginPreset();
-                                        LoadPreset(atom, "PluginPresets", false, pluginPresetFullName);
-                                        yield return new WaitForSeconds(1f);
-                                        AnimationTimelineTrigger timelineTrigger = null;
-                                        foreach (var trig in SuperController.singleton.motionAnimationMaster.GetTriggers())
-                                        {
-                                            if (trig.displayName == "person1MotionActive")
-                                            {
-                                                timelineTrigger = trig;
-                                                break;
-                                            }
-                                        }
-                                        if (timelineTrigger == null)
-                                        {
-                                            timelineTrigger = SuperController.singleton.motionAnimationMaster.AddAndReturnTrigger();
-                                            timelineTrigger.displayName = "person1MotionActive";
-                                        }
-                                        string triggerjsonstr = String.Format("{{\"displayName\":\"person1MotionActive\",\"startActions\":[{{\"name\":\"Playperson1motion\",\"receiverAtom\":\"{0}\",\"receiver\":\"plugin#0_VamTimeline.AtomPlugin\",\"receiverTargetName\":\"Play\"}}],\"transitionActions\":[],\"endActions\":[],\"startTime\":\"0\",\"endTime\":\"0\"}}",
-                                            atom.uid);
-                                        JSONClass jsontrigger = (JSONClass)JSON.Parse(triggerjsonstr);
-                                        timelineTrigger.RestoreFromJSON(jsontrigger);
-                                        yield return new WaitForSeconds(0.5f);
-                                    }
-
+                                    FileManagerSecure.DeleteFile(pluginPresetFullName);
                                 }
+                                */
+                                if (resource.HasKey("enableHeel"))
+                                {
+                                    LogUtil.Log("enableHeel:" + resource["enableHeel"].AsBool.ToString());
+                                    mmdPersons[atomid].enableHeel.SetVal(resource["enableHeel"].AsBool);
+                                }
+                                if (resource.HasKey("footJointDriveXTargetAdjust"))
+                                {
+                                    LogUtil.Log("footJointDriveXTargetAdjust:" + resource["footJointDriveXTargetAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].footJointDriveXTargetAdjust.SetVal(resource["footJointDriveXTargetAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("toeJointDriveXTargetAdjust"))
+                                {
+                                    LogUtil.Log("toeJointDriveXTargetAdjust:" + resource["toeJointDriveXTargetAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].toeJointDriveXTargetAdjust.SetVal(resource["toeJointDriveXTargetAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("holdRotationMaxForceAdjust"))
+                                {
+                                    LogUtil.Log("holdRotationMaxForceAdjust:" + resource["holdRotationMaxForceAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].holdRotationMaxForceAdjust.SetVal(resource["holdRotationMaxForceAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("straightLeg"))
+                                {
+                                    LogUtil.Log("straightLeg:" + resource["straightLeg"].AsFloat.ToString());
+                                    mmdPersons[atomid].StraightLeg(resource["straightLeg"].AsFloat);
+                                }
+                                if (resource.HasKey("straightLegWorkAngle"))
+                                {
+                                    LogUtil.Log("straightLegWorkAngle:" + resource["straightLegWorkAngle"].AsFloat.ToString());
+                                    mmdPersons[atomid].SetStraightLegWorkAngle(resource["straightLegWorkAngle"].AsFloat);
+                                }
+
+                                mmdPersons[atomid].InitAtom();
+                                yield return null;
+                                float posX = 0, posY = 0, posZ = 0;
+                                if (resource.HasKey("posX"))
+                                {
+                                    LogUtil.Log("posX:" + resource["posX"].AsFloat.ToString());
+                                    posX = resource["posX"].AsFloat;
+                                }
+                                if (resource.HasKey("posY"))
+                                {
+                                    LogUtil.Log("posY:" + resource["posY"].AsFloat.ToString());
+                                    posY = resource["posY"].AsFloat;
+                                }
+                                if (resource.HasKey("posZ"))
+                                {
+                                    LogUtil.Log("posZ:" + resource["posZ"].AsFloat.ToString());
+                                    posZ = resource["posZ"].AsFloat;
+                                }
+                                mmdPersons[atomid].pos.SetVal(new Vector3(posX, posY, posZ));
+                                yield return null;
+                                atom.SetOn(true);
+
 
                             }
+                            if (scenetype == "personvmd")
+                            {
+                                atom.ResetPhysical();
+                                atom.collisionEnabled = false;
+                                int atomid = atom.GetInstanceID();
+                                if (!mmdPersons.ContainsKey(atomid))
+                                {
+                                    Mmd2TimelinePersonAtom mmdPerson = new Mmd2TimelinePersonAtom(atom);
+
+                                    mmdPersons[atomid] = mmdPerson;
+                                }
+                                string presetFileName = "Preset_mmdloader" + personOrder.ToString() + ".vap";
+                                string pluginPresetFullName = "Custom/Atom/Person/Plugins/"+ presetFileName;
+                                if (FileManagerSecure.FileExists(pluginPresetFullName, false))
+                                {
+                                    FileManagerSecure.DeleteFile(pluginPresetFullName);
+                                    //yield return new WaitForSeconds(0.5f);
+                                }
+                                bool bIsTest = false;
+                                if (resource.HasKey("isTest"))
+                                {
+                                    LogUtil.Log("isTest:" + resource["isTest"]);
+                                    bIsTest = resource["isTest"].AsBool;
+                                }
+                                if (bIsTest)
+                                {
+                                    foreach (var pmc in atom.presetManagerControls)
+                                    {
+                                        if (pmc.name == "PluginPresets")
+                                        {
+                                            var pm = pmc.GetComponent<PresetManager>();
+                                            JSONClass pluginEmpty = (JSONClass)JSON.Parse("{\"setUnlistedParamsToDefault\":\"true\",\"storables\":[{\"id\":\"PluginManager\",\"plugins\":{}}]}");
+                                            pm.LoadPresetFromJSON(pluginEmpty);
+                                            yield return new WaitForSeconds(0.5f);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (resource.HasKey("ignoreFace"))
+                                {
+                                    LogUtil.Log("ignoreFace:" + resource["ignoreFace"].AsBool.ToString());
+                                    mmdPersons[atomid].IgnoreFace(resource["ignoreFace"].AsBool);
+                                }
+                                if (resource.HasKey("enableHeel"))
+                                {
+                                    LogUtil.Log("enableHeel:" + resource["enableHeel"].AsBool.ToString());
+                                    mmdPersons[atomid].enableHeel.SetVal(resource["enableHeel"].AsBool);
+                                }
+                                if (resource.HasKey("footJointDriveXTargetAdjust"))
+                                {
+                                    LogUtil.Log("footJointDriveXTargetAdjust:" + resource["footJointDriveXTargetAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].footJointDriveXTargetAdjust.SetVal(resource["footJointDriveXTargetAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("toeJointDriveXTargetAdjust"))
+                                {
+                                    LogUtil.Log("toeJointDriveXTargetAdjust:" + resource["toeJointDriveXTargetAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].toeJointDriveXTargetAdjust.SetVal(resource["toeJointDriveXTargetAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("holdRotationMaxForceAdjust"))
+                                {
+                                    LogUtil.Log("holdRotationMaxForceAdjust:" + resource["holdRotationMaxForceAdjust"].AsFloat.ToString());
+                                    mmdPersons[atomid].holdRotationMaxForceAdjust.SetVal(resource["holdRotationMaxForceAdjust"].AsFloat);
+                                }
+                                if (resource.HasKey("straightLeg"))
+                                {
+                                    LogUtil.Log("straightLeg:" + resource["straightLeg"].AsFloat.ToString());
+                                    mmdPersons[atomid].StraightLeg(resource["straightLeg"].AsFloat);
+                                }
+                                if (resource.HasKey("straightLegWorkAngle"))
+                                {
+                                    LogUtil.Log("straightLegWorkAngle:" + resource["straightLegWorkAngle"].AsFloat.ToString());
+                                    mmdPersons[atomid].SetStraightLegWorkAngle(resource["straightLegWorkAngle"].AsFloat);
+                                }
+                                mmdPersons[atomid].InitAtom();
+
+                                mmdPersons[atomid].ImportVmd(scenefile);
+                                if (resource.HasKey("personvmd2"))
+                                {
+                                    LogUtil.Log("personvmd2:" + resource["personvmd2"]);
+                                    mmdPersons[atomid].ImportVmd(resource["personvmd2"]);
+                                }
+
+                                bool bAudioSourceControl = false;
+                                if (resource.HasKey("AudioSourceControl"))
+                                {
+                                    LogUtil.Log("AudioSourceControl:" + resource["AudioSourceControl"]);
+                                    bAudioSourceControl = resource["AudioSourceControl"].AsBool;
+                                }
+                                string strAudioSourceControl = "";
+                                if (bAudioSourceControl)
+                                {
+                                    foreach (var audioatom in SuperController.singleton.GetAtoms())
+                                    {
+                                        if (audioatom.type == "AudioSource")
+                                        {
+                                            strAudioSourceControl = audioatom.uid;
+                                            break;
+                                        }
+                                    }
+                                }
+                                float posX = 0, posY = 0, posZ = 0;
+                                if (resource.HasKey("posX"))
+                                {
+                                    LogUtil.Log("posX:" + resource["posX"].AsFloat.ToString());
+                                    posX = resource["posX"].AsFloat;
+                                }
+                                if (resource.HasKey("posY"))
+                                {
+                                    LogUtil.Log("posY:" + resource["posY"].AsFloat.ToString());
+                                    posY = resource["posY"].AsFloat;
+                                }
+                                if (resource.HasKey("posZ"))
+                                {
+                                    LogUtil.Log("posZ:" + resource["posZ"].AsFloat.ToString());
+                                    posZ = resource["posZ"].AsFloat;
+                                }
+                                mmdPersons[atomid].pos.SetVal(new Vector3(posX, posY, posZ));
+                                float sampleSpeed = 1;
+                                if (resource.HasKey("sampleSpeed"))
+                                {
+                                    LogUtil.Log("sampleSpeed:" + resource["sampleSpeed"]);
+                                    sampleSpeed = resource["sampleSpeed"].AsFloat;
+                                }
+
+                                mmdPersons[atomid].sampleSpeed.SetVal(sampleSpeed);
+                                var anijson = mmdPersons[atomid].StartPlay(strAudioSourceControl, bIsTest);
+                                if (!bIsTest)
+                                {
+                                    mmdPersons[atomid].SavePluginPreset(presetFileName);
+                                    LoadPreset(atom, "PluginPresets", false, pluginPresetFullName);
+                                    yield return new WaitForSeconds(1f);
+                                    AnimationTimelineTrigger timelineTrigger = null;
+                                    foreach (var trig in SuperController.singleton.motionAnimationMaster.GetTriggers())
+                                    {
+                                        if (trig.displayName == "person1MotionActive")
+                                        {
+                                            timelineTrigger = trig;
+                                            break;
+                                        }
+                                    }
+                                    if (timelineTrigger == null)
+                                    {
+                                        timelineTrigger = SuperController.singleton.motionAnimationMaster.AddAndReturnTrigger();
+                                        timelineTrigger.displayName = "person1MotionActive";
+                                    }
+                                    string triggerjsonstr = String.Format("{{\"displayName\":\"person1MotionActive\",\"startActions\":[{{\"name\":\"Playperson1motion\",\"receiverAtom\":\"{0}\",\"receiver\":\"plugin#0_VamTimeline.AtomPlugin\",\"receiverTargetName\":\"Play\"}}],\"transitionActions\":[],\"endActions\":[],\"startTime\":\"0\",\"endTime\":\"0\"}}",
+                                        atom.uid);
+                                    JSONClass jsontrigger = (JSONClass)JSON.Parse(triggerjsonstr);
+                                    timelineTrigger.RestoreFromJSON(jsontrigger);
+                                    yield return new WaitForSeconds(0.5f);
+                                    //mmdPersons[atomid].InitAtom();
+                                    mmdPersons[atomid].pos.SetVal(new Vector3(posX, posY, posZ));
+                                }
+                                atom.collisionEnabled = true;
+                                //
+
+                            }
+
+                            else
+                                SuperController.LogError("Error load Preset,Unable to match the right atom");
+
+
                         }
 
                     }
 
 
-                    if (!findatom)
-                        SuperController.LogError("Error load Preset,Unable to match the right atom");
                 }
             }
             else

@@ -7,11 +7,14 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="icon.ico" />
     <None Remove="ImageHighHeel.png" />
+    <None Remove="UserCtls\ImageHighHeel.png" />
     <None Remove="Resources\ImageFlats.png" />
     <None Remove="Resources\ImageHighHeel.png" />
   </ItemGroup>
@@ -58,6 +61,7 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
     <Resource Include="ImageHighHeel.png" />
+    <Resource Include="UserCtls\ImageHighHeel.png" />
   </ItemGroup>
 
 </Project>

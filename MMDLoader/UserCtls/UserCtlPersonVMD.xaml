@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="MMDLoader.UserCtls.UserCtlPersonVMD"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MMDLoader.UserCtls"
+             mc:Ignorable="d" Height="260" Width="800" Loaded="UserControl_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+            <RowDefinition Height="66*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+            <ColumnDefinition Width="54*"/>
+        </Grid.ColumnDefinitions>
+        <local:UserCtlSlider x:Name="sliderStraightLeg" Grid.Row="1" Grid.ColumnSpan="4" MaxValue="1" LargeChange="0.1" DefaultValue="0" SmallChange="0.01" Grid.Column="2" Value="{Binding StraightLeg, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" BorderBrush="Black" BorderThickness="0,0,0,1" Margin="0,2,0,2">
+            <local:UserCtlSlider.ToolTip>
+                <StackPanel>
+                    <TextBlock>When the knee angle is greater than the work angel,</TextBlock>
+                    <TextBlock>the angle will be expanded in proportion to the StraightLeg value.</TextBlock>
+                    <TextBlock>When StraightLeg is 0, it will not be processed,</TextBlock>
+                    <TextBlock>and when it is 1, it will be expanded to 180 degrees.</TextBlock>
+                </StackPanel>
+            </local:UserCtlSlider.ToolTip>
+        </local:UserCtlSlider>
+            
+        <Label x:Name="label2" Content="Motion1:" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Column="2"/>
+        <Label x:Name="label2_Copy" Content="Motion2:" Grid.Column="7" Grid.RowSpan="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"/>
+        <ComboBox x:Name="comboBoxPersonVmd2" RenderTransformOrigin="0.157,-0.068" VerticalAlignment="Center" Height="21" Grid.ColumnSpan="4" Grid.Column="8" SelectedIndex="{Binding Motion2, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" IsEnabled="False" ToolTip="Person Motion2 VMD,usually for expression"/>
+        <Label x:Name="label6_Copy1" Content="Straight Leg:" HorizontalContentAlignment="Right" Grid.RowSpan="1" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center"/>
+        <Label x:Name="label6_Copy" Content="PosX:" HorizontalContentAlignment="Right" Grid.Row="2" VerticalContentAlignment="Center"/>
+        <CheckBox x:Name="checkBoxEnableHighHeel" Content="Enable HighHeel" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="3" Height="16" HorizontalAlignment="Center" Checked="checkBoxEnableHighHeel_Checked" IsChecked="{Binding EnableHighHeel, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" Unchecked="checkBoxEnableHighHeel_Unchecked"/>
+        <Button x:Name="buttonHighHeelDefault" Grid.Column="4" Content="Default" HorizontalAlignment="Center" Grid.Row="3" Width="80" VerticalAlignment="Center" Height="19" Grid.ColumnSpan="2" Click="buttonHighHeelDefault_Click"/>
+        <Label x:Name="label6" HorizontalContentAlignment="Right" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Height="10" Margin="31,0,0,0" Width="10"/>
+        <Image x:Name="imageHighheel" HorizontalAlignment="Center" Height="74" VerticalAlignment="Top" Width="94" Source="/Resources/ImageFlats.png" Opacity="0.8" Grid.Row="3" Grid.RowSpan="5" Grid.Column="6" Grid.ColumnSpan="3" Margin="0,8,0,0"/>
+        <Rectangle x:Name="rectToe" HorizontalAlignment="Left" Height="15" VerticalAlignment="Top" Width="26" RadiusX="12" RadiusY="12" Stroke="Black" Grid.Row="3" Grid.Column="6" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="57,19,0,0"/>
+        <Rectangle x:Name="rectHeel" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="6" Stroke="Black" Grid.Row="3" Grid.Column="6" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="127,22,0,0"/>
+        <Rectangle x:Name="rectFoot" HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="60" RadiusX="6" RadiusY="6" RenderTransformOrigin="0.5,0.5" Grid.Row="3" Grid.Column="6" Stroke="Black" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="69,19,0,0"/>
+        <Rectangle Height="17" VerticalAlignment="Top" Stroke="Black" RenderTransformOrigin="0.5,0.5" Grid.Row="3" Grid.Column="7" Width="24" HorizontalAlignment="Left" Margin="52,16,0,0" Grid.ColumnSpan="2">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="23.721"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Button x:Name="buttonTestHighHeel" Grid.Column="9" Content="Test HighHeel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="5" Width="110" Height="20" Grid.ColumnSpan="3" Click="buttonTestHighHeel_Click"/>
+        <Button x:Name="buttonVmdTest" Grid.Column="9" Content=" Test VMD" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="6" Width="110" Height="20" Grid.ColumnSpan="3" Click="buttonVmdTest_Click"/>
+        <Label x:Name="label3" Content="Rate:" HorizontalAlignment="Right" Grid.Row="6" VerticalAlignment="Center" Height="26" Width="38" Grid.ColumnSpan="1" Grid.Column="6"/>
+        <ComboBox x:Name="comboBoxSampleSpeed" Grid.Column="7" HorizontalAlignment="Stretch" Height="22" Grid.Row="6" VerticalAlignment="Stretch" Width="62" Grid.ColumnSpan="2" ToolTip="playback rate only works in test VMD">
+            <ComboBoxItem Content="×0.5"/>
+            <ComboBoxItem Content="×1" />
+            <ComboBoxItem Content="×2" IsSelected="True"/>
+            <ComboBoxItem Content="×3"/>
+        </ComboBox>
+        <local:UserCtlSlider x:Name="sliderStraightLegWorkAngle" Grid.Row="1" Grid.ColumnSpan="4" MinValue="60" MaxValue="170" Value="{Binding StraightLegWorkAngle, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" DefaultValue="140" Grid.Column="8" Margin="0,2,0,2" BorderBrush="Black" BorderThickness="0,0,0,1" >
+            <local:UserCtlSlider.ToolTip>
+                <StackPanel>
+                    <TextBlock>When the knee angle is greater than the work angel,</TextBlock>
+                    <TextBlock>the angle will be expanded in proportion to the StraightLeg value.</TextBlock>
+                    <TextBlock>When StraightLeg is 0, it will not be processed,</TextBlock>
+                    <TextBlock>and when it is 1, it will be expanded to 180 degrees.</TextBlock>
+                </StackPanel>
+            </local:UserCtlSlider.ToolTip>
+        </local:UserCtlSlider>
+        <local:UserCtlSlider x:Name="sliderPosX" Grid.Row="2" Grid.ColumnSpan="3" MaxValue="2" LargeChange="0.1" DefaultValue="0" SmallChange="0.01" Grid.Column="1" MinValue="-2" Value="{Binding PosX, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" BorderBrush="Black" Margin="0,2,0,2" ToolTip="Person Pos" />
+        <TextBlock x:Name="textBlock1" Grid.Column="6" HorizontalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap" Text="Straight Leg Work Angle:" VerticalAlignment="Stretch" Grid.ColumnSpan="2" TextAlignment="Right"/>
+        <Label x:Name="label6_Copy2" Content="PosY:" HorizontalContentAlignment="Right" Grid.Row="2" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="1" HorizontalAlignment="Right"/>
+        <local:UserCtlSlider x:Name="sliderPosY" Grid.Row="2" Grid.ColumnSpan="3" MaxValue="1" LargeChange="0.1" DefaultValue="0" SmallChange="0.01" Grid.Column="5" MinValue="-1" Value="{Binding PosY, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" BorderBrush="Black" Margin="0,2,0,2" ToolTip="Person Pos" />
+        <Label x:Name="label6_Copy3" Content="PosZ:" HorizontalContentAlignment="Right" Grid.Row="2" VerticalContentAlignment="Center" Grid.Column="8" Grid.ColumnSpan="1" HorizontalAlignment="Right"/>
+        <local:UserCtlSlider x:Name="sliderPosZ" Grid.Row="2" Grid.ColumnSpan="3" MaxValue="2" LargeChange="0.1" DefaultValue="0" SmallChange="0.01" Grid.Column="9" MinValue="-2" Value="{Binding PosZ, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" BorderBrush="Black" Margin="0,2,0,2" ToolTip="Person Pos" />
+        <local:UserCtlSlider x:Name="sliderFootHoldForce" Grid.Row="4" Grid.ColumnSpan="3" MaxValue="1000" LargeChange="50" DefaultValue="0" SmallChange="5" Grid.Column="9" Value="{Binding FootHoldRotMaxForce, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" BorderBrush="Black" Margin="0,2,0,2" />
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Foot Hold Rot Max Force:" Grid.ColumnSpan="3" Grid.Column="9" Width="149" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Right" Grid.Row="4" TextWrapping="Wrap" Text="Foot Joint Drive X Angle:" Grid.ColumnSpan="2"/>
+        <local:UserCtlSlider x:Name="sliderFootXAngle" Grid.Row="4" Grid.ColumnSpan="4" MinValue="-65" MaxValue="45" Value="{Binding HighHeelFootXangle, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" DefaultValue="-45" Grid.Column="2" ValueChanged="sliderFootXAngle_ValueChanged" BorderBrush="Black" Margin="0,2,0,2" />
+        <TextBlock x:Name="textBlock2_Copy1" HorizontalAlignment="Right" Grid.Row="5" TextWrapping="Wrap" Text="Toe Joint Drive X Angle:" Grid.ColumnSpan="2" Margin="10,0,0,0"/>
+        <local:UserCtlSlider x:Name="sliderToeXAngle" Grid.Row="5" Grid.ColumnSpan="4" MinValue="-30" MaxValue="75" Value="{Binding HighHeelToeXangle, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" DefaultValue="35" Grid.Column="2" Grid.RowSpan="1" ValueChanged="sliderToeXAngle_ValueChanged" BorderBrush="Black" Margin="0,2,0,2" />
+        <ComboBox x:Name="comboBoxPersonVmd" RenderTransformOrigin="0.157,-0.068" VerticalAlignment="Center" Height="21" Grid.ColumnSpan="4" Grid.Column="3" SelectedIndex="{Binding Motion1, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" SelectionChanged="comboBoxPersonVmd_SelectionChanged" ToolTip="Person Motion1 VMD"/>
+        <Border Grid.Column="0" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="12" Grid.RowSpan="2" BorderBrush="#FF9B9B9B" BorderThickness="0,1,0,1"/>
+        <Border BorderBrush="#FF9B9B9B" BorderThickness="0,1,0,1" Grid.Row="6" Grid.ColumnSpan="12">
+            
+
+        </Border> 
+        <Label x:Name="label" Content="Person" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FF0080FF" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Grid.ColumnSpan="2" FontSize="22"/>
+        <Label x:Name="labelPersonOrder" Grid.Column="1" Content="{Binding PersonOrder, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" HorizontalAlignment="Left" Margin="17,0,0,0" VerticalAlignment="Center" Foreground="#FF0080FF" FontSize="22"/>
+        <CheckBox x:Name="checkBoxIgnoreFace" Grid.Column="0" Content="Disable expression conversion" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Center" Grid.ColumnSpan="4" IsChecked="{Binding IgnoreFace, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserCtlPersonVMD}}}" ToolTip="Because expression conversion may cause facial shaking problems, check it to disable" Margin="6,0,0,0"/>
+
+    </Grid>
+
+</UserControl>
