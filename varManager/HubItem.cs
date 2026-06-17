@@ -117,7 +117,7 @@ namespace varManager
             if (buttonInRepository.Text.StartsWith("Go To "))
             {
                 if (!string.IsNullOrEmpty(download_url))
-                    System.Diagnostics.Process.Start($"{download_url}");
+                    Comm.OpenShell($"{download_url}");
             }
         }
         void RaiseGenLinkListFilterEvent(Dictionary<string, string> varDownloadUrl)
@@ -222,7 +222,7 @@ namespace varManager
 
         private void pictureBoxImage_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start($"https://hub.virtamate.com/resources/{resource_id}/");
+            Comm.OpenShell($"https://hub.virtamate.com/resources/{resource_id}/");
         }
         void RaiseClickFilterEvent(string filterType,string payType,string category,string  creator)
         {

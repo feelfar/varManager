@@ -1,4 +1,4 @@
-﻿namespace varManager
+namespace varManager
 {
     partial class FormStaleVars
     {
@@ -130,7 +130,7 @@
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(639, 388);
             this.ControlBox = false;

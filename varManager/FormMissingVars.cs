@@ -160,7 +160,7 @@ namespace varManager
             if (e.ColumnIndex == 3)
             {
                 string varname = dataGridViewMissingVars.Rows[e.RowIndex].Cells[0].Value.ToString().Replace(".latest", ".1");
-                System.Diagnostics.Process.Start("https://www.google.com/search?q=" + varname + " var");
+                Comm.OpenShell("https://www.google.com/search?q=" + varname + " var");
             }
         }
 

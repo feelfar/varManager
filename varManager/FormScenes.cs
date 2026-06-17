@@ -21,9 +21,25 @@ namespace varManager
         // private static int maxitemPerpage = 100;
         private string strCategory = "scenes";
         private string strOrderBy = "_";
+        private bool closingDown;
+
         public FormScenes()
         {
             InitializeComponent();
+            // .NET 8 enumerates every virtual-list item while destroying the window
+            // (WmDestroy -> ReleaseUiaProvider -> get_Item -> RetrieveVirtualItem). With
+            // tens of thousands of items that re-entry loaded an image per item against
+            // half-disposed components — the real "freeze + memory spike on exit".
+            // Zero the virtual sizes first so teardown has nothing to enumerate.
+            this.FormClosing += (s, e) =>
+            {
+                closingDown = true;
+                listViewHide.VirtualListSize = 0;
+                listViewNormal.VirtualListSize = 0;
+                listViewFav.VirtualListSize = 0;
+            };
+            // Free the big preview bitmap deterministically when the window closes.
+            this.FormClosed += (s, e) => Comm.SwapPictureBoxImage(pictureBoxPreview, null);
         }
         public Form1 form1;
         /*
@@ -765,7 +781,7 @@ namespace varManager
                         labelPreviewVarName.Text = item.Text;
                         checkBoxMerge.Checked = false;
                         buttonLoadscene.Text = "Load " + item.SubItems[6].Text;
-                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[3].Text);
+                        Comm.SwapPictureBoxImage(pictureBoxPreview, item.SubItems[3].Text);
 
                         panelImage.Visible = true;
                         radioButtonPersonOrder1.Checked = true;
@@ -1051,6 +1067,7 @@ namespace varManager
 
         private void listViewHide_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
+            if (closingDown) { e.Item = new ListViewItem(string.Empty); return; }
             var curpriviewscene = listFilterCreatorSceneHide[e.ItemIndex];
             RetrieveVirtualItem(e, curpriviewscene);
         }
@@ -1058,13 +1075,14 @@ namespace varManager
 
         private void listViewNormal_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-
-            var curpriviewscene = listFilterCreatorSceneNormal[e.ItemIndex]; 
+            if (closingDown) { e.Item = new ListViewItem(string.Empty); return; }
+            var curpriviewscene = listFilterCreatorSceneNormal[e.ItemIndex];
             RetrieveVirtualItem(e, curpriviewscene);
         }
 
         private void listViewFav_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
+            if (closingDown) { e.Item = new ListViewItem(string.Empty); return; }
             var curpriviewscene = listFilterCreatorSceneFav[e.ItemIndex];
             RetrieveVirtualItem(e, curpriviewscene);
         }
@@ -1079,8 +1097,11 @@ namespace varManager
             }
             if (!imageListScenes.Images.ContainsKey(key))
             {
-                imageListScenes.Images.Add(key, Image.FromFile(key));
-                if (imageListScenes.Images.Count > 40) imageListScenes.Images.RemoveAt(0);
+                Comm.AddImageToList(imageListScenes, key, key);
+                // 256/192 with hysteresis: the old ">40 remove one" cap was smaller than
+                // the number of visible tiles, so visible items evicted each other and
+                // every repaint reloaded (and leaked) the whole screen of images.
+                Comm.TrimImageList(imageListScenes, 256, 192);
             }
 
 

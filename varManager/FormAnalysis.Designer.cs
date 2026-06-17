@@ -1,4 +1,4 @@
-﻿namespace varManager
+namespace varManager
 {
     partial class FormAnalysis
     {
@@ -388,7 +388,7 @@
             // 
             this.AcceptButton = this.buttonLoadLook;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonExit;
             this.ClientSize = new System.Drawing.Size(541, 534);
             this.ControlBox = false;

@@ -1,4 +1,4 @@
-﻿
+
 namespace varManager
 {
     partial class FormSettings
@@ -40,6 +40,7 @@ namespace varManager
             this.textBoxVamPath = new System.Windows.Forms.TextBox();
             this.buttonVamPath = new System.Windows.Forms.Button();
             this.folderBrowserDialogVam = new System.Windows.Forms.FolderBrowserDialog();
+            this.buttonMigrate = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -140,16 +141,27 @@ namespace varManager
             this.folderBrowserDialogVam.Description = global::varManager.Properties.Settings.Default.varspath;
             this.folderBrowserDialogVam.SelectedPath = global::varManager.Properties.Settings.Default.varspath;
             this.folderBrowserDialogVam.ShowNewFolderButton = false;
-            // 
+            //
+            // buttonMigrate
+            //
+            this.buttonMigrate.Location = new System.Drawing.Point(24, 470);
+            this.buttonMigrate.Name = "buttonMigrate";
+            this.buttonMigrate.Size = new System.Drawing.Size(260, 26);
+            this.buttonMigrate.TabIndex = 6;
+            this.buttonMigrate.Text = "从旧版(Access)迁移数据…";
+            this.buttonMigrate.UseVisualStyleBackColor = true;
+            this.buttonMigrate.Click += new System.EventHandler(this.buttonMigrate_Click);
+            //
             // FormSettings
             // 
             this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(800, 510);
             this.ControlBox = false;
             this.Controls.Add(label3);
+            this.Controls.Add(this.buttonMigrate);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonVamPath);
@@ -182,5 +194,6 @@ namespace varManager
         private System.Windows.Forms.TextBox textBoxVamPath;
         private System.Windows.Forms.Button buttonVamPath;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogVam;
+        private System.Windows.Forms.Button buttonMigrate;
     }
 }

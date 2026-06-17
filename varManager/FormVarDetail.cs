@@ -94,7 +94,7 @@ namespace varManager
                 if (dependVar == "missing")
                 {
                     string varname = dependName.Replace(".latest", ".1");
-                    System.Diagnostics.Process.Start("https://www.google.com/search?q=" + varname + " var");
+                    Comm.OpenShell("https://www.google.com/search?q=" + varname + " var");
                 }
                 else
                 {

@@ -9,6 +9,80 @@ namespace varManager
 {
     static class Comm
     {
+        // ---- image hygiene -------------------------------------------------
+        // GDI+ bitmaps are native memory the GC barely sees (tiny managed wrapper,
+        // megabytes of native pixels). The original code loaded Image.FromFile into
+        // ImageLists / PictureBoxes and never disposed the sources, leaving gigabytes
+        // of unfinalized native bitmaps after browsing previews. These helpers make
+        // every load deterministic: ImageList copies the image internally, so the
+        // source is disposed immediately; PictureBox swaps dispose the old image.
+
+        /// <summary>Add an image file to an ImageList and dispose the source right away.
+        /// The native handle is forced FIRST: with a created handle the ImageList copies
+        /// the bitmap immediately, so disposing the source is safe. Without it the
+        /// ImageList only stores a reference and converts at CreateHandle — by then a
+        /// disposed source throws "Parameter is not valid". Key may be null (unkeyed).</summary>
+        public static void AddImageToList(System.Windows.Forms.ImageList list, string key, string path)
+        {
+            var _ = list.Handle; // force native image list creation before Add
+            using (var img = System.Drawing.Image.FromFile(path))
+            {
+                if (key == null) list.Images.Add(img);
+                else list.Images.Add(key, img);
+            }
+        }
+
+        /// <summary>Bound an ImageList used as a scroll cache: when it exceeds
+        /// <paramref name="max"/> entries, evict oldest down to <paramref name="trimTo"/>
+        /// (hysteresis avoids the visible-items-evicting-each-other thrash of a
+        /// remove-one-per-add policy).</summary>
+        public static void TrimImageList(System.Windows.Forms.ImageList list, int max, int trimTo)
+        {
+            if (list.Images.Count <= max) return;
+            while (list.Images.Count > trimTo)
+                list.Images.RemoveAt(0);
+        }
+
+        /// <summary>Show an image file in a PictureBox, disposing whatever image the box
+        /// held before. Pass null/empty to just clear and free.</summary>
+        public static void SwapPictureBoxImage(System.Windows.Forms.PictureBox box, string path)
+        {
+            var old = box.Image;
+            box.Image = string.IsNullOrEmpty(path) ? null : System.Drawing.Image.FromFile(path);
+            if (old != null) old.Dispose();
+        }
+        // --------------------------------------------------------------------
+
+        /// <summary>
+        /// Open a URL, file, or folder with the OS default handler.
+        /// .NET Framework's Process.Start(string) implicitly used ShellExecute, so passing a
+        /// URL like "https://..." just opened the browser. .NET 8/Core flipped the default to
+        /// UseShellExecute=false, which treats the string as an executable path → "系统找不到
+        /// 指定的文件". This restores the original behaviour explicitly.
+        /// </summary>
+        public static void OpenShell(string target)
+        {
+            if (string.IsNullOrWhiteSpace(target)) return;
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(target) { UseShellExecute = true });
+            }
+            catch (System.Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("无法打开:\n" + target + "\n\n" + ex.Message,
+                    "varManager", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// The scene-analysis cache folder next to the executable. The original code used
+        /// Directory.GetCurrentDirectory(), which is the process *working directory* — not the
+        /// exe folder. WinForms file dialogs and "run as admin" can change it, so the cache
+        /// could be written to one place and read/cleared from another (cache silently never
+        /// hit). AppContext.BaseDirectory is the stable exe location.
+        /// </summary>
+        public static string CacheDir => Path.Combine(AppContext.BaseDirectory, "Cache");
+
         public static void LocateFile(string filePath)
         {
             if (!File.Exists(filePath))

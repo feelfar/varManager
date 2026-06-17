@@ -42,10 +42,25 @@ namespace varManager
         private static string tempVarLinkDirName = "___TempVarLink___";
         //private varManagerDataSet.dependenciesDataTable installedDependencies = new varManagerDataSet.dependenciesDataTable();
         private InvokeAddLoglist addlog;
+        private bool closingDown;
+        private string baseTitle;
+
         public Form1()
         {
             InitializeComponent();
             addlog = new InvokeAddLoglist(UpdateAddLoglist);
+            // Smooth scrolling: DataGridView doesn't double-buffer by default, so the big
+            // vars grid flickered/stuttered on scroll (more visible under .NET 8 rendering).
+            // The DoubleBuffered property is protected, so set it via reflection.
+            EnableDoubleBuffer(varsViewDataGridView);
+            // Same teardown protection as FormScenes: .NET 8 enumerates virtual-list
+            // items at window destroy; with a large preview list that would re-enter
+            // RetrieveVirtualItem thousands of times during app exit.
+            this.FormClosing += (s, e) =>
+            {
+                closingDown = true;
+                listViewPreviewPics.VirtualListSize = 0;
+            };
         }
 
         private void buttonSetting_Click(object sender, EventArgs e)
@@ -568,34 +583,36 @@ namespace varManager
         }
         private void UpdateVarsInstalled()
         {
-            foreach (var row in this.varManagerDataSet.installStatus)
-                row.Delete();
-            installStatusTableAdapter.Update(varManagerDataSet.installStatus);
-            this.varManagerDataSet.installStatus.AcceptChanges();
-            installStatusTableAdapter.DeleteAll();
-            this.varManagerDataSet.installStatus.Clear();
-            this.varManagerDataSet.installStatus.AcceptChanges();
             mutex.WaitOne();
+
+            // Scan the file system FIRST while the old installStatus data is still in the DB.
+            // This prevents the "all vars show as uninstalled" flash that would occur if we
+            // cleared the DB before scanning.
+            var newRows = new System.Collections.Generic.List<(string varName, bool installed, bool disabled)>();
             foreach (string varfile in GetInstalledVars().Values)
             {
                 string varName = Path.GetFileNameWithoutExtension(varfile);
                 if (varManagerDataSet.vars.FindByvarName(varName) != null)
                 {
                     bool isdisable = File.Exists(varfile + ".disabled");
-                    varManagerDataSet.installStatus.AddinstallStatusRow(varName, true, isdisable);
+                    newRows.Add((varName, true, isdisable));
                 }
             }
 
-            installStatusTableAdapter.Update(varManagerDataSet.installStatus);
-            this.varManagerDataSet.installStatus.AcceptChanges();
-            mutex.ReleaseMutex();
-            // TODO: 这行代码将数据加载到表“varManagerDataSet1.varsView”中。您可以根据需要移动或删除它。
+            // Atomic replace: DELETE + INSERT in one transaction.
+            // Concurrent DB readers (varsView Fill) see either the complete old state or
+            // the complete new state — never an empty gap.
+            installStatusTableAdapter.BulkReplace(newRows);
 
-            //varsViewBindingSource.ResetBindings(true);
-            InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
-            this.BeginInvoke(invokeUpdateVarsViewDataGridView);
-            
-            //varsViewDataGridView.Update();
+            // Keep the in-memory DataTable in sync with the DB.
+            this.varManagerDataSet.installStatus.Clear();
+            foreach (var (varName, _, disabled) in newRows)
+                varManagerDataSet.installStatus.AddinstallStatusRow(varName, true, disabled);
+            varManagerDataSet.installStatus.AcceptChanges();
+
+            mutex.ReleaseMutex();
+
+            this.BeginInvoke(new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView));
         }
         private Mutex mutex;
         private System.Threading.Mutex mut = new Mutex();
@@ -612,12 +629,9 @@ namespace varManager
                 this.Close();
                 return;
             }
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.installStatus”中。您可以根据需要移动或删除它。
+            // TODO: 这行代码将数据加载到表"varManagerDataSet.installStatus"中。您可以根据需要移动或删除它。
             //this.installStatusTableAdapter.DeleteAll();
             mutex = new System.Threading.Mutex();
-            
-            backgroundWorkerInstall.RunWorkerAsync("FillDataTables");
-            //
             string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
             string packpath = new DirectoryInfo(Path.Combine(Settings.Default.vampath, "AddonPackages")).FullName;
 
@@ -689,37 +703,71 @@ namespace varManager
             //dtstart = DateTime.Now;
             //string[] packswitchdirs = Directory.GetDirectories(packsSwitchpath, "*", SearchOption.TopDirectoryOnly);
 
-            UpdateVarsInstalled();
-            comboBoxCreater.Items.Add("____ALL");
-            foreach (var row in this.varManagerDataSet.vars.GroupBy(g => g.creatorName))
-            {
-                comboBoxCreater.Items.Add(row.Key);
-            }
-            comboBoxCreater.SelectedIndex = 0;
-            //  FillDataTables();
-            //TimeSpan ts6 = DateTime.Now - dtstart;
-            //dtstart = DateTime.Now;
-            //MessageBox.Show($"{ts1.TotalSeconds},{ts2.TotalSeconds},{ts3.TotalSeconds},{ts4.TotalSeconds},{ts5.TotalSeconds},{ts6.TotalSeconds}");
             dgvFilterManager = new DgvFilterManager(varsViewDataGridView);
-            if (ExistAddonpackagesVar())
+            baseTitle = this.Text;
+            // Heavy startup work (DB load, installStatus reconcile) runs in background.
+            // Started only AFTER the AddonPackages symlink setup above, so the worker's
+            // symlink scan cannot race the link creation. Grid render, comboBoxCreater
+            // population and the unorganized-vars check happen in RunWorkerCompleted.
+            RunBackgroundTask("FillDataTables");
+        }
+
+        /// <summary>Turn on double buffering for a control whose DoubleBuffered property is
+        /// protected (DataGridView/ListView) so scrolling/redraw is smooth.</summary>
+        private static void EnableDoubleBuffer(System.Windows.Forms.Control c)
+        {
+            try
             {
-                MessageBox.Show("There are unorganized var files in the current switch, please run UPD_DB first");
-                buttonUpdDB.Focus();
+                typeof(System.Windows.Forms.Control).GetProperty("DoubleBuffered",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    ?.SetValue(c, true, null);
             }
+            catch { /* non-fatal cosmetic optimization */ }
+        }
+
+        /// <summary>
+        /// Single gate for every backgroundWorkerInstall task. The worker is shared by ~11
+        /// features (UpdDB, rebuild symlink, fix preview, missing-depends, …); the original
+        /// code called RunWorkerAsync directly, so starting a second task while one was still
+        /// running threw "This BackgroundWorker is currently busy" and crashed. This refuses
+        /// politely when busy and shows a running indicator in the title bar.
+        /// </summary>
+        private bool RunBackgroundTask(string arg)
+        {
+            if (backgroundWorkerInstall.IsBusy)
+            {
+                MessageBox.Show("后台正在执行其他操作,请等待当前任务完成后再试。\n(标题栏会显示当前正在运行的任务)",
+                    "请稍候", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            SetBusyUi(true, arg);
+            backgroundWorkerInstall.RunWorkerAsync(arg);
+            return true;
+        }
+
+        private void SetBusyUi(bool busy, string taskName = null)
+        {
+            this.UseWaitCursor = busy;
+            if (!string.IsNullOrEmpty(baseTitle))
+                this.Text = busy ? baseTitle + "  —  正在执行: " + taskName + " …" : baseTitle;
         }
         
         private void FillDataTables()
         {
             this.BeginInvoke(addlog, new Object[] { $"load vars...", LogLevel.INFO });
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
+            // TODO: 这行代码将数据加载到表"varManagerDataSet.vars"中。您可以根据需要移动或删除它。
             this.varsTableAdapter.Fill(this.varManagerDataSet.vars); 
             this.BeginInvoke(addlog, new Object[] { $"load scenes...", LogLevel.INFO });
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
+            // TODO: 这行代码将数据加载到表"varManagerDataSet.scenes"中。您可以根据需要移动或删除它。
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
             this.BeginInvoke(addlog, new Object[] { $"load dependencies...", LogLevel.INFO });
-            // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
+            // TODO: 这行代码将数据加载到表"varManagerDataSet.dependencies"中。您可以根据需要移动或删除它。
             this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
-            
+            // The in-memory installStatus table is read by install/uninstall/switch logic
+            // (FindByvarName etc.). Load the persisted state immediately so those paths see
+            // the last-known truth even before the filesystem reconcile below finishes.
+            this.BeginInvoke(addlog, new Object[] { $"load install status...", LogLevel.INFO });
+            this.installStatusTableAdapter.Fill(this.varManagerDataSet.installStatus);
         }
 
         public delegate void InvokeUpdateVarsViewDataGridView();
@@ -806,7 +854,7 @@ namespace varManager
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
-                backgroundWorkerInstall.RunWorkerAsync("UpdDB");
+                RunBackgroundTask("UpdDB");
         }
 
         private void UpdDB(string destvarfilename)
@@ -818,6 +866,20 @@ namespace varManager
                 curpath = Comm.MakeRelativePath(Settings.Default.varspath, curpath);
 
                 var varsrow = varManagerDataSet.vars.FindByvarName(basename);
+                // Detect changed vars: same filename but filesize differs → content replaced.
+                // Re-import by treating as new (CleanVar removes the stale record first).
+                if (varsrow != null && !varsrow.IsfilesizeNull())
+                {
+                    long diskSize = new FileInfo(destvarfilename).Length;
+                    if ((long)varsrow.filesize != diskSize)
+                    {
+                        this.BeginInvoke(addlog, new Object[] {
+                            $"{basename}: filesize changed ({(long)varsrow.filesize} → {diskSize}), re-importing",
+                            LogLevel.INFO });
+                        CleanVar(basename);
+                        varsrow = null;
+                    }
+                }
                 if (varsrow == null)
                 {
                     ZipFile varzipfile;
@@ -1256,19 +1318,22 @@ namespace varManager
             mutex.WaitOne();
             if ((string)e.Argument == "FillDataTables")
             {
-                /*
-                Thread thread1 = new Thread(new ThreadStart(fillscenes));
-                thread1.Start();
-                Thread thread2 = new Thread(new ThreadStart(fillvars));
-                thread2.Start();
-                Thread thread3 = new Thread(new ThreadStart(filldependencies));
-                thread3.Start();
-                thread1.Join();
-                thread2.Join();
-                thread3.Join();
-                */
+                var sw = System.Diagnostics.Stopwatch.StartNew();
                 FillDataTables();
-            } 
+                long fillMs = sw.ElapsedMilliseconds;
+                this.BeginInvoke(addlog, new object[] {
+                    $"DB load: {fillMs}ms",
+                    LogLevel.INFO });
+                // Reconcile install state with the actual AddonPackages symlinks (the
+                // original app did this on startup; it catches changes made outside the
+                // app). Still off the UI thread; BulkReplace keeps it a single transaction.
+                sw.Restart();
+                UpdateVarsInstalled();
+                this.BeginInvoke(addlog, new object[] {
+                    $"install-status reconcile: {sw.ElapsedMilliseconds}ms",
+                    LogLevel.INFO });
+                e.Result = "FillDataTables";
+            }
             if ((string)e.Argument == "UpdDB")
             {
                 TidyVars();
@@ -1340,7 +1405,30 @@ namespace varManager
 
         private void backgroundWorkerInstall_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            SetBusyUi(false);
+            if (e.Error != null)
+            {
+                MessageBox.Show("后台任务出错: " + e.Error.Message);
+                return;
+            }
+            if (e.Result is string s && s == "FillDataTables")
+            {
+                // Startup complete: render table from persisted SQLite data.
+                UpdateVarsViewDataGridView();
+                comboBoxCreater.Items.Clear();
+                comboBoxCreater.Items.Add("____ALL");
+                foreach (var row in this.varManagerDataSet.vars.GroupBy(g => g.creatorName))
+                    comboBoxCreater.Items.Add(row.Key);
+                if (comboBoxCreater.Items.Count > 0)
+                    comboBoxCreater.SelectedIndex = 0;
+                // Original startup behaviour: warn when AddonPackages holds real (non-link)
+                // var files that the manager doesn't know about yet.
+                if (ExistAddonpackagesVar())
+                {
+                    MessageBox.Show("There are unorganized var files in the current switch, please run UPD_DB first");
+                    buttonUpdDB.Focus();
+                }
+            }
         }
 
         private void buttonMissingDepends_Click(object sender, EventArgs e)
@@ -1354,7 +1442,7 @@ namespace varManager
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                backgroundWorkerInstall.RunWorkerAsync("MissingDepends");
+                RunBackgroundTask("MissingDepends");
             }
         }
         
@@ -1450,7 +1538,7 @@ namespace varManager
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                backgroundWorkerInstall.RunWorkerAsync("AllMissingDepends");
+                RunBackgroundTask("AllMissingDepends");
             }
         }
         public  void AllMissingDepends()
@@ -1712,7 +1800,7 @@ namespace varManager
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
-                backgroundWorkerInstall.RunWorkerAsync("rebuildLink");
+                RunBackgroundTask("rebuildLink");
         }
 
         private void buttonFixSavesDepend_Click(object sender, EventArgs e)
@@ -1725,7 +1813,7 @@ namespace varManager
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
-                backgroundWorkerInstall.RunWorkerAsync("savesDepend");
+                RunBackgroundTask("savesDepend");
         }
 
         private void comboBoxCreater_SelectedIndexChanged(object sender, EventArgs e)
@@ -2007,19 +2095,12 @@ namespace varManager
             {
                 if (string.IsNullOrWhiteSpace(picpath))
                 {
-                    imageListPreviewPics.Images.Add(Image.FromFile("vam.png"));
+                    Comm.AddImageToList(imageListPreviewPics, null, "vam.png");
                 }
                 else
                 {
                     picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, varname, picpath);
-                    if (File.Exists(picpath))
-                    {
-                        imageListPreviewPics.Images.Add(Image.FromFile(picpath));
-                    }
-                    else
-                    {
-                        imageListPreviewPics.Images.Add(Image.FromFile("vam.png"));
-                    }
+                    Comm.AddImageToList(imageListPreviewPics, null, File.Exists(picpath) ? picpath : "vam.png");
                 }
                 var item = listViewPreviewPics.Items.Add(Path.GetFileNameWithoutExtension(picpath), imageListPreviewPics.Images.Count - 1);
                 item.SubItems.Add(varname);
@@ -2033,6 +2114,7 @@ namespace varManager
 
         private void listViewPreviewPics_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
+            if (closingDown) { e.Item = new ListViewItem(string.Empty); return; }
             var curpriviewpic = previewpicsfilter[e.ItemIndex];
             string key = "vam.png";
             if (!string.IsNullOrWhiteSpace(curpriviewpic.Picpath))
@@ -2049,8 +2131,10 @@ namespace varManager
             }
             if (!imageListPreviewPics.Images.ContainsKey(key))
             {
-                imageListPreviewPics.Images.Add(key, Image.FromFile(key));
-                if (imageListPreviewPics.Images.Count > 20) imageListPreviewPics.Images.RemoveAt(0);
+                Comm.AddImageToList(imageListPreviewPics, key, key);
+                // see FormScenes.RetrieveVirtualItem: hysteresis cap, sized above the
+                // visible tile count so the scroll cache stops thrashing/leaking.
+                Comm.TrimImageList(imageListPreviewPics, 256, 192);
             }
             string itemname = Path.GetFileNameWithoutExtension(curpriviewpic.Picpath);
             if(string.IsNullOrEmpty(itemname))
@@ -2182,9 +2266,9 @@ namespace varManager
             if (formStaleVars.ShowDialog() == DialogResult.OK)
             {
                 if (formStaleVars.removeOldVersion)
-                    backgroundWorkerInstall.RunWorkerAsync("OldVersionVars");
+                    RunBackgroundTask("OldVersionVars");
                 else
-                    backgroundWorkerInstall.RunWorkerAsync("StaleVars");
+                    RunBackgroundTask("StaleVars");
             }
         }
 
@@ -2239,7 +2323,7 @@ namespace varManager
                     }
                 }
             }
-            System.Diagnostics.Process.Start(stalepath);
+            Comm.OpenShell(stalepath);
             //MessageBox.Show("Please run upd-db once");
         }
 
@@ -2296,7 +2380,7 @@ namespace varManager
                 }
 
             }
-            System.Diagnostics.Process.Start(oldversionpath);
+            Comm.OpenShell(oldversionpath);
             //MessageBox.Show("Please run upd-db once");
         }
 
@@ -2425,12 +2509,6 @@ namespace varManager
                 }
             }
             if (varNames.Count <= 0) return;
-            int max = 500;
-            if (varNames.Count > max)
-            {
-                MessageBox.Show($"Please do not install more than {max} files at once");
-                return;
-            }
             string message = $"There are {varNames.Count} vars and their dependencies will be installed, are you sure?";
             string caption = "Install Var";
             var result = MessageBox.Show(message, caption,
@@ -2439,12 +2517,19 @@ namespace varManager
                                   MessageBoxDefaultButton.Button2);
             if (result == DialogResult.Yes)
             {
-                varNames = VarsDependencies(varNames);
-                foreach (string varname in varNames)
+                // No 500-row cap anymore: symlink creation is cheap and DB persistence is
+                // batched under one SQLite transaction. Wait cursor covers the sync work.
+                this.UseWaitCursor = true;
+                try
                 {
-                    VarInstall(varname);
+                    varNames = VarsDependencies(varNames);
+                    foreach (string varname in varNames)
+                    {
+                        VarInstall(varname);
+                    }
+                    UpdateVarsInstalled();
                 }
-                UpdateVarsInstalled();
+                finally { this.UseWaitCursor = false; }
             }
         }
         public List<string> GetDependents(string dependName)
@@ -2495,9 +2580,9 @@ namespace varManager
                     curEntryName = item.SubItems[5].Text;
                     labelPreviewVarName.Text = curVarName;
                     if (string.IsNullOrEmpty(item.SubItems[2].Text))
-                        pictureBoxPreview.Image = pictureBoxPreview.Image = Image.FromFile("vam.png");
+                        Comm.SwapPictureBoxImage(pictureBoxPreview, "vam.png");
                     else
-                        pictureBoxPreview.Image = Image.FromFile(item.SubItems[2].Text);
+                        Comm.SwapPictureBoxImage(pictureBoxPreview, item.SubItems[2].Text);
 
                     if (item.SubItems[3].Text.ToLower() == "true")
                     {
@@ -2575,7 +2660,7 @@ namespace varManager
 
         private void UpdateButtonClearCache()
         {
-            string sceneCacheFolderName = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+            string sceneCacheFolderName = Path.Combine(Comm.CacheDir,
                Comm.ValidFileName(curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
             if (Directory.Exists(sceneCacheFolderName))
             {
@@ -2618,7 +2703,7 @@ namespace varManager
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                backgroundWorkerInstall.RunWorkerAsync("LogAnalysis");
+                RunBackgroundTask("LogAnalysis");
             }
         }
 
@@ -2632,7 +2717,7 @@ namespace varManager
                 var metajsonsteam = new StreamReader(logfile);
                 string logstring = metajsonsteam.ReadToEnd();
                 metajsonsteam.Close();
-                System.Diagnostics.Process.Start(logfile);
+                Comm.OpenShell(logfile);
                 List<string> dependencies = new List<string>();
                 try
                 {
@@ -2697,12 +2782,6 @@ namespace varManager
                 }
             }
             if (varNames.Count <= 0) return;
-            int max = 500;
-            if (varNames.Count > max)
-            {
-                MessageBox.Show($"Please do not uninstall more than {max} files at once");
-                return;
-            }
             string message = $"There are {varNames.Count} vars and their dependencies will be Uninstall, are you sure?";
             string caption = "Uninstall Vars";
             var result = MessageBox.Show(message, caption,
@@ -2711,8 +2790,13 @@ namespace varManager
                                   MessageBoxDefaultButton.Button2);
             if (result == DialogResult.Yes)
             {
-                UnintallVars(varNames);
-                UpdateVarsInstalled();
+                this.UseWaitCursor = true;
+                try
+                {
+                    UnintallVars(varNames);
+                    UpdateVarsInstalled();
+                }
+                finally { this.UseWaitCursor = false; }
             }
         }
 
@@ -2726,7 +2810,9 @@ namespace varManager
                 varNames.Add(varName);
             }
             if (varNames.Count <= 0) return;
-            int max = 50;
+            // Delete physically removes var files — keep a generous guard (raised from 50)
+            // against a fat-finger "select all + delete", but no longer the old tiny cap.
+            int max = 5000;
             if (varNames.Count > max)
             {
                 MessageBox.Show($"Please do not delete more than {max} files at once");
@@ -2740,9 +2826,14 @@ namespace varManager
                                   MessageBoxDefaultButton.Button2);
             if (result == DialogResult.Yes)
             {
-                DeleteVars(varNames);
-                UpdateVarsInstalled();
-                RescanPackages();
+                this.UseWaitCursor = true;
+                try
+                {
+                    DeleteVars(varNames);
+                    UpdateVarsInstalled();
+                    RescanPackages();
+                }
+                finally { this.UseWaitCursor = false; }
             }
         }
 
@@ -3000,7 +3091,7 @@ namespace varManager
                 JSONClass resource = (JSONClass)resources[0];
                 saveName = resource["saveName"].Value;
                 (string varName, string entryName) = SaveNameSplit(saveName);
-                string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                string sceneFolder = Path.Combine(Comm.CacheDir,
                      Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
                 string dependfFilename = Path.Combine(sceneFolder, "depend.txt");
                 if (!File.Exists(dependfFilename))
@@ -3250,7 +3341,7 @@ namespace varManager
                 JSONClass resource = (JSONClass)resources[0];
                 saveName = resource["saveName"].Value;
                 (string varName, string entryName) = SaveNameSplit(saveName);
-                string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                string sceneFolder = Path.Combine(Comm.CacheDir,
                     Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
                 string atomsFoldername = Path.Combine(sceneFolder, "atoms");
 
@@ -3352,7 +3443,7 @@ namespace varManager
             }
 
             depends.AddRange(Getdependencies(jsonscene));
-            string sceneFolder = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+            string sceneFolder = Path.Combine(Comm.CacheDir,
                 Comm.ValidFileName(varName), Comm.ValidFileName(entryName.Replace('\\', '_').Replace('/', '_')));
             Directory.CreateDirectory(sceneFolder);
             string dependFilename = Path.Combine(sceneFolder, "depend.txt");
@@ -3520,7 +3611,7 @@ namespace varManager
                                          MessageBoxIcon.Question,
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
-                backgroundWorkerInstall.RunWorkerAsync("fixPreview");
+                RunBackgroundTask("fixPreview");
         }
 
         private void buttonHub_Click(object sender, EventArgs e)
@@ -3573,7 +3664,7 @@ namespace varManager
                                          MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                backgroundWorkerInstall.RunWorkerAsync("FilteredMissingDepends");
+                RunBackgroundTask("FilteredMissingDepends");
             }
         }
 
@@ -3581,7 +3672,7 @@ namespace varManager
         {
             if (MessageBox.Show("The cache can improve the speed of secondary analysis, normally you don't need to clear it, unless you modify the scene file. This operation only clears the cache of the current scene, if you need to clear all the cache, please delete the cache directory manually.", "Clear Cache", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                string sceneFoldername = Path.Combine(Directory.GetCurrentDirectory(), "Cache",
+                string sceneFoldername = Path.Combine(Comm.CacheDir,
                            Comm.ValidFileName(curVarName), Comm.ValidFileName(curEntryName.Replace('\\', '_').Replace('/', '_')));
                 try { Directory.Delete(sceneFoldername, true); }
                 catch { }

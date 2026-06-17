@@ -170,7 +170,7 @@ namespace varManager
                 if (item != null)
                 {
                     labelPreviewVarName.Text = item.SubItems[1].Text;
-                    pictureBoxPreview.Image = Image.FromFile(item.SubItems[2].Text);
+                    Comm.SwapPictureBoxImage(pictureBoxPreview, item.SubItems[2].Text);
 
                     tableLayoutPanelPreview.Dock = DockStyle.Fill;
                     tableLayoutPanelPreview.Visible = true;
@@ -197,7 +197,7 @@ namespace varManager
             }
             else
             {
-                imageListPreviewPics.Images.Add(Image.FromFile(picpath));
+                Comm.AddImageToList(imageListPreviewPics, null, picpath);
                 var item = listViewPreviewPics.Items.Add(Path.GetFileNameWithoutExtension(picpath), imageListPreviewPics.Images.Count - 1);
                 item.SubItems.Add(varname);
                 item.SubItems.Add(picpath);
