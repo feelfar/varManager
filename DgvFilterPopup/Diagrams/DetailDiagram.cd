@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="DgvFilterPopup.DgvFilterManager">
+    <Position X="3.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\DgvFilterManager.cs</FileName>
+      <HashCode>EEAAIKAIABAAkgACCIhAIQAAAACADBCABgBABAIAABA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FilterHost" />
+      <Property Name="this[System.Int32]" />
+      <Property Name="this[System.String]" />
+    </ShowAsAssociation>
+    <Members>
+      <Method Name="CreateColumnFilter" Hidden="true" />
+      <Method Name="FindDataView" Hidden="true" />
+      <Field Name="mAutoCreateFilters" Hidden="true" />
+      <Field Name="mBaseFilter" Hidden="true" />
+      <Field Name="mBoundDataView" Hidden="true" />
+      <Field Name="mColumnFilterArray" Hidden="true" />
+      <Field Name="mCurrentColumnIndex" Hidden="true" />
+      <Field Name="mDataGridView" Hidden="true" />
+      <Method Name="mDataGridView_CellPainting" Hidden="true" />
+      <Method Name="mDataGridView_ColumnAdded" Hidden="true" />
+      <Method Name="mDataGridView_ColumnRemoved" Hidden="true" />
+      <Field Name="mFilterHost" Hidden="true" />
+      <Field Name="mFilterIsActive" Hidden="true" />
+      <Field Name="mFilterPicture" Hidden="true" />
+      <Method Name="Popup_Closed" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+    </Members>
+    <AssociationLine Name="FilterHost" Type="DgvFilterPopup.DgvBaseFilterHost">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.216" Y="0.068" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="this[System.String]" Type="DgvFilterPopup.DgvBaseColumnFilter">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.204" Y="0.06" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvBaseColumnFilter">
+    <Position X="6.25" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\DgvBaseColumnFilter.cs</FileName>
+      <HashCode>FQAAAgIBAAKAAhAJIBBqAFAAAAAgAMw0AEECAAgAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FilterHost" />
+    </ShowAsAssociation>
+    <Members>
+      <Field Name="mActive" Hidden="true" />
+      <Field Name="mBoundDataView" Hidden="true" />
+      <Field Name="mColumnDataType" Hidden="true" />
+      <Field Name="mDataGridViewColumn" Hidden="true" />
+      <Field Name="mFilterApplySoon" Hidden="true" />
+      <Field Name="mFilterCaption" Hidden="true" />
+      <Field Name="mFilterExpression" Hidden="true" />
+      <Field Name="mFilterHost" Hidden="true" />
+      <Field Name="mFilterManager" Hidden="true" />
+      <Field Name="mHFilterAlignment" Hidden="true" />
+      <Field Name="mOriginalDataGridViewColumnHeaderText" Hidden="true" />
+      <Field Name="mVFilterAlignment" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="FilterHost" Type="DgvFilterPopup.DgvBaseFilterHost">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="-3.963" Y="1.029" Height="0.16" Width="0.93" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvBaseFilterHost">
+    <Position X="0.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\DgvBaseFilterHost.cs</FileName>
+      <HashCode>JBAAAQAAABBBBBUAAAACAAAAAAAACMAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CurrentColumnFilter" />
+    </ShowAsAssociation>
+    <Members>
+      <Field Name="mCurrentColumnFilter" Hidden="true" />
+      <Field Name="mFilterManager" Hidden="true" />
+      <Field Name="mPopup" Hidden="true" />
+      <Field Name="mSizeDifference" Hidden="true" />
+      <Method Name="onDropDown" Hidden="true" />
+      <Method Name="onDropDownClosed" Hidden="true" />
+    </Members>
+    <AssociationLine Name="CurrentColumnFilter" Type="DgvFilterPopup.DgvBaseColumnFilter" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.5" Y="4.851" />
+        <Point X="1.5" Y="6.948" />
+        <Point X="6.812" Y="6.948" />
+        <Point X="6.812" Y="6.573" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="3.914" Y="0.141" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Class>
+</ClassDiagram>

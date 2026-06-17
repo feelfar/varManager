@@ -1,4 +1,4 @@
-﻿namespace varManager
+namespace varManager
 {
     partial class PrepareSaves
     {
@@ -175,7 +175,7 @@
             // PrepareSaves
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonExit;
             this.ClientSize = new System.Drawing.Size(1160, 732);
             this.ControlBox = false;

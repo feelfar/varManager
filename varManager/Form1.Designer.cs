@@ -1,4 +1,4 @@
-﻿
+
 namespace varManager
 {
     partial class Form1
@@ -1547,7 +1547,7 @@ namespace varManager
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1540, 829);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

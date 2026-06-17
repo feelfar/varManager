@@ -361,3 +361,22 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# --- varManager .NET 8 / SQLite modernization ---
+dist/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+varManager.migration.log
+
+
+# test-only scaffolding (not for upstream PR)
+*.asinvoker.manifest
+
+
+# redundant backups of pre-modernization files (original is in git history)
+migration/legacy/
+
+
+# dev-only verification harness (not product code)
+tests/
+

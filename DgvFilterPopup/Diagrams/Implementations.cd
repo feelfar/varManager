@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="DgvFilterPopup.DgvBaseFilterHost" Collapsed="true">
+    <Position X="1" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\DgvBaseFilterHost.cs</FileName>
+      <HashCode>JBAAAQAAABBBBBUAAAACAAAAAAAACMAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvBaseColumnFilter" Collapsed="true">
+    <Position X="1.75" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\DgvBaseColumnFilter.cs</FileName>
+      <HashCode>FQAAAgIBAAKAAhAJIBBqAFAAAAAgAMw0AEECAAgAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvCheckBoxColumnFilter" Collapsed="true">
+    <Position X="0.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\Implementations\DgvCheckBoxColumnFilter.cs</FileName>
+      <HashCode>AAAAAQAAAHAAAAAAAACAAAACAAAAAAAEAAAAABgAAAE=</HashCode>
+    </TypeIdentifier>
+    <InheritanceLine Type="DgvFilterPopup.DgvBaseColumnFilter" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.75" Y="1" />
+        <Point X="1.375" Y="1" />
+        <Point X="1.375" Y="2" />
+      </Path>
+    </InheritanceLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvComboBoxColumnFilter" Collapsed="true">
+    <Position X="0.5" Y="3" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\Implementations\DgvComboBoxColumnFilter.cs</FileName>
+      <HashCode>AAABEAAAAHAAAAAAAACAAAACAAAAAAAEAAAAABgAAAA=</HashCode>
+    </TypeIdentifier>
+    <InheritanceLine Type="DgvFilterPopup.DgvBaseColumnFilter" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.625" Y="1.38" />
+        <Point X="2.625" Y="2.808" />
+        <Point X="2.062" Y="2.808" />
+        <Point X="2.062" Y="3" />
+      </Path>
+    </InheritanceLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvDateColumnFilter" Collapsed="true">
+    <Position X="3" Y="2" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\Implementations\DgvDateColumnFilter.cs</FileName>
+      <HashCode>AAAAAAAAAHAAAAAAAACAAAACAAAAAAAEAAAAABgCgAA=</HashCode>
+    </TypeIdentifier>
+    <InheritanceLine Type="DgvFilterPopup.DgvBaseColumnFilter" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.75" Y="1" />
+        <Point X="4.143" Y="1" />
+        <Point X="4.143" Y="2" />
+      </Path>
+    </InheritanceLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvTextBoxColumnFilter" Collapsed="true">
+    <Position X="3" Y="3" Width="2" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\Implementations\DgvTextBoxColumnFilter.cs</FileName>
+      <HashCode>AAAAAAAAAHAAAAAAAACAAAACAAAAAEAEAABAABgAAAA=</HashCode>
+    </TypeIdentifier>
+    <InheritanceLine Type="DgvFilterPopup.DgvBaseColumnFilter" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.875" Y="1.38" />
+        <Point X="2.875" Y="2.808" />
+        <Point X="3.438" Y="2.808" />
+        <Point X="3.438" Y="3" />
+      </Path>
+    </InheritanceLine>
+  </Class>
+  <Class Name="DgvFilterPopup.DgvFilterHost" Collapsed="true">
+    <Position X="1" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>FilterPopup\Implementations\DgvFilterHost.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAQAAECAAAAiAAECAgAgAAAAAQJAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

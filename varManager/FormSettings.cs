@@ -64,5 +64,11 @@ namespace varManager
             if (this.DialogResult == DialogResult.None)
                 e.Cancel = true;
         }
+
+        private void buttonMigrate_Click(object sender, EventArgs e)
+        {
+            using (var f = new FormMigrate())
+                f.ShowDialog(this);
+        }
     }
 }

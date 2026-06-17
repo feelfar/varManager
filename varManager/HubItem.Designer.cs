@@ -1,4 +1,4 @@
-﻿namespace varManager
+namespace varManager
 {
     partial class HubItem
     {
@@ -250,7 +250,7 @@
             // HubItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.Controls.Add(this.picRating5);
             this.Controls.Add(this.picRating4);

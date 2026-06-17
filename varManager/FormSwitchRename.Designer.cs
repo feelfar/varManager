@@ -1,4 +1,4 @@
-﻿
+
 namespace varManager
 {
     partial class FormSwitchRename
@@ -87,7 +87,7 @@ namespace varManager
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(277, 150);
             this.ControlBox = false;

@@ -1,4 +1,4 @@
-﻿
+
 namespace varManager
 {
     partial class FormMissingVars
@@ -661,7 +661,7 @@ namespace varManager
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(1328, 569);
             this.ControlBox = false;
